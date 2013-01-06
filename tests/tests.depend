@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1357486441 source:c:\src\llib\tests\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<arena.h>
+
+1357484019 c:\src\llib\\arena.h
+	"except.h"
+
+1357474700 c:\src\llib\\except.h
+	<setjmp.h>
+	<windows.h>
+
