@@ -1,7 +1,7 @@
+#include "_config.h"
+
 #include <stdlib.h>
 #include <string.h>
-
-#include "_config.h" // luca for MAXALIGN
 
 #include "assert.h"
 #include "except.h"
@@ -13,8 +13,8 @@ const Except_T Arena_NewFailed = { "Arena Creation Failed" };
 const Except_T Arena_Failed    = { "Arena Allocation Failed" };
 
 #define THRESHOLD 10
-#define RESERVED_SIZE sizeof(long) // luca to store the size of the allocated memory
-#define BLOCK_START(ptr) ((long*)((ptr) - RESERVED_SIZE))
+#define RESERVED_SIZE sizeof(long) /* luca to store the size of the allocated memory */
+#define BLOCK_START(ptr) ((long*)(((char*)ptr) - RESERVED_SIZE))
 
 struct T {
 	T prev;
@@ -68,7 +68,7 @@ void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
 	assert(nbytes > 0);
 
 	nbytes = ((nbytes + sizeof (union align) - 1)/ (sizeof (union align)))*(sizeof (union align));
-	nbytes = nbytes + RESERVED_SIZE; // luca
+	nbytes = nbytes + RESERVED_SIZE; /* luca */
 
 	while (nbytes > arena->limit - arena->avail) {
 		T ptr;
@@ -96,9 +96,9 @@ void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
 		arena->prev  = ptr;
 	}
 
-	*((long*)arena->avail) = nbytes; // luca storing the size
+	*((long*)arena->avail) = nbytes; /* luca storing the size */
 	arena->avail += nbytes;
-	return arena->avail - nbytes + RESERVED_SIZE; // luca
+	return arena->avail - nbytes + RESERVED_SIZE; /* luca */
 }
 
 void *Arena_calloc(T arena, long count, long nbytes, const char *file, int line) {
@@ -117,10 +117,10 @@ void *Arena_realloc  (T arena, void *ptr, long nbytes, const char *file, int lin
 	assert(arena);
 	assert(nbytes > 0);
 
-	if(!nbytes) // doesn't set ptr to NULL as it is not required
+	if(!nbytes) /* doesn't set ptr to NULL as it is not required */
         return NULL;
 
-	if(!ptr) { // if ptr is null just alloc
+	if(!ptr) { /* if ptr is null just alloc */
         p   = Arena_alloc(arena, nbytes, file, line);
         *BLOCK_START(p) = nbytes;
         return p;
@@ -135,11 +135,11 @@ void *Arena_realloc  (T arena, void *ptr, long nbytes, const char *file, int lin
     }
 #endif
 
-    p               = Arena_alloc(arena, nbytes, file, line); // allocate the requested size
+    p               = Arena_alloc(arena, nbytes, file, line); /* allocate the requested size */
     *BLOCK_START(p) = nbytes;
 
     bsize           = bsize < nbytes ? bsize : nbytes;
-    memcpy(p, ptr, bsize); // memcopy the minimum of the two, this is why we are keeping track of size
+    memcpy(p, ptr, bsize); /* memcopy the minimum of the two, this is why we are keeping track of size */
 
     return p;
 }
