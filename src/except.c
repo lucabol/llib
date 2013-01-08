@@ -1,4 +1,4 @@
-#include "_config.h"
+#include "portable.h"
 
 #include <stdlib.h>
 #include <stdio.h>

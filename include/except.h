@@ -1,8 +1,13 @@
 #ifndef EXCEPT_INCLUDED
 #define EXCEPT_INCLUDED
 
+#include "utils.h"
+#include <portable.h>
 #include <setjmp.h>
-#include "thread.h" /* for thread_local */
+
+#include "portable.h" /* for thread_local */
+
+BEGIN_DECLS
 
 #define T Except_T
 
@@ -66,5 +71,7 @@ void Except_raise(const T *e, const char *file,int line);
 } while (0)
 
 #undef T
+
+END_DECLS
 
 #endif

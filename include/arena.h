@@ -1,7 +1,12 @@
 #ifndef ARENA_INCLUDED
 #define ARENA_INCLUDED
 
+#include "utils.h"
+#include "config.h"
+
 #include "except.h"
+
+BEGIN_DECLS
 
 #define T Arena_T
 
@@ -18,4 +23,6 @@ extern void *Arena_realloc  (T arena, void *ptr, long nbytes, const char *file, 
 extern void  Arena_free  (T arena);
 
 #undef T
+
+END_DECLS
 #endif

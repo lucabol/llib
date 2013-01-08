@@ -14,14 +14,17 @@
     <ClCompile Include="..\src\arena.c" />
     <ClCompile Include="..\src\assert.c" />
     <ClCompile Include="..\src\except.c" />
+    <ClCompile Include="..\src\test.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\arena.h" />
     <ClInclude Include="..\include\assert.h" />
+    <ClInclude Include="..\include\config.h" />
     <ClInclude Include="..\include\except.h" />
-    <ClInclude Include="..\include\llib.h" />
+    <ClInclude Include="..\include\test.h" />
     <ClInclude Include="..\include\thread.h" />
-    <ClInclude Include="..\include\_config.h" />
+    <ClInclude Include="..\include\portable.h" />
+    <ClInclude Include="..\include\utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{733287C1-3852-4914-B50C-51BCE751E4F6}</ProjectGuid>
@@ -70,6 +73,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -84,6 +88,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

@@ -24,24 +24,33 @@
     <ClCompile Include="..\src\assert.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\test.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\_config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\arena.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\except.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\llib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\thread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\assert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\portable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

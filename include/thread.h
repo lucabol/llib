@@ -1,6 +1,8 @@
 #ifndef THREAD_INCLUDED
 #define THREAD_INCLUDED
 
+BEGIN_DECLS
+
 #if 0
 #include "except.h"
 
@@ -20,16 +22,7 @@ extern void Thread_pause(void);
 
 #endif
 
-/* Define thread_local for different gcc and msvc */
-#ifdef __GNUC__
-# define thread_local   __thread
-#else
-# ifdef _MSC_VER
-#   define thread_local    __declspec(thread)
-# else
-#   define thread_local    
-# endif
-#endif
-
 #undef T
+
+END_DECLS
 #endif
