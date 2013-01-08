@@ -21,9 +21,8 @@ BEGIN_DECLS
 
 #  define assert(e) ((void)((e)||(BREAKPOINT,0)))
 
-# endif
+# endif /* NDEBUG */
+
+#endif /* REMOVE_ASSERTS */
 
 END_DECLS
-
-#endif
-

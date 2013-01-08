@@ -8,15 +8,18 @@
 # ifdef _MSC_VER
 #   define thread_local    __declspec(thread)
 # else
-#   define thread_local    
+#   define thread_local
 # endif
 #endif
 
 /* Portable breakpoint expression (not statement) */
 #if defined (_MSC_VER)
-#  define BREAKPOINT        __debugbreak()
-#else   
-#  define BREAKPOINT        (raise (SIGTRAP))
+# define BREAKPOINT        __debugbreak()
+#elif defined (__GNUC__)
+# define BREAKPOINT __builtin_trap()
+#else
+# include <signal.h>
+# define BREAKPOINT        (raise (SIGTRAP))
 #endif
 
 

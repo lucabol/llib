@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/DebugGcc/LLib" prefix_auto="1" extension_auto="1" />
+				<Option output="../lib/DebugGcc/LLib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/DebugGcc/" />
+				<Option object_output="../obj/DebugGcc/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -17,9 +17,9 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/ReleaseGcc/LLib" prefix_auto="1" extension_auto="1" />
+				<Option output="../lib/ReleaseGcc/LLib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/ReleaseGcc/" />
+				<Option object_output="../obj/ReleaseGcc/" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -32,16 +32,28 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="../include" />
 		</Compiler>
-		<Unit filename="_config.h" />
-		<Unit filename="arena.c">
+		<Unit filename="../include/arena.h" />
+		<Unit filename="../include/assert.h" />
+		<Unit filename="../include/config.h" />
+		<Unit filename="../include/except.h" />
+		<Unit filename="../include/portable.h" />
+		<Unit filename="../include/test.h" />
+		<Unit filename="../include/thread.h" />
+		<Unit filename="../include/utils.h" />
+		<Unit filename="../src/arena.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="arena.h" />
-		<Unit filename="except.c">
+		<Unit filename="../src/assert.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="except.h" />
+		<Unit filename="../src/except.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/test.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

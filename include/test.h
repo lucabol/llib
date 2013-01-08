@@ -7,11 +7,12 @@
 
 BEGIN_DECLS
 
-#define tassert(e) STMT_START {                                                                     \
-    if(!e) { printf("Test failed: \n" #e); return 0; } } STMT_END
+#define test_assert(e) STMT_START {                                                                 \
+    if((e) == 0) { printf("Test failed: \n" #e);                                                     \
+             return 0; }} STMT_END
 
-#define tassert_str(s1, s2) STMT_START {                                                            \
-    if(strcmp(s1, s2) != 0) { printf("Test failed (got, expected): %s == %s \n", s1, s2);           \
+#define test_assert_str(s1, s2) STMT_START {                                                        \
+    if(strcmp((s1), (s2)) != 0) { printf("Test failed (got, expected): %s == %s \n", (s1), (s2));   \
         return 0; } } STMT_END
 
 typedef int (*test_func) ();

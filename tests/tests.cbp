@@ -7,34 +7,38 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/DebugGcc/tests" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/DebugGcc/" />
+				<Option output="../bin/DebugGcc/tests" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../obj/DebugGcc/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add directory="../lib/debuggcc" />
+				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/ReleaseGcc/tests" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/ReleaseGcc/" />
+				<Option output="../bin/ReleaseGcc/tests" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../obj/ReleaseGcc/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add directory="../lib/releasegcc" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add directory="../" />
+			<Add directory="../include" />
 		</Compiler>
 		<Linker>
 			<Add library="llib" />
-			<Add directory="../bin/debuggcc" />
 		</Linker>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
