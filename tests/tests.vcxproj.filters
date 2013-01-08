@@ -15,25 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="arena.c">
+    <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="except.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="_config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="arena.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="except.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="llib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
