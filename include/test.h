@@ -1,19 +1,22 @@
 #ifndef TEST_INCLUDED
 #define TEST_INCLUDED
 
-#include <stdio.h>
+#include <stdio.h>  /* for printf */
 
-#include <utils.h>
+#include "utils.h"  /* for begin_decl*/
 
 BEGIN_DECLS
 
+#define TEST_SUCCESS 1
+#define TEST_FAILURE 0
+
 #define test_assert(e) STMT_START {                                                                 \
     if((e) == 0) { printf("Test failed: \n" #e);                                                     \
-             return 0; }} STMT_END
+             return TEST_FAILURE; }} STMT_END
 
 #define test_assert_str(s1, s2) STMT_START {                                                        \
     if(strcmp((s1), (s2)) != 0) { printf("Test failed (got, expected): %s == %s \n", (s1), (s2));   \
-        return 0; } } STMT_END
+        return TEST_FAILURE; } } STMT_END
 
 typedef int (*test_func) ();
 

@@ -1,6 +1,8 @@
 #ifndef THREAD_INCLUDED
 #define THREAD_INCLUDED
 
+#include "utils.h"  /* for begin_decl */
+
 BEGIN_DECLS
 
 #if 0

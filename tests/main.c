@@ -6,6 +6,7 @@
 #include <test.h>
 #include <except.h>
 #include <arena.h>
+#include <mem.h>
 
 int test_arena_resize() {
     Arena_T arena   = Arena_new();
@@ -26,12 +27,36 @@ int test_arena_resize() {
     test_assert_str(aChar, "abcdefghi");
 
     Arena_dispose(&arena);
-    return 1;
+    return TEST_SUCCESS;
+}
+
+int test_mem_free() {
+
+#define TEST_ASSERT(...) \
+    TRY { \
+        __VA_ARGS__; \
+        RETURN TEST_FAILURE; \
+    } EXCEPT(Assert_Failed) { \
+        RETURN TEST_SUCCESS; \
+    } END_TRY;
+
+    TEST_ASSERT(
+        int *i, *j;
+        NEW(i);
+        FREE(j); /* free not allocated pointer */
+        );
+    TEST_ASSERT(
+        char *str, *mid;
+        str = ALLOC(100);
+        FREE(mid); /* free in the middle of the block */
+        );
+
+    return TEST_SUCCESS;
 }
 
 int main()
 {
-    assert(1-1);
     test_add("arena", "resize", test_arena_resize);
+    test_add("mem", "free", test_mem_free);
     return test_run_all();
 }

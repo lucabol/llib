@@ -1,7 +1,5 @@
-#include "portable.h"
-
-#include <stdlib.h>
-#include <string.h>
+#include <stdlib.h> /* for malloc */
+#include <string.h> /* for memcpy */
 
 #include "assert.h"
 #include "except.h"

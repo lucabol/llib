@@ -31,6 +31,7 @@ union align {
 	float f;
 	double d;
 	long double ld;
+    long long ll;
 };
 
 typedef void (*functp);
@@ -42,9 +43,11 @@ typedef void (*functp);
 	xx(functp,fp);\
 	xx(float,f);\
 	xx(double,d);\
-	xx(long double,ld);
+	xx(long double,ld); \
+	xx(long long,ll);
 
 int main(int argc, char *argv[]) {
+    char* ptr;
 #define xx(t,v)	struct { char pad; t v; } v
 	yy
 #undef xx
@@ -60,12 +63,13 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr, "sizeof (union align) = %u\n", sizeof (union align));
 	assert(max);
 
-	char *ptr = malloc(1);
+	ptr = malloc(1);
 	if (verbose)
 		fprintf(stderr, "malloc(1) = %p\n", ptr);
 	while (max > 0 && ((unsigned)ptr)%max != 0)
 		max /= 2;
 	assert(max);
+    fprintf(stderr, "max = %u\n", max);
 
 	if (max != sizeof (union align))
 		printf("-DMAXALIGN=%u\n", max);

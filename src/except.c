@@ -1,7 +1,5 @@
-#include "portable.h"
-
-#include <stdlib.h>
-#include <stdio.h>
+#include <stdlib.h> /* for abort */
+#include <stdio.h>  /* for fprintf */
 
 #include "assert.h"
 #include "except.h"

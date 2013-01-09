@@ -14,6 +14,8 @@
     <ClCompile Include="..\src\arena.c" />
     <ClCompile Include="..\src\assert.c" />
     <ClCompile Include="..\src\except.c" />
+    <ClCompile Include="..\src\mem.c" />
+    <ClCompile Include="..\src\memchk.c" />
     <ClCompile Include="..\src\test.c" />
   </ItemGroup>
   <ItemGroup>
@@ -21,6 +23,7 @@
     <ClInclude Include="..\include\assert.h" />
     <ClInclude Include="..\include\config.h" />
     <ClInclude Include="..\include\except.h" />
+    <ClInclude Include="..\include\mem.h" />
     <ClInclude Include="..\include\test.h" />
     <ClInclude Include="..\include\thread.h" />
     <ClInclude Include="..\include\portable.h" />
@@ -88,7 +91,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG; _CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

@@ -1,9 +1,9 @@
 #undef assert
 
-#include "utils.h"
-#include "portable.h"
+#include "utils.h"      /* for begin_decl*/
+#include "portable.h"   /* for BREAKPOINT */ 
 
-#include "except.h"
+#include "except.h"     /* for raise */
 
 BEGIN_DECLS
 

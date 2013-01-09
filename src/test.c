@@ -54,8 +54,9 @@ int test_run_all() {
         int status = 0;
         
         status = p->func();
-        printf("/%s/%s/ %s\n", p->library, p->feature, status != 0? "Ok" : "Failed!!!");
-        code = status != 0 ? 0 : 3;
+        printf("/%s/%s/ %s\n", p->library, p->feature, status == TEST_SUCCESS ? "Ok" : "Failed!!!");
+        /* A positive value is failure code supposed to be returned from main */
+        if(status == TEST_FAILURE) code = 3; 
     }
 
     /* Free tests */

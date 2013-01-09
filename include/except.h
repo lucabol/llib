@@ -1,11 +1,10 @@
 #ifndef EXCEPT_INCLUDED
 #define EXCEPT_INCLUDED
 
-#include "utils.h"
-#include <portable.h>
-#include <setjmp.h>
+#include <setjmp.h>     /* for setjmp*/
 
-#include "portable.h" /* for thread_local */
+#include "utils.h"      /* for begin_decl */
+#include "portable.h"   /* for thread_local */
 
 BEGIN_DECLS
 

@@ -1,10 +1,9 @@
 #ifndef ARENA_INCLUDED
 #define ARENA_INCLUDED
 
-#include "utils.h"
-#include "config.h"
-
-#include "except.h"
+#include "utils.h"  /* for begin_decl */
+#include "config.h" /* for maxalign */
+#include "except.h" /* for except_t */
 
 BEGIN_DECLS
 

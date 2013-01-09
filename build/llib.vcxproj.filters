@@ -27,6 +27,12 @@
     <ClCompile Include="..\src\test.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\mem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\memchk.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\arena.h">
@@ -51,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\mem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
