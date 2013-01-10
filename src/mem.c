@@ -47,8 +47,7 @@ void Mem_free(void *ptr, const char *file, int line) {
 		free(ptr);
 }
 
-void *Mem_resize(void *ptr, long nbytes,
-	const char *file, int line) {
+void *Mem_ralloc(void *ptr, long nbytes, const char *file, int line) {
 	assert(ptr);
 	assert(nbytes > 0);
 
@@ -63,5 +62,7 @@ void *Mem_resize(void *ptr, long nbytes,
 
 	return ptr;
 }
+
+void Mem_print_allocated() {}
 
 #endif /* NDEBUG */

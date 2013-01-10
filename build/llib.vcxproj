@@ -58,16 +58,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)..\lib\$(Configuration)msvc\</OutDir>
+    <OutDir>$(SolutionDir)..\lib\</OutDir>
     <TargetExt>.lib</TargetExt>
     <IntDir>$(SolutionDir)..\obj\$(Configuration)msvc\</IntDir>
     <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath)</IncludePath>
+    <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)..\lib\$(Configuration)msvc\</OutDir>
+    <OutDir>$(SolutionDir)..\lib\</OutDir>
     <TargetExt>.lib</TargetExt>
     <IntDir>$(SolutionDir)..\obj\$(Configuration)msvc\</IntDir>
     <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath)</IncludePath>
+    <TargetName>$(ProjectName)r</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

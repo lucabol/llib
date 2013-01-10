@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #ifndef NDEBUG /* Need this to be second to avoid a translation empty error in msvc */
 
-#include <string.h>
+#include <string.h> /* for memcpy */
+#include <stdio.h> /* for printf */
+
 #include "assert.h"
 #include "except.h"
 #include "mem.h"
@@ -26,10 +28,12 @@ union align {
 
 #define NDESCRIPTORS 512
 
-/* A space of 4096 or more bytes that is a multiple of sizeof (union align) (necessary alignment size)  */
+/* A space of 4096 or more bytes that is a multiple of sizeof (union align) */
 #define NALLOC ((4096 + sizeof (union align) - 1) / (sizeof (union align)))*(sizeof (union align))
 
 const Except_T Mem_Failed = { "Allocation Failed" };
+
+#define max_hashed  2048
 
 static struct descriptor {
     struct descriptor *free;
@@ -38,7 +42,7 @@ static struct descriptor {
     long size;
     const char *file;
     int line;
-} *htab[2048];
+} *htab[max_hashed];
 
 static struct descriptor freelist = { &freelist };
 
@@ -57,7 +61,7 @@ void Mem_free(void *ptr, const char *file, int line) {
         /* Catches:
             . free on not aligned pointer (i.e. from middle of structure
             . free on pointer not given out with malloc
-            . pointer doesn't have a free pointer
+            . free pointer twice
         */
         if (((unsigned long)ptr) % (sizeof (union align)) != 0 || (bp = find(ptr)) == NULL || bp->free)
             Except_raise(&Assert_Failed, file, line);
@@ -67,11 +71,19 @@ void Mem_free(void *ptr, const char *file, int line) {
     }
 }
 
-void *Mem_resize(void *ptr, long nbytes, const char *file, int line) {
+void *Mem_realloc(void *ptr, long nbytes, const char *file, int line) {
     struct descriptor *bp;
     void *newptr;
     assert(ptr);
     assert(nbytes > 0);
+
+    /* This is rather error prone, but it is needed to conform to realloc spec */
+    if(!ptr)
+        return Mem_alloc(nbytes, file, line);
+
+    /* This conforms to C90. In C99 it is left implementation dependent.*/
+    if(!nbytes)
+        Mem_free(ptr, file, line);
 
     if (((unsigned long)ptr)%(sizeof (union align)) != 0 || (bp = find(ptr)) == NULL || bp->free)
         Except_raise(&Assert_Failed, file, line);
@@ -126,6 +138,7 @@ void *Mem_alloc(long nbytes, const char *file, int line){
 
     for (bp = freelist.free; bp; bp = bp->free) {
         if (bp->size > nbytes) {
+            /* Carves out a nbytes block at the end of the block, adds it to the list and returns it */
             bp->size -= nbytes;
             ptr = (char *)bp->ptr + bp->size;
 
@@ -147,7 +160,8 @@ void *Mem_alloc(long nbytes, const char *file, int line){
             struct descriptor *newptr;
 
             /* Malloc nbytes (correctly aligned) + a 4096 correctly aligned block and
-               returns a pointer to a descriptor.
+               returns a pointer to a descriptor. It means that each allocation adds one more
+               page in memory, so that it can satisfy requests for small blocks from this larger chunk.
             */
             if ((ptr = malloc(nbytes + NALLOC)) == NULL ||  (newptr = dalloc(ptr, nbytes + NALLOC,
                     __FILE__, __LINE__)) == NULL)
@@ -157,7 +171,7 @@ void *Mem_alloc(long nbytes, const char *file, int line){
                     else
                         Except_raise(&Mem_Failed, file, line);
                 }
-            /* change the freelist to point to the returned pointer and close the circular list */
+            /* Add the block as the first one in the free list. It will be picked up in the next iteration. */
             newptr->free = freelist.free;
             freelist.free = newptr;
         }
@@ -165,6 +179,26 @@ void *Mem_alloc(long nbytes, const char *file, int line){
 
     assert(0);
     return NULL;
+}
+
+void Mem_print_allocated() {
+    struct descriptor* bp;
+    int i;
+    int found = 0;
+
+    printf("Allocated memory blocks (file:line size, ptr)\n");
+    printf("---------------------------------------------\n");
+
+    for(i = 0; i < max_hashed ; i++) {
+        for(bp = htab[i]; bp; bp = bp->link) {
+            if(bp->free == NULL) {
+                printf("%20s:%i%10u%10p\n", bp->file, bp->line, bp->size, bp->ptr);
+                found = 1;
+            }
+        }
+    }
+    if(!found) printf("No allocated blocks found.\n");
+    else printf("\n");
 }
 
 #endif /*NDEBUG*/

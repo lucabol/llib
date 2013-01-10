@@ -8,7 +8,8 @@ extern const Except_T Mem_Failed;
 extern void *Mem_alloc (long nbytes, const char *file, int line);
 extern void *Mem_calloc(long count, long nbytes, const char *file, int line);
 extern void Mem_free(void *ptr, const char *file, int line);
-extern void *Mem_resize(void *ptr, long nbytes, const char *file, int line);
+extern void *Mem_realloc(void *ptr, long nbytes, const char *file, int line);
+extern void Mem_print_allocated();
 
 #define ALLOC(nbytes) \
 	Mem_alloc((nbytes), __FILE__, __LINE__)
@@ -23,7 +24,7 @@ extern void *Mem_resize(void *ptr, long nbytes, const char *file, int line);
 #define FREE(ptr) ((void)(Mem_free((ptr), \
 	__FILE__, __LINE__), (ptr) = 0))
 
-#define RESIZE(ptr, nbytes) 	((ptr) = Mem_resize((ptr), \
+#define REALLOC(ptr, nbytes) 	((ptr) = Mem_realloc((ptr), \
 	(nbytes), __FILE__, __LINE__))
 
 #endif

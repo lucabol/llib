@@ -8,21 +8,17 @@
 BEGIN_DECLS
 
 #ifdef REMOVE_ASSERTS
-
-#define assert(e) ((void)0)
-
-#else
-
-# ifdef NDEBUG
-
+# define assert(e) ((void)0)
+#elif defined(NDEBUG)
 #  define assert(e) ((void)((e)||(RAISE(Assert_Failed),0)))
-
 # else
-
 #  define assert(e) ((void)((e)||(BREAKPOINT,0)))
+# endif /* REMOVE_ASSERTS */
 
-# endif /* NDEBUG */
-
-#endif /* REMOVE_ASSERTS */
+#ifndef NDEBUG
+# define trace_log(...) fprint(stderr, __VA_ARGS__) 
+#else
+# define trace_log(...) 
+#endif
 
 END_DECLS

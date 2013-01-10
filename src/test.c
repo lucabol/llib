@@ -58,6 +58,7 @@ int test_run_all() {
         /* A positive value is failure code supposed to be returned from main */
         if(status == TEST_FAILURE) code = 3; 
     }
+    printf("\n");
 
     /* Free tests */
     while (head) {

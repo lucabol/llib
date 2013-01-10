@@ -26,37 +26,56 @@ int test_arena_resize() {
     aChar           = Arena_realloc(arena, aChar, 100000, NULL, 0);
     test_assert_str(aChar, "abcdefghi");
 
-    Arena_dispose(&arena);
+    Arena_dispose(arena);
+    
     return TEST_SUCCESS;
 }
 
 int test_mem_free() {
 
+    int result = TEST_SUCCESS;
+
 #define TEST_ASSERT(...) \
     TRY { \
         __VA_ARGS__; \
-        RETURN TEST_FAILURE; \
+        result = TEST_FAILURE; \
     } EXCEPT(Assert_Failed) { \
-        RETURN TEST_SUCCESS; \
     } END_TRY;
 
-    TEST_ASSERT(
-        int *i, *j;
-        NEW(i);
-        FREE(j); /* free not allocated pointer */
-        );
-    TEST_ASSERT(
-        char *str, *mid;
-        str = ALLOC(100);
-        FREE(mid); /* free in the middle of the block */
-        );
+#ifndef NDEBUG /* If the non-checking version of the mem library is used, then the code below
+                  accesses wrong pointers, hence it crashes as expected*/
+    int *i, *j;
+    char *str, *mid;
 
-    return TEST_SUCCESS;
+    TEST_ASSERT(
+        NEW(i);
+        FREE(j); 
+        );
+    FREE(i);
+    
+    TEST_ASSERT(
+        str = ALLOC(100);
+        FREE(mid); 
+        );
+    FREE(str);
+
+    TEST_ASSERT(
+        str = ALLOC(100);
+        REALLOC(mid, 200); 
+        );
+    FREE(str);
+
+#endif /*NDEBUG*/
+    return result;
 }
 
 int main()
 {
-    test_add("arena", "resize", test_arena_resize);
+    int res;
     test_add("mem", "free", test_mem_free);
-    return test_run_all();
+    test_add("arena", "resize", test_arena_resize);
+    res = test_run_all();
+
+    Mem_print_allocated();
+    return res;
 }
