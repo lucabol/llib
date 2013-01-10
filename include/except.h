@@ -31,6 +31,7 @@ extern thread_local Except_Frame *Except_stack;
 extern const Except_T Assert_Failed;
 
 void Except_raise(const T *e, const char *file,int line);
+extern void Except_hook_signal();
 
 
 #define RAISE(e) Except_raise(&(e), __FILE__, __LINE__)

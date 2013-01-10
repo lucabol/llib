@@ -5,6 +5,7 @@
 #include "except.h"
 #include "arena.h"
 #include "mem.h"
+#include "config.h" /* for MAXALIGN*/
 
 #define T Arena_T
 

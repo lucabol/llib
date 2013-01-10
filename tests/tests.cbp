@@ -15,7 +15,8 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add directory="../lib/debuggcc" />
+					<Add library="llibd" />
+					<Add directory="../lib/" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -29,7 +30,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add directory="../lib/releasegcc" />
+					<Add library="llibr" />
+					<Add directory="../lib/" />
 				</Linker>
 			</Target>
 		</Build>
@@ -37,9 +39,6 @@
 			<Add option="-Wall" />
 			<Add directory="../include" />
 		</Compiler>
-		<Linker>
-			<Add library="llib" />
-		</Linker>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

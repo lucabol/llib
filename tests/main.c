@@ -27,7 +27,7 @@ int test_arena_resize() {
     test_assert_str(aChar, "abcdefghi");
 
     Arena_dispose(arena);
-    
+
     return TEST_SUCCESS;
 }
 
@@ -44,24 +44,25 @@ int test_mem_free() {
 
 #ifndef NDEBUG /* If the non-checking version of the mem library is used, then the code below
                   accesses wrong pointers, hence it crashes as expected*/
-    int *i, *j;
+    int k, *i = NULL, *j = &k;
     char *str, *mid;
 
     TEST_ASSERT(
         NEW(i);
-        FREE(j); 
+        FREE(j);
         );
     FREE(i);
-    
+
     TEST_ASSERT(
         str = ALLOC(100);
-        FREE(mid); 
+        mid = str + 50;
+        FREE(mid);
         );
     FREE(str);
 
     TEST_ASSERT(
         str = ALLOC(100);
-        REALLOC(mid, 200); 
+        REALLOC(mid, 200);
         );
     FREE(str);
 
@@ -69,11 +70,24 @@ int test_mem_free() {
     return result;
 }
 
+int test_native_exceptions() {
+    Except_hook_signal();
+    TRY {
+        int k = 1 / 0;
+        printf("%i", k);
+        return TEST_FAILURE;
+    } EXCEPT(Assert_Failed) {
+        printf("exception caught\n");
+        return TEST_SUCCESS;
+    } END_TRY;
+}
+
 int main()
 {
     int res;
     test_add("mem", "free", test_mem_free);
     test_add("arena", "resize", test_arena_resize);
+    test_add("exception", "native", test_native_exceptions);
     res = test_run_all();
 
     Mem_print_allocated();

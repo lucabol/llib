@@ -7,6 +7,7 @@
 #include "assert.h"
 #include "except.h"
 #include "mem.h"
+#include "config.h" /* for MAXALIGN*/
 
 union align {
 #ifdef MAXALIGN
@@ -44,7 +45,7 @@ static struct descriptor {
     int line;
 } *htab[max_hashed];
 
-static struct descriptor freelist = { &freelist };
+static struct descriptor freelist = { &freelist, NULL, NULL, 0, NULL, 0 };
 
 static struct descriptor *find(const void *ptr) {
     struct descriptor *bp = htab[hash(ptr, htab)];
@@ -63,7 +64,10 @@ void Mem_free(void *ptr, const char *file, int line) {
             . free on pointer not given out with malloc
             . free pointer twice
         */
-        if (((unsigned long)ptr) % (sizeof (union align)) != 0 || (bp = find(ptr)) == NULL || bp->free)
+        int is_not_aligned = ((unsigned long)ptr) % (sizeof (union align)) != 0;
+
+        bp = find(ptr);
+        if ( is_not_aligned || bp == NULL || bp->free)
             Except_raise(&Assert_Failed, file, line);
 
         bp->free = freelist.free;
@@ -102,7 +106,7 @@ void *Mem_calloc(long count, long nbytes, const char *file, int line) {
 
     ptr = Mem_alloc(count*nbytes, file, line);
     memset(ptr, '\0', count*nbytes);
-    
+
     return ptr;
 }
 
@@ -132,7 +136,7 @@ void *Mem_alloc(long nbytes, const char *file, int line){
     struct descriptor *bp;
     void *ptr;
     assert(nbytes > 0);
-    
+
     /* Makes nbytes a multiple of the necessary alignment size */
     nbytes = ((nbytes + sizeof (union align) - 1) / (sizeof (union align))) * (sizeof (union align));
 
@@ -192,7 +196,7 @@ void Mem_print_allocated() {
     for(i = 0; i < max_hashed ; i++) {
         for(bp = htab[i]; bp; bp = bp->link) {
             if(bp->free == NULL) {
-                printf("%20s:%i%10u%10p\n", bp->file, bp->line, bp->size, bp->ptr);
+                printf("%20s:%i%10li%10p\n", bp->file, bp->line, bp->size, bp->ptr);
                 found = 1;
             }
         }

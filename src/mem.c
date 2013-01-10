@@ -43,6 +43,7 @@ void *Mem_calloc(long count, long nbytes,
 }
 
 void Mem_free(void *ptr, const char *file, int line) {
+    (void)file, (void)line;
 	if (ptr)
 		free(ptr);
 }
