@@ -28,7 +28,8 @@ enum { Except_entered=0, Except_raised, Except_handled,   Except_finalized };
 
 extern thread_local Except_Frame *Except_stack;
 
-extern const Except_T Assert_Failed;
+extern const    Except_T Assert_Failed;
+extern thread_local Except_T Native_Exception;
 
 void Except_raise(const T *e, const char *file,int line);
 extern void Except_hook_signal();
@@ -39,7 +40,8 @@ extern void Except_hook_signal();
 #define RERAISE Except_raise(Except_frame.exception, \
     Except_frame.file, Except_frame.line)
 
-#define RETURN switch (Except_stack = Except_stack->prev,0) default: return
+/* In all my examples this is not needed ...*/
+/* #define RETURN switch (Except_stack = Except_stack->prev,0) default: return */
 
 #define TRY do { \
     volatile int Except_flag; \

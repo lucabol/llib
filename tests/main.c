@@ -73,13 +73,17 @@ int test_mem_free() {
 int test_native_exceptions() {
     Except_hook_signal();
     TRY {
-        int k = 1 / 0;
-        printf("%i", k);
+        int a = 42;
+        volatile int b = 0;
+        printf("%i", a / b);
         return TEST_FAILURE;
-    } EXCEPT(Assert_Failed) {
-        printf("exception caught\n");
+    } EXCEPT(Native_Exception) {
+        printf("%s", Except_frame.exception->reason);
+        test_assert(1);
         return TEST_SUCCESS;
     } END_TRY;
+
+    return TEST_SUCCESS;
 }
 
 int main()
