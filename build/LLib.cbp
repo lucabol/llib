@@ -35,6 +35,10 @@
 			<Add option="-Wall" />
 			<Add directory="../include" />
 		</Compiler>
+		<Linker>
+			<Add option="-lpsapi" />
+			<Add library="psapi" />
+		</Linker>
 		<Unit filename="../include/arena.h" />
 		<Unit filename="../include/assert.h" />
 		<Unit filename="../include/config.h" />

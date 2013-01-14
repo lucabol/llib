@@ -80,7 +80,16 @@ int test_native_exceptions() {
     } EXCEPT(Native_Exception) {
         printf("%s", Except_frame.exception->reason);
         test_assert(1);
-        return TEST_SUCCESS;
+    } END_TRY;
+
+    TRY {
+        int* a = 0;
+        *a = 43;
+        printf("%i", *a);
+        return TEST_FAILURE;
+    } EXCEPT(Native_Exception) {
+        printf("%s", Except_frame.exception->reason);
+        test_assert(1);
     } END_TRY;
 
     return TEST_SUCCESS;

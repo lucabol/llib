@@ -16,6 +16,7 @@
 				</Compiler>
 				<Linker>
 					<Add library="llibd" />
+					<Add library="psapi" />
 					<Add directory="../lib/" />
 				</Linker>
 			</Target>
@@ -31,6 +32,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add library="llibr" />
+					<Add library="psapi" />
 					<Add directory="../lib/" />
 				</Linker>
 			</Target>

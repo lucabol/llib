@@ -6,7 +6,7 @@
 
 #define T Except_T
 
-extern thread_local Except_T Native_Exception = { "A native exception has occurred" };
+thread_local Except_T Native_Exception = { "A native exception has occurred" };
 
 thread_local Except_Frame *Except_stack = NULL;
 
@@ -45,6 +45,7 @@ void Except_raise(const T *e, const char *file, int line) {
 /* from here: http://stackoverflow.com/questions/3523716/is-there-a-function-to-convert-exception-pointers-struct-to-a-string */
 
 // Compile with /EHa
+#define _WIN32_WINNT    0x0501
 #include <windows.h>
 #include <Psapi.h>
 
@@ -99,7 +100,7 @@ LONG(CALLBACK win_exception_handler)(LPEXCEPTION_POINTERS ep) {
     GetModuleHandleEx(
         GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)(ep->ExceptionRecord->ExceptionAddress), &hm );
     GetModuleInformation(GetCurrentProcess(), hm, &mi, sizeof(mi) );
-    GetModuleFileNameExA(GetCurrentProcess(), hm, fn, MAX_PATH );
+    GetModuleFileNameEx(GetCurrentProcess(), hm, fn, MAX_PATH );
 
     sprintf(message, "SE %s at address %p inside %s loaded at base address %p\n",
         seDescription(code), ep->ExceptionRecord->ExceptionAddress, fn,
@@ -117,6 +118,9 @@ LONG(CALLBACK win_exception_handler)(LPEXCEPTION_POINTERS ep) {
     }
 
     Native_Exception.reason = message;
+
+    SetUnhandledExceptionFilter(win_exception_handler);
+
     Except_raise(&Native_Exception, "", 0);
     return 0;
 }
