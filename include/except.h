@@ -32,8 +32,6 @@ extern const    Except_T Assert_Failed;
 extern thread_local Except_T Native_Exception;
 
 void Except_raise(const T *e, const char *file,int line);
-extern void Except_hook_signal();
-
 
 #define RAISE(e) Except_raise(&(e), __FILE__, __LINE__)
 

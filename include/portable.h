@@ -22,5 +22,8 @@
 # define BREAKPOINT        (raise (SIGTRAP))
 #endif
 
+#ifdef NATIVE_EXCEPTIONS
+extern void Except_hook_signal();
+#endif
 
 #endif /* PORTABLE_INCLUDED */

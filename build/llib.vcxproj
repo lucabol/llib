@@ -14,8 +14,10 @@
     <ClCompile Include="..\src\arena.c" />
     <ClCompile Include="..\src\assert.c" />
     <ClCompile Include="..\src\except.c" />
+    <ClCompile Include="..\src\log.c" />
     <ClCompile Include="..\src\mem.c" />
     <ClCompile Include="..\src\memchk.c" />
+    <ClCompile Include="..\src\portable.c" />
     <ClCompile Include="..\src\test.c" />
   </ItemGroup>
   <ItemGroup>
@@ -23,6 +25,7 @@
     <ClInclude Include="..\include\assert.h" />
     <ClInclude Include="..\include\config.h" />
     <ClInclude Include="..\include\except.h" />
+    <ClInclude Include="..\include\log.h" />
     <ClInclude Include="..\include\mem.h" />
     <ClInclude Include="..\include\test.h" />
     <ClInclude Include="..\include\thread.h" />

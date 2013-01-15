@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
+    <ClCompile Include="perf.c" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\build\llib.vcxproj">

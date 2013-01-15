@@ -33,6 +33,12 @@
     <ClCompile Include="..\src\memchk.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\portable.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\log.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\arena.h">
@@ -60,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\mem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

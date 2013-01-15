@@ -7,6 +7,7 @@
 #include <except.h>
 #include <arena.h>
 #include <mem.h>
+#include <log.h>
 
 int test_arena_resize() {
     Arena_T arena   = Arena_new();
@@ -71,6 +72,9 @@ int test_mem_free() {
 }
 
 int test_native_exceptions() {
+
+#ifdef NATIVE_EXCEPTIONS
+
     Except_hook_signal();
     TRY {
         int a = 42;
@@ -91,16 +95,26 @@ int test_native_exceptions() {
         printf("%s", Except_frame.exception->reason);
         test_assert(1);
     } END_TRY;
+#endif /*NATIVE_EXCEPTIONS*/
 
     return TEST_SUCCESS;
 }
 
+int test_log() {
+    log("Log a number: %i\n", 10);
+    return TEST_SUCCESS;
+}
+
+int test_mem_perf();
+
 int main()
 {
     int res;
-    test_add("mem", "free", test_mem_free);
-    test_add("arena", "resize", test_arena_resize);
-    test_add("exception", "native", test_native_exceptions);
+    test_add("mem", "free",             test_mem_free);
+    test_add("mem", "perf",             test_mem_perf);
+    test_add("arena", "resize",         test_arena_resize);
+    test_add("exception", "native",     test_native_exceptions);
+    test_add("log", "printing",         test_log);
     res = test_run_all();
 
     Mem_print_allocated();
