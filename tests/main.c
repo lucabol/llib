@@ -101,7 +101,15 @@ int test_native_exceptions() {
 }
 
 int test_log() {
-    log("Log a number: %i\n", 10);
+    log_init(NULL, LOG_DISABLE);
+    log("Don't print this number: %i\n", 10);
+
+    log_init(stderr, LOG_INFO);
+    log("Print this number: %i", 10);
+
+    log_init(NULL, LOG_DISABLE);
+    log("Don't print this number: %i\n", 10);
+
     return TEST_SUCCESS;
 }
 
@@ -110,6 +118,9 @@ int test_mem_perf();
 int main()
 {
     int res;
+
+    /* log_init(stderr, LOG_DBG); */
+
     test_add("mem", "free",             test_mem_free);
     test_add("mem", "perf",             test_mem_perf);
     test_add("arena", "resize",         test_arena_resize);

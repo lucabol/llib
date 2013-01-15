@@ -3,6 +3,7 @@
 
 #include "assert.h"
 #include "except.h"
+#include "log.h"
 
 #define T Except_T
 
@@ -17,18 +18,19 @@ void Except_raise(const T *e, const char *file, int line) {
     assert(e);
 
     if (p == NULL) {
-        fprintf(stderr, "Uncaught exception");
+        char message[50];
+        sprintf(message, "Uncaught exception");
 
         if (e->reason)
-            fprintf(stderr, " %s", e->reason);
+            sprintf(message, " %s", e->reason);
         else
-            fprintf(stderr, " at 0x%p", e);
+            sprintf(message, " at 0x%p", e);
 
         if (file && line > 0)
-            fprintf(stderr, " raised at %s:%d\n", file, line);
+            sprintf(message, " raised at %s:%d\n", file, line);
 
-        fprintf(stderr, "aborting...\n");
-        fflush(stderr);
+        sprintf(message, "aborting...\n");
+        log(message);
         abort();
     }
 

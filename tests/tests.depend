@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1358201279 source:c:\src\llib\tests\main.c
+1358281640 source:c:\src\llib\tests\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -8,6 +8,7 @@
 	<except.h>
 	<arena.h>
 	<mem.h>
+	<log.h>
 
 1357484019 c:\src\llib\\arena.h
 	"except.h"
@@ -20,14 +21,14 @@
 	<stdio.h>
 	"utils.h"
 
-1357672215 c:\src\llib\include\utils.h
+1358279841 c:\src\llib\include\utils.h
 
-1358196436 c:\src\llib\include\except.h
+1358279865 c:\src\llib\include\except.h
 	<setjmp.h>
 	"utils.h"
 	"portable.h"
 
-1357672885 c:\src\llib\include\portable.h
+1358279841 c:\src\llib\include\portable.h
 	<signal.h>
 
 1357850818 c:\src\llib\include\arena.h
@@ -35,13 +36,22 @@
 	"config.h"
 	"except.h"
 
-1357852417 c:\src\llib\include\config.h
+1358279362 c:\src\llib\include\config.h
 
-1357850818 c:\src\llib\include\assert.h
+1358279412 c:\src\llib\include\assert.h
 	"utils.h"
 	"portable.h"
 	"except.h"
 
-1357850818 c:\src\llib\include\mem.h
+1358279841 c:\src\llib\include\mem.h
 	"except.h"
+
+1358280567 c:\src\llib\include\log.h
+	<stdio.h>
+	"utils.h"
+
+1358276599 source:c:\src\llib\tests\perf.c
+	<string.h>
+	<test.h>
+	<mem.h>
 

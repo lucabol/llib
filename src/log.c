@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include "assert.h"
 #include "log.h"
 
@@ -10,4 +12,13 @@ void log_init(FILE* where, int level) {
 
     dbgstream   = where;
     debug_level = level;
+}
+
+void get_time(char* buffer) {
+    time_t t;
+    struct tm* tinfo;
+
+    time(&t);
+    tinfo = localtime(&t);
+    strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", tinfo);
 }

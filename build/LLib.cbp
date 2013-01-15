@@ -43,6 +43,7 @@
 		<Unit filename="../include/assert.h" />
 		<Unit filename="../include/config.h" />
 		<Unit filename="../include/except.h" />
+		<Unit filename="../include/log.h" />
 		<Unit filename="../include/mem.h" />
 		<Unit filename="../include/portable.h" />
 		<Unit filename="../include/test.h" />
@@ -57,10 +58,16 @@
 		<Unit filename="../src/except.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../src/log.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../src/mem.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/memchk.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/portable.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/test.c">

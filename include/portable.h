@@ -1,6 +1,16 @@
 #ifndef PORTABLE_INCLUDED
 #define PORTABLE_INCLUDED
 
+#ifdef __GNUC__
+#define MAXALIGN 8 /* Alignment used in the allocation functions */
+#endif
+
+#ifdef __GNUC__
+#define inline inline
+#else
+#define inline
+#endif
+
 /* Define thread_local for different gcc and msvc */
 #ifdef __GNUC__
 # define thread_local   __thread

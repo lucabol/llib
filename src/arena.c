@@ -5,7 +5,7 @@
 #include "except.h"
 #include "arena.h"
 #include "mem.h"
-#include "config.h" /* for MAXALIGN*/
+#include "log.h"
 
 #define T Arena_T
 
@@ -56,11 +56,14 @@ T Arena_new(void) {
     NEW(arena);
     arena->prev = NULL;
     arena->limit = arena->avail = NULL;
+    log_dbg("%p new arena", arena);
     return arena;
 }
 
 void Arena_dispose(T ap) {
     assert(ap);
+    log_dbg("%p dispose arena", ap);
+
     Arena_free(ap);
 
     FREE(ap);
@@ -68,6 +71,7 @@ void Arena_dispose(T ap) {
 }
 
 void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
+    void* ptr;
     assert(arena);
     assert(nbytes > 0);
 
@@ -82,9 +86,12 @@ void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
             freechunks = freechunks->prev;
             nfree--;
             limit = ptr->limit;
+            log_dbg("%p arena reusing chunk, left %i chunks", freechunks, nfree);
         } else {
             long m = sizeof (union header) + nbytes + 10*1024;
             ptr = ALLOC(m);
+            log_dbg("%p arena alloc new chunk %li", ptr, m);
+
             if (ptr == NULL) {
                 if (file == NULL)
                     RAISE(Arena_Failed);
@@ -102,7 +109,10 @@ void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
 
     *((long*)arena->avail) = nbytes; /* luca storing the size */
     arena->avail += nbytes;
-    return arena->avail - nbytes + RESERVED_SIZE; /* luca */
+    ptr = arena->avail - nbytes + RESERVED_SIZE; /* luca */
+
+    log_dbg("%p arena %li bytes", ptr, nbytes);
+    return ptr;
 }
 
 void *Arena_calloc(T arena, long count, long nbytes, const char *file, int line) {
@@ -112,6 +122,7 @@ void *Arena_calloc(T arena, long count, long nbytes, const char *file, int line)
     ptr = Arena_alloc(arena, count*nbytes, file, line);
     memset(ptr, '\0', count*nbytes);
 
+    log_dbg("%p arena %li bytes", ptr, nbytes);
     return ptr;
 }
 
@@ -145,11 +156,13 @@ void *Arena_realloc  (T arena, void *ptr, long nbytes, const char *file, int lin
     bsize           = bsize < nbytes ? bsize : nbytes;
     memcpy(p, ptr, bsize); /* memcopy the minimum of the two, this is why we are keeping track of size */
 
+    log_dbg("%p arena %li bytes", p, nbytes);
     return p;
 }
 
 void Arena_free(T arena) {
     assert(arena);
+    log_dbg("%p arena freed", arena);
 
     while (arena->prev) {
         struct T tmp = *arena->prev;

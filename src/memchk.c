@@ -7,7 +7,7 @@
 #include "assert.h"
 #include "except.h"
 #include "mem.h"
-#include "config.h" /* for MAXALIGN*/
+#include "log.h"
 
 union align {
 #ifdef MAXALIGN
@@ -56,6 +56,7 @@ static struct descriptor *find(const void *ptr) {
 }
 
 void Mem_free(void *ptr, const char *file, int line) {
+
     if (ptr) {
         struct descriptor *bp;
 
@@ -65,21 +66,25 @@ void Mem_free(void *ptr, const char *file, int line) {
             . free pointer twice
         */
         int is_not_aligned = ((unsigned long)ptr) % (sizeof (union align)) != 0;
-
         bp = find(ptr);
         if ( is_not_aligned || bp == NULL || bp->free)
             Except_raise(&Assert_Failed, file, line);
 
         bp->free = freelist.free;
         freelist.free = bp;
+
+        log_dbg("%p freed", ptr);
     }
 }
 
 void *Mem_realloc(void *ptr, long nbytes, const char *file, int line) {
     struct descriptor *bp;
     void *newptr;
+
     assert(ptr);
     assert(nbytes > 0);
+
+    log_dbg("%p realloc %li bytes", ptr, nbytes);
 
     /* This is rather error prone, but it is needed to conform to realloc spec */
     if(!ptr)
@@ -107,6 +112,7 @@ void *Mem_calloc(long count, long nbytes, const char *file, int line) {
     ptr = Mem_alloc(count*nbytes, file, line);
     memset(ptr, '\0', count*nbytes);
 
+    log_dbg("%p calloc %li bytes", ptr, nbytes);
     return ptr;
 }
 
@@ -175,6 +181,7 @@ void *Mem_alloc(long nbytes, const char *file, int line){
                     else
                         Except_raise(&Mem_Failed, file, line);
                 }
+            log_dbg("%p alloc %li bytes", ptr, nbytes + NALLOC);
             /* Add the block as the first one in the free list. It will be picked up in the next iteration. */
             newptr->free = freelist.free;
             freelist.free = newptr;
