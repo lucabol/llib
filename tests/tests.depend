@@ -1,14 +1,13 @@
 # depslib dependency file v1.0
-1358281640 source:c:\src\llib\tests\main.c
+1358539909 source:c:\src\llib\tests\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<assert.h>
 	<test.h>
 	<except.h>
-	<arena.h>
-	<mem.h>
 	<log.h>
+	<mem.h>
 
 1357484019 c:\src\llib\\arena.h
 	"except.h"
@@ -17,7 +16,7 @@
 	<setjmp.h>
 	<windows.h>
 
-1357850818 c:\src\llib\include\test.h
+1358538743 c:\src\llib\include\test.h
 	<stdio.h>
 	"utils.h"
 
@@ -28,8 +27,12 @@
 	"utils.h"
 	"portable.h"
 
-1358279841 c:\src\llib\include\portable.h
+1358540578 c:\src\llib\include\portable.h
 	<signal.h>
+	<malloc.h>
+	<stdlib.h>
+	<malloc.h>
+	<windows.h>
 
 1357850818 c:\src\llib\include\arena.h
 	"utils.h"
@@ -43,15 +46,24 @@
 	"portable.h"
 	"except.h"
 
-1358279841 c:\src\llib\include\mem.h
+1358538743 c:\src\llib\include\mem.h
 	"except.h"
 
-1358280567 c:\src\llib\include\log.h
+1358538743 c:\src\llib\include\log.h
 	<stdio.h>
+	"portable.h"
 	"utils.h"
 
-1358276599 source:c:\src\llib\tests\perf.c
+1358538743 source:c:\src\llib\tests\perf.c
 	<string.h>
 	<test.h>
 	<mem.h>
+	<timer.h>
+	<log.h>
+	<slist.h>
+
+1358538743 c:\src\llib\include\timer.h
+	"utils.h"
+
+1358538743 c:\src\llib\include\slist.h
 

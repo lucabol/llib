@@ -19,15 +19,15 @@ int test_arena_resize() {
     *aChar          = 'a';
     test_assert(*aChar == 'a');
 
-    aChar           = REALLOC(aChar, 100);
+    REALLOC(aChar, 100);
     strcpy(aChar + 1, "bcdefghilmnopqrstuvz");
     test_assert_str(aChar, "abcdefghilmnopqrstuvz");
 
-    aChar           = REALLOC(aChar, 10);
+    REALLOC(aChar, 10);
     aChar[9]        = '\0';
     test_assert_str(aChar, "abcdefghi");
 
-    aChar           = REALLOC(aChar, 100000);
+    REALLOC(aChar, 100000);
     test_assert_str(aChar, "abcdefghi");
 
     Mem_set_default();
@@ -148,7 +148,7 @@ int main()
     log_set(NULL, LOG_DBG);
     Mem_print_stats();
     log_set(NULL, LOG_DISABLE);
-    
+
     Arena_dispose(arena);
     return res;
 }

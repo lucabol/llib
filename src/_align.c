@@ -1,6 +1,3 @@
-#include <stdlib.h>
-#include <stddef.h>
-
 #include "portable.h" /* for OS specific alignment functions */
 #include "assert.h"
 #include "except.h"
@@ -28,8 +25,7 @@ void *align_alloc(long nbytes, const char *file, int line){
 }
 
 static
-void *align_calloc(long count, long nbytes,
-    const char *file, int line) {
+void *align_calloc(long count, long nbytes, const char *file, int line) {
     void *ptr;
     assert(count > 0);
     assert(nbytes > 0);

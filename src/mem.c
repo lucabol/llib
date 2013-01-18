@@ -26,7 +26,7 @@ void Mem_print_stats() {
 
 /* Plug Arena into the common allocation framework */
 
-thread_local static Arena_T Arena_default;
+static thread_local  Arena_T Arena_default;
 
 void* a_alloc  (long nbytes, const char *file, int line) {
     return Arena_alloc(Arena_default, nbytes, file, line);
@@ -37,7 +37,7 @@ void* a_calloc (long count, long nbytes, const char *file, int line) {
 }
 
 void  a_free   (void *ptr, const char *file, int line) {
-    (void) ptr, file, line;
+    (void) ptr, (void)file, (void)line;
 }
 
 void* a_realloc(void *ptr, long nbytes, const char *file, int line) {

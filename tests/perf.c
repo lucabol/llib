@@ -72,7 +72,7 @@ int test_list_perf() {
     double res = test_perf(test_list);
     Arena_T arena;
 
-    log_set(NULL, LOG_DBG);
+    log_set(NULL, LOG_DISABLE);
     log("List : %10.0f", res);
     log_set(NULL, LOG_DISABLE);
 
@@ -83,7 +83,7 @@ int test_list_perf() {
     Arena_dispose(arena);
     Mem_set_default();
 
-    log_set(NULL, LOG_DBG);
+    log_set(NULL, LOG_DISABLE);
     log("ListA: %10.0f", res);
     log_set(NULL, LOG_DISABLE);
 
@@ -126,7 +126,7 @@ int test_mem_perf() {
     Mem_set_default();
     alignTime = Timer_elapsed_micro_dispose(t);
     
-    log_set(NULL, LOG_DBG);
+    log_set(NULL, LOG_DISABLE);
     log("Mem  : %10.0f", memTime);
     log("Arena: %10.0f", arenaTime);
     log("Align: %10.0f", alignTime);
@@ -134,10 +134,5 @@ int test_mem_perf() {
     log("Ratio: %10.0f", alignTime / arenaTime);
     log_set(NULL, LOG_DISABLE);
    
-
-#ifdef NDEBUG
-    test_assert(arenaTime < memTime * 10);
-#endif
-
     return TEST_SUCCESS;
 }

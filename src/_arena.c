@@ -19,12 +19,12 @@ TODO: decrease memory usage, look in existing chunks to find one that has enough
 const Except_T Arena_NewFailed = { "Arena Creation Failed" };
 const Except_T Arena_Failed    = { "Arena Allocation Failed" };
 
-thread_local static int  Arena_chunk_n           = 10;
-thread_local static long Arena_additional_size   = 10 * 1024;
+static thread_local int  Arena_chunk_n           = 10;
+static thread_local long Arena_additional_size   = 10 * 1024;
 
 /* for stats */
 #ifndef NDEBUG
-thread_local static unsigned long chunk_allocations = 0;
+static thread_local unsigned long chunk_allocations = 0;
 #endif
 
 #define RESERVED_SIZE sizeof(long) /* luca to store the size of the allocated memory */
@@ -82,7 +82,7 @@ void Arena_dispose(T ap) {
     log_dbg("%p dispose arena", ap);
 
     Arena_free(ap);
-    
+
     _Mem_free(ap, __FILE__, __LINE__);
     ap = NULL;
 }
@@ -107,7 +107,7 @@ void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
         } else {
             long m = sizeof (union header) + nbytes + Arena_additional_size;
             ptr = _Mem_alloc(m, __FILE__, __LINE__);
-            
+
 #ifndef NDEBUG
             chunk_allocations = chunk_allocations + 1;
 #endif
@@ -215,7 +215,7 @@ void Arena_print_stats() {
 #ifndef NDEBUG
     log_dbg("Allocated memory chunks");
     log_dbg("---------------------------------------------");
-    log_dbg("%dl", chunk_allocations);
+    log_dbg("%lu", chunk_allocations);
 #endif
 }
 

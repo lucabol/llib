@@ -38,7 +38,7 @@ const Except_T Mem_Failed = { "Allocation Failed" };
 
 #define max_hashed  2048
 
-thread_local static struct descriptor {
+static thread_local  struct descriptor {
     struct descriptor *free;
     struct descriptor *link;
     const void *ptr;
@@ -47,7 +47,7 @@ thread_local static struct descriptor {
     int line;
 } *htab[max_hashed];
 
-thread_local static struct descriptor freelist;
+static thread_local struct descriptor freelist;
 
 static struct descriptor *find(const void *ptr) {
     struct descriptor *bp = htab[hash(ptr, htab)];

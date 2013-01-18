@@ -36,10 +36,20 @@
 extern void Except_hook_signal();
 #endif
 
-#ifdef _WIN32
+#ifdef _MSC_VER
+#include <malloc.h>
+
 #define Aligned_malloc  _aligned_malloc
 #define Aligned_realloc _aligned_realloc
 #define Aligned_free    _aligned_free
+#elif __GNUC__
+#include <stdlib.h>
+#include <malloc.h>
+#include <windows.h>
+
+#define Aligned_malloc  __mingw_aligned_malloc
+#define Aligned_realloc __mingw_aligned_realloc
+#define Aligned_free    __mingw_aligned_free
 #else
 #define Aligned_free    free
 #endif
