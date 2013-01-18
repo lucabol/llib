@@ -42,10 +42,13 @@
     <ClCompile Include="..\src\mem.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\timer.c">
+    <ClCompile Include="..\src\_align.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\_align.c">
+    <ClCompile Include="..\src\portable_timer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\slist.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\slist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

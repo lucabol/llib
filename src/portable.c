@@ -1,5 +1,23 @@
 #include "portable.h"
 
+
+#ifdef _WIN32
+#else
+void* Aligned_malloc(long nbytes, long alignment) {
+    void *ptr;
+    assert(posix_memalign(&ptr, alignment, nbytes);
+    return ptr;
+}
+
+void* Aligned_realloc(void* ptr, long nbytes, long alignment) {
+    assert(0);
+    /*  no posix_memrealloc, should implement it by keeping track of size of block
+        associated with ptr */
+}
+
+#endif
+
+
 #ifdef NATIVE_EXCEPTIONS
 
 #ifdef _WIN32

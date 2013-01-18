@@ -1,23 +1,32 @@
 #include "mem.h"
 #include "assert.h"
 
+#include "_mem.h"
+#include "_arena.h"
+
 const MemFuncs _Mem_functions = {
-    Mem_alloc,
-    Mem_calloc,
-    Mem_free,
-    Mem_realloc,
-    Mem_print_allocated
+    _Mem_alloc,
+    _Mem_calloc,
+    _Mem_free,
+    _Mem_realloc,
+    _Mem_print_stats
 };
 
-MemFuncs Mem_functions = {
-    Mem_alloc,
-    Mem_calloc,
-    Mem_free,
-    Mem_realloc,
-    Mem_print_allocated
+thread_local struct MemFuncs Mem_functions = {
+    _Mem_alloc,
+    _Mem_calloc,
+    _Mem_free,
+    _Mem_realloc,
+    _Mem_print_stats
 };
 
-static Arena_T Arena_default;
+void Mem_print_stats() {
+    Mem_functions.print_stats();
+}
+
+/* Plug Arena into the common allocation framework */
+
+thread_local static Arena_T Arena_default;
 
 void* a_alloc  (long nbytes, const char *file, int line) {
     return Arena_alloc(Arena_default, nbytes, file, line);
@@ -34,14 +43,14 @@ void  a_free   (void *ptr, const char *file, int line) {
 void* a_realloc(void *ptr, long nbytes, const char *file, int line) {
     return Arena_realloc(Arena_default, ptr, nbytes, file, line);
 }
-void  a_print_allocated () {}
+void  a_print_stats () { Arena_print_stats();}
 
 const MemFuncs _Arena_functions = {
     a_alloc,
     a_calloc,
     a_free,
     a_realloc,
-    a_print_allocated
+    a_print_stats
 };
 
 extern MemFuncs Mem_set_functions(MemFuncs functions) {
@@ -65,4 +74,3 @@ extern MemFuncs Mem_set_default() {
     Mem_functions = _Mem_functions;
     return tmp;
 }
-

@@ -13,6 +13,7 @@
 static LARGE_INTEGER frequency;
 #endif
 
+#define T Timer_T
 
 struct T {
 #ifdef _WIN32

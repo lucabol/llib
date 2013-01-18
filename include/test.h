@@ -20,8 +20,9 @@ BEGIN_DECLS
 
 typedef int (*test_func) ();
 
-void test_add(char* kind, char* feature, test_func f);
-int test_run_all();
+extern void test_add(char* kind, char* feature, test_func f);
+extern int test_run_all();
+extern double test_perf(test_func f);
 
 END_DECLS
 

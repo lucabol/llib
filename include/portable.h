@@ -36,4 +36,17 @@
 extern void Except_hook_signal();
 #endif
 
+#ifdef _WIN32
+#define Aligned_malloc  _aligned_malloc
+#define Aligned_realloc _aligned_realloc
+#define Aligned_free    _aligned_free
+#else
+#define Aligned_free    free
+#endif
+
+# ifdef _MSC_VER
+#   define inline
+# else
+# endif
+
 #endif /* PORTABLE_INCLUDED */

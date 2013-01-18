@@ -15,11 +15,13 @@ extern const Except_T Arena_NewFailed;
 extern const Except_T Arena_Failed;
 
 extern T    Arena_new       (void);
+extern void Arena_config    (int chunks, long size);
 extern void Arena_dispose   (T ap);
 extern void *Arena_alloc    (T arena, long nbytes, const char *file, int line);
 extern void *Arena_calloc   (T arena, long count, long nbytes, const char *file, int line);
 extern void *Arena_realloc  (T arena, void *ptr, long nbytes, const char *file, int line);
 extern void  Arena_free     (T arena);
+extern void Arena_print_stats();
 
 #undef T
 

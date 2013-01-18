@@ -1,9 +1,7 @@
-#ifdef _WIN32
-
-#include <Windows.h>
 #include <stdlib.h>
 #include <stddef.h>
 
+#include "portable.h" /* for OS specific alignment functions */
 #include "assert.h"
 #include "except.h"
 #include "log.h"
@@ -17,7 +15,7 @@ void *align_alloc(long nbytes, const char *file, int line){
     void *ptr;
     assert(nbytes > 0);
 
-    ptr = _aligned_malloc(nbytes, ALIGNMENT);
+    ptr = Aligned_malloc(nbytes, ALIGNMENT);
     if (ptr == NULL)
         {
             if (file == NULL)
@@ -36,7 +34,7 @@ void *align_calloc(long count, long nbytes,
     assert(count > 0);
     assert(nbytes > 0);
 
-    ptr = _aligned_malloc(count * nbytes, ALIGNMENT);
+    ptr = Aligned_malloc(count * nbytes, ALIGNMENT);
     if (ptr == NULL)
         {
             if (file == NULL)
@@ -53,7 +51,7 @@ static
 void align_free(void *ptr, const char *file, int line) {
     (void)file, (void)line;
     if (ptr)
-        _aligned_free(ptr);
+        Aligned_free(ptr);
 
     log_dbg("%p freed", ptr);
 }
@@ -63,7 +61,7 @@ void *align_realloc(void *ptr, long nbytes, const char *file, int line) {
     assert(ptr);
     assert(nbytes > 0);
 
-    ptr = _aligned_realloc(ptr, nbytes, ALIGNMENT);
+    ptr = Aligned_realloc(ptr, nbytes, ALIGNMENT);
     if (ptr == NULL)
         {
             if (file == NULL)
@@ -92,5 +90,3 @@ extern MemFuncs Mem_set_align() {
     Mem_functions   = _Align_functions;
     return tmp;
 }
-
-#endif

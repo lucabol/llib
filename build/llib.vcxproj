@@ -12,7 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\mem.c" />
-    <ClCompile Include="..\src\timer.c" />
+    <ClCompile Include="..\src\portable_timer.c" />
+    <ClCompile Include="..\src\slist.c" />
     <ClCompile Include="..\src\_align.c" />
     <ClCompile Include="..\src\_arena.c" />
     <ClCompile Include="..\src\assert.c" />
@@ -25,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\mem.h" />
+    <ClInclude Include="..\include\slist.h" />
     <ClInclude Include="..\include\timer.h" />
     <ClInclude Include="..\include\_arena.h" />
     <ClInclude Include="..\include\assert.h" />

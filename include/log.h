@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 
+#include "portable.h" /* for thread_local */
 #include "utils.h"
 
 BEGIN_DECLS
@@ -34,12 +35,12 @@ extern void get_time(char*);
 #define log_info(...)   LOG_LEVEL(LOG_INFO, __VA_ARGS__)
 #define log_dbg(...)    LOG_LEVEL(LOG_DBG, __VA_ARGS__)
 
-extern FILE *dbgstream;
-extern int  debug_level;
+extern thread_local FILE *dbgstream;
+extern thread_local int  debug_level;
 
 /* If FILE is NULL, set it to stderr, if level is NULL, set it to 0 */
 
-extern void log_init(FILE* where, int level);
+extern void log_set(FILE* where, int level);
 
 END_DECLS
 

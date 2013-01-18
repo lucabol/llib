@@ -105,22 +105,25 @@ int test_native_exceptions() {
 }
 
 int test_log() {
-    log_init(NULL, LOG_DISABLE);
+    log_set(NULL, LOG_DISABLE);
     log("Don't print this number: %i\n", 10);
 
-    log_init(stderr, LOG_INFO);
+    log_set(stderr, LOG_INFO);
     /*log("Print this number: %i", 10); */
 
-    log_init(NULL, LOG_DISABLE);
+    log_set(NULL, LOG_DISABLE);
     log("Don't print this number: %i\n", 10);
 
     return TEST_SUCCESS;
 }
 
 int test_mem_perf();
+int test_list();
+int test_list_perf();
 
 int main()
 {
+    Arena_T arena; // needed to print Arena stats nicely below
     int res;
 
     /* log_init(stderr, LOG_DBG); */
@@ -130,8 +133,22 @@ int main()
     test_add("arena", "resize",         test_arena_resize);
     test_add("exception", "native",     test_native_exceptions);
     test_add("log", "printing",         test_log);
+    test_add("list", "basic",           test_list);
+    test_add("list", "perf",            test_list_perf);
     res = test_run_all();
 
-    Mem_print_allocated();
+    Arena_remove_free_blocks();
+    log_set(NULL, LOG_DBG);
+    Mem_print_stats();
+    log_set(NULL, LOG_DISABLE);
+
+    arena  = Arena_new();
+    Mem_set_arena(arena);
+
+    log_set(NULL, LOG_DBG);
+    Mem_print_stats();
+    log_set(NULL, LOG_DISABLE);
+    
+    Arena_dispose(arena);
     return res;
 }

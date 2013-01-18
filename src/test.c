@@ -3,6 +3,7 @@
 
 #include "assert.h"
 #include "test.h"
+#include "timer.h"
 
 /* Use the list module */
 
@@ -72,5 +73,18 @@ int test_run_all() {
     }
 
     return code;
+}
+
+double test_perf(test_func f) {
+    Timer_T t;
+    double time_res;
+    int test_res;
+    assert(f);
+
+    t           = Timer_new_start();
+    test_res    = f ();
+    time_res    = Timer_elapsed_micro_dispose(t);
+    test_assert(test_res == TEST_SUCCESS);
+    return time_res;
 }
 

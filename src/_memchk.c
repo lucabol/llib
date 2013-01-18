@@ -4,6 +4,7 @@
 #include <string.h> /* for memcpy */
 #include <stdio.h> /* for printf */
 
+#include "portable.h" /* for thread_local */
 #include "assert.h"
 #include "except.h"
 #include "log.h"
@@ -37,7 +38,7 @@ const Except_T Mem_Failed = { "Allocation Failed" };
 
 #define max_hashed  2048
 
-static struct descriptor {
+thread_local static struct descriptor {
     struct descriptor *free;
     struct descriptor *link;
     const void *ptr;
@@ -46,7 +47,7 @@ static struct descriptor {
     int line;
 } *htab[max_hashed];
 
-static struct descriptor freelist = { &freelist, NULL, NULL, 0, NULL, 0 };
+thread_local static struct descriptor freelist;
 
 static struct descriptor *find(const void *ptr) {
     struct descriptor *bp = htab[hash(ptr, htab)];
@@ -56,7 +57,15 @@ static struct descriptor *find(const void *ptr) {
     return bp;
 }
 
-void Mem_free(void *ptr, const char *file, int line) {
+/* Guess: I cannot initialize this at the declaration side because freelist address
+   is assigned at runtime given that it is thread_loocal */
+inline static
+void init_freelist() {
+    if(freelist.size == 0) freelist.free = &freelist;
+}
+
+void _Mem_free(void *ptr, const char *file, int line) {
+    init_freelist();
 
     if (ptr) {
         struct descriptor *bp;
@@ -78,39 +87,43 @@ void Mem_free(void *ptr, const char *file, int line) {
     }
 }
 
-void *Mem_realloc(void *ptr, long nbytes, const char *file, int line) {
+void *_Mem_realloc(void *ptr, long nbytes, const char *file, int line) {
     struct descriptor *bp;
     void *newptr;
 
     assert(ptr);
     assert(nbytes > 0);
 
+    init_freelist();
+
     log_dbg("%p realloc %li bytes", ptr, nbytes);
 
     /* This is rather error prone, but it is needed to conform to realloc spec */
     if(!ptr)
-        return Mem_alloc(nbytes, file, line);
+        return _Mem_alloc(nbytes, file, line);
 
     /* This conforms to C90. In C99 it is left implementation dependent.*/
     if(!nbytes)
-        Mem_free(ptr, file, line);
+        _Mem_free(ptr, file, line);
 
     if (((unsigned long)ptr)%(sizeof (union align)) != 0 || (bp = find(ptr)) == NULL || bp->free)
         Except_raise(&Assert_Failed, file, line);
 
-    newptr = Mem_alloc(nbytes, file, line);
+    newptr = _Mem_alloc(nbytes, file, line);
     memcpy(newptr, ptr, nbytes < bp->size ? nbytes : bp->size);
-    Mem_free(ptr, file, line);
+    _Mem_free(ptr, file, line);
 
     return newptr;
 }
 
-void *Mem_calloc(long count, long nbytes, const char *file, int line) {
+void *_Mem_calloc(long count, long nbytes, const char *file, int line) {
     void *ptr;
     assert(count > 0);
     assert(nbytes > 0);
 
-    ptr = Mem_alloc(count*nbytes, file, line);
+    init_freelist();
+
+    ptr = _Mem_alloc(count*nbytes, file, line);
     memset(ptr, '\0', count*nbytes);
 
     log_dbg("%p calloc %li bytes", ptr, nbytes);
@@ -121,6 +134,8 @@ void *Mem_calloc(long count, long nbytes, const char *file, int line) {
 static struct descriptor *dalloc(void *ptr, long size, const char *file, int line) {
     static struct descriptor *avail;
     static int nleft;
+
+    init_freelist();
 
     if (nleft <= 0) {
         avail = malloc(NDESCRIPTORS*sizeof (*avail));
@@ -139,10 +154,12 @@ static struct descriptor *dalloc(void *ptr, long size, const char *file, int lin
     return avail++;
 }
 
-void *Mem_alloc(long nbytes, const char *file, int line){
+void *_Mem_alloc(long nbytes, const char *file, int line){
     struct descriptor *bp;
     void *ptr;
     assert(nbytes > 0);
+
+    init_freelist();
 
     /* Makes nbytes a multiple of the necessary alignment size */
     nbytes = ((nbytes + sizeof (union align) - 1) / (sizeof (union align))) * (sizeof (union align));
@@ -193,24 +210,26 @@ void *Mem_alloc(long nbytes, const char *file, int line){
     return NULL;
 }
 
-void Mem_print_allocated() {
+void _Mem_print_stats() {
     struct descriptor* bp;
     int i;
     int found = 0;
 
-    printf("Allocated memory blocks (file:line size, ptr)\n");
-    printf("---------------------------------------------\n");
+    init_freelist();
+
+    log_dbg("Allocated memory blocks (file:line size, ptr)");
+    log_dbg("---------------------------------------------");
 
     for(i = 0; i < max_hashed ; i++) {
         for(bp = htab[i]; bp; bp = bp->link) {
             if(bp->free == NULL) {
-                printf("%20s:%i%10li%10p\n", bp->file, bp->line, bp->size, bp->ptr);
+                log_dbg("%20s:%i%10li%10p", bp->file, bp->line, bp->size, bp->ptr);
                 found = 1;
             }
         }
     }
-    if(!found) printf("No allocated blocks found.\n\n");
-    else printf("\n\n");
+    if(!found) log_dbg("No allocated blocks found.\n");
+    else log_dbg("\n");
 }
 
 #endif /*NDEBUG*/

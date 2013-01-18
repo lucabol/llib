@@ -3,9 +3,6 @@
 
 #include "except.h"
 
-#include "_mem.h"
-#include "_arena.h"
-
 BEGIN_DECLS
 
 extern const Except_T Mem_Failed;
@@ -23,14 +20,23 @@ typedef struct MemFuncs {
     void* (*calloc) (long count, long nbytes, const char *file, int line);
     void  (*free)   (void *ptr, const char *file, int line);
     void* (*realloc)(void *ptr, long nbytes, const char *file, int line);
-    void  (*print_allocated) ();
+    void  (*print_stats) ();
 } MemFuncs;
 
-extern MemFuncs Mem_functions;
+extern thread_local struct MemFuncs Mem_functions;
 
+typedef struct Arena_T* Arena_T;
+
+extern void     Mem_print_stats();
 extern MemFuncs Mem_set_functions(MemFuncs functions);
 extern MemFuncs Mem_set_arena(Arena_T arena);
 extern MemFuncs Mem_set_default();
+
+extern Arena_T  Arena_new       (void);
+extern void     Arena_config    (int chunks, long size);
+extern void     Arena_dispose   (Arena_T ap);
+extern void     Arena_free     (Arena_T arena);
+extern void     Arena_remove_free_blocks();
 
 #ifdef _WIN32 /* Empirical testing in perf.c suggests that naively using _aligned_malloc is slower*/
 extern MemFuncs Mem_set_align();
