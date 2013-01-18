@@ -1,74 +1,68 @@
-#include <stdlib.h>
-#ifdef NDEBUG /* Need this to be second to avoid a translation empty error in msvc */
-
-#include <stddef.h>
-#include "assert.h"
-#include "except.h"
 #include "mem.h"
-#include "log.h"
+#include "assert.h"
 
-const Except_T Mem_Failed = { "Allocation Failed" };
+const MemFuncs _Mem_functions = {
+    Mem_alloc,
+    Mem_calloc,
+    Mem_free,
+    Mem_realloc,
+    Mem_print_allocated
+};
 
-void *Mem_alloc(long nbytes, const char *file, int line){
-	void *ptr;
-	assert(nbytes > 0);
+MemFuncs Mem_functions = {
+    Mem_alloc,
+    Mem_calloc,
+    Mem_free,
+    Mem_realloc,
+    Mem_print_allocated
+};
 
-	ptr = malloc(nbytes);
-	if (ptr == NULL)
-		{
-			if (file == NULL)
-				RAISE(Mem_Failed);
-			else
-				Except_raise(&Mem_Failed, file, line);
-		}
+static Arena_T Arena_default;
 
-	return ptr;
+void* a_alloc  (long nbytes, const char *file, int line) {
+    return Arena_alloc(Arena_default, nbytes, file, line);
 }
 
-void *Mem_calloc(long count, long nbytes,
-	const char *file, int line) {
-	void *ptr;
-	assert(count > 0);
-	assert(nbytes > 0);
-
-	ptr = calloc(count, nbytes);
-	if (ptr == NULL)
-		{
-			if (file == NULL)
-				RAISE(Mem_Failed);
-			else
-				Except_raise(&Mem_Failed, file, line);
-		}
-
-    log_dbg("%p calloc %li bytes", ptr, nbytes);
-	return ptr;
+void* a_calloc (long count, long nbytes, const char *file, int line) {
+    return Arena_calloc(Arena_default, count, nbytes, file, line);
 }
 
-void Mem_free(void *ptr, const char *file, int line) {
-    (void)file, (void)line;
-	if (ptr)
-		free(ptr);
-
-    log_dbg("%p freed", ptr);
+void  a_free   (void *ptr, const char *file, int line) {
+    (void) ptr, file, line;
 }
 
-void *Mem_realloc(void *ptr, long nbytes, const char *file, int line) {
-	assert(ptr);
-	assert(nbytes > 0);
+void* a_realloc(void *ptr, long nbytes, const char *file, int line) {
+    return Arena_realloc(Arena_default, ptr, nbytes, file, line);
+}
+void  a_print_allocated () {}
 
-	ptr = realloc(ptr, nbytes);
-	if (ptr == NULL)
-		{
-			if (file == NULL)
-				RAISE(Mem_Failed);
-			else
-				Except_raise(&Mem_Failed, file, line);
-		}
+const MemFuncs _Arena_functions = {
+    a_alloc,
+    a_calloc,
+    a_free,
+    a_realloc,
+    a_print_allocated
+};
 
-    log_dbg("%p realloc %li bytes", ptr, nbytes);
-	return ptr;
+extern MemFuncs Mem_set_functions(MemFuncs functions) {
+    MemFuncs tmp = Mem_functions;
+    Mem_functions = functions;
+    return tmp;
 }
 
-void Mem_print_allocated() {}
+extern MemFuncs Mem_set_arena(Arena_T arena) {
+    MemFuncs tmp;
+    assert(arena);
 
-#endif /* NDEBUG */
+    Arena_default = arena;
+    tmp = Mem_functions;
+    Mem_functions = _Arena_functions;
+    return tmp;
+}
+
+extern MemFuncs Mem_set_default() {
+    MemFuncs tmp = Mem_functions;
+    Mem_functions = _Mem_functions;
+    return tmp;
+}
+

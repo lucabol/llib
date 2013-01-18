@@ -3,20 +3,18 @@
 
 #include "assert.h"
 #include "except.h"
-#include "arena.h"
-#include "mem.h"
 #include "log.h"
+
+#include "_arena.h"
+#include "_mem.h"
 
 #define T Arena_T
 
 const Except_T Arena_NewFailed = { "Arena Creation Failed" };
 const Except_T Arena_Failed    = { "Arena Allocation Failed" };
 
-#ifdef NDEBUG
-#define THRESHOLD 10
-#else
-#define THRESHOLD 0 /* In debug mode don't reuse memory blocks, so you can detect leaks */
-#endif
+static int  Arena_chunk_n           = 10;
+static long Arena_additional_size   = 10 * 1024;
 
 #define RESERVED_SIZE sizeof(long) /* luca to store the size of the allocated memory */
 #define BLOCK_START(ptr) ((long*)(((char*)ptr) - RESERVED_SIZE))
@@ -53,9 +51,9 @@ static int nfree;
 T Arena_new(void) {
     T arena;
 
-    NEW(arena);
-    arena->prev = NULL;
-    arena->limit = arena->avail = NULL;
+    arena           = Mem_alloc(sizeof(arena), __FILE__, __LINE__);
+    arena->prev     = NULL;
+    arena->limit    = arena->avail = NULL;
     log_dbg("%p new arena", arena);
     return arena;
 }
@@ -65,8 +63,8 @@ void Arena_dispose(T ap) {
     log_dbg("%p dispose arena", ap);
 
     Arena_free(ap);
-
-    FREE(ap);
+    
+    Mem_free(ap, __FILE__, __LINE__);
     ap = NULL;
 }
 
@@ -75,8 +73,8 @@ void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
     assert(arena);
     assert(nbytes > 0);
 
-    nbytes = ((nbytes + sizeof (union align) - 1)/ (sizeof (union align)))*(sizeof (union align));
-    nbytes = nbytes + RESERVED_SIZE; /* luca */
+    /* A space of 4096 or more bytes that is a multiple of sizeof (union align) */
+    nbytes = ((nbytes + RESERVED_SIZE + sizeof (union align) - 1)/ (sizeof (union align)))*(sizeof (union align));
 
     while (nbytes > arena->limit - arena->avail) {
         T ptr;
@@ -88,8 +86,8 @@ void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
             limit = ptr->limit;
             log_dbg("%p arena reusing chunk, left %i chunks", freechunks, nfree);
         } else {
-            long m = sizeof (union header) + nbytes + 10*1024;
-            ptr = ALLOC(m);
+            long m = sizeof (union header) + nbytes + Arena_additional_size;
+            ptr = Mem_alloc(m, __FILE__, __LINE__);
             log_dbg("%p arena alloc new chunk %li", ptr, m);
 
             if (ptr == NULL) {
@@ -143,9 +141,9 @@ void *Arena_realloc  (T arena, void *ptr, long nbytes, const char *file, int lin
 
     bsize = *BLOCK_START(ptr);
 
-#ifdef NDEBUG
+#ifdef NDEBUG /* Optimized for the case when the requested block fits into existing one*/
     if(nbytes <= bsize) {
-        *BLOCK_START(ptr) = bsize;
+        *BLOCK_START(ptr) = nbytes;
         return ptr;
     }
 #endif
@@ -167,13 +165,15 @@ void Arena_free(T arena) {
     while (arena->prev) {
         struct T tmp = *arena->prev;
 
-        if (nfree < THRESHOLD) {
+#ifdef NDEBUG /* Reuse chunks if in debug mode */
+        if (nfree < Arena_chunk_n) {
             arena->prev->prev = freechunks;
             freechunks = arena->prev;
             nfree++;
             freechunks->limit = arena->limit;
         } else
-            FREE(arena->prev);
+#endif
+            Mem_free(arena->prev, __FILE__, __LINE__);
 
         *arena = tmp;
     }

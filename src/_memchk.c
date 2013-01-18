@@ -6,8 +6,9 @@
 
 #include "assert.h"
 #include "except.h"
-#include "mem.h"
 #include "log.h"
+
+#include "_mem.h"
 
 union align {
 #ifdef MAXALIGN
@@ -208,8 +209,8 @@ void Mem_print_allocated() {
             }
         }
     }
-    if(!found) printf("No allocated blocks found.\n");
-    else printf("\n");
+    if(!found) printf("No allocated blocks found.\n\n");
+    else printf("\n\n");
 }
 
 #endif /*NDEBUG*/

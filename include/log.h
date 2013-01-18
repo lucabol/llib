@@ -37,7 +37,7 @@ extern void get_time(char*);
 extern FILE *dbgstream;
 extern int  debug_level;
 
-/* If FILE is NULL, set it to stderr, if level is NULL, set it to 1 */
+/* If FILE is NULL, set it to stderr, if level is NULL, set it to 0 */
 
 extern void log_init(FILE* where, int level);
 

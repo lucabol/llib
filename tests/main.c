@@ -5,28 +5,32 @@
 #include <assert.h>
 #include <test.h>
 #include <except.h>
-#include <arena.h>
-#include <mem.h>
 #include <log.h>
+
+#include <mem.h>
 
 int test_arena_resize() {
     Arena_T arena   = Arena_new();
+    char * aChar;
 
-    char* aChar     = Arena_alloc(arena, sizeof(char), NULL, 0);
+    Mem_set_arena(arena);
+
+    aChar           = ALLOC(sizeof(char));
     *aChar          = 'a';
     test_assert(*aChar == 'a');
 
-    aChar           = Arena_realloc(arena, aChar, 100, NULL, 0);
+    aChar           = REALLOC(aChar, 100);
     strcpy(aChar + 1, "bcdefghilmnopqrstuvz");
     test_assert_str(aChar, "abcdefghilmnopqrstuvz");
 
-    aChar           = Arena_realloc(arena, aChar, 10, NULL, 0);
+    aChar           = REALLOC(aChar, 10);
     aChar[9]        = '\0';
     test_assert_str(aChar, "abcdefghi");
 
-    aChar           = Arena_realloc(arena, aChar, 100000, NULL, 0);
+    aChar           = REALLOC(aChar, 100000);
     test_assert_str(aChar, "abcdefghi");
 
+    Mem_set_default();
     Arena_dispose(arena);
 
     return TEST_SUCCESS;
@@ -105,7 +109,7 @@ int test_log() {
     log("Don't print this number: %i\n", 10);
 
     log_init(stderr, LOG_INFO);
-    log("Print this number: %i", 10);
+    /*log("Print this number: %i", 10); */
 
     log_init(NULL, LOG_DISABLE);
     log("Don't print this number: %i\n", 10);
