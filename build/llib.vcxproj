@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\mem.c" />
     <ClCompile Include="..\src\portable_timer.c" />
+    <ClCompile Include="..\src\ring.c" />
     <ClCompile Include="..\src\slist.c" />
     <ClCompile Include="..\src\_align.c" />
     <ClCompile Include="..\src\_arena.c" />
@@ -26,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\mem.h" />
+    <ClInclude Include="..\include\ring.h" />
     <ClInclude Include="..\include\slist.h" />
     <ClInclude Include="..\include\timer.h" />
     <ClInclude Include="..\include\_arena.h" />

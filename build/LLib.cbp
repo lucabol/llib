@@ -47,6 +47,7 @@
 		<Unit filename="../include/log.h" />
 		<Unit filename="../include/mem.h" />
 		<Unit filename="../include/portable.h" />
+		<Unit filename="../include/ring.h" />
 		<Unit filename="../include/slist.h" />
 		<Unit filename="../include/test.h" />
 		<Unit filename="../include/thread.h" />
@@ -80,6 +81,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/portable_timer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/ring.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/slist.c">

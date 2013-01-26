@@ -8,6 +8,7 @@
 #include <log.h>
 
 #include <mem.h>
+#include <ring.h>
 
 int test_arena_resize() {
     Arena_T arena   = Arena_new();
@@ -117,6 +118,37 @@ int test_log() {
     return TEST_SUCCESS;
 }
 
+void by2(void** i, void* v) {
+    int* ip;
+    (void)v;
+    
+    ip = (int*)*i;
+    *ip = *ip * 2;
+}
+
+int test_ring_apply() {
+    int k = 0, *p, i, sum = 0;
+    Ring_T ring = Ring_new();
+
+    for(i=0; i < 10; i++) {
+        NEW(p);
+        *p = k++;
+        Ring_push_front(ring, (void*) p);
+    }
+
+    Ring_map(ring, by2, NULL);
+
+    for(i=0; i < 10; i++) {
+        int* res = ((int*)Ring_pop_front(ring));
+        sum += *res;
+        FREE(res);
+    }
+    test_assert(sum == 90);
+
+    Ring_free(&ring);
+    return TEST_SUCCESS;
+}
+
 int test_mem_perf();
 int test_list();
 int test_list_perf();
@@ -135,6 +167,7 @@ int main()
     test_add("log", "printing",         test_log);
     test_add("list", "basic",           test_list);
     test_add("list", "perf",            test_list_perf);
+    test_add("ring", "apply",           test_ring_apply);
     res = test_run_all();
 
     Arena_remove_free_blocks();

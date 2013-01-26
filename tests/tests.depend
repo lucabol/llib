@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1358539909 source:c:\src\llib\tests\main.c
+1359229822 source:c:\src\llib\tests\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -8,6 +8,7 @@
 	<except.h>
 	<log.h>
 	<mem.h>
+	<ring.h>
 
 1357484019 c:\src\llib\\arena.h
 	"except.h"
@@ -54,7 +55,7 @@
 	"portable.h"
 	"utils.h"
 
-1358538743 source:c:\src\llib\tests\perf.c
+1358541409 source:c:\src\llib\tests\perf.c
 	<string.h>
 	<test.h>
 	<mem.h>
@@ -65,5 +66,7 @@
 1358538743 c:\src\llib\include\timer.h
 	"utils.h"
 
-1358538743 c:\src\llib\include\slist.h
+1359202426 c:\src\llib\include\slist.h
+
+1359203905 c:\src\llib\include\ring.h
 

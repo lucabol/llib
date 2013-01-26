@@ -6,6 +6,11 @@
 #include "slist.h"
 #define T SList_T
 
+/* Added to normalize the interface with other containers, so you can a typedef 'list' and redefine it later*/
+T SList_new() {
+    return NULL;
+}
+
 T SList_push_front(T list, void *x) {
     T p;
 
@@ -18,25 +23,25 @@ T SList_push_front(T list, void *x) {
 T SList_list(void *x, ...) {
     va_list ap;
     T list, *p = &list;
-    
+
     va_start(ap, x);
-    
+
     for ( ; x; x = va_arg(ap, void *)) {
 
         NEW(*p);
         (*p)->first = x;
         p = &(*p)->rest;
     }
-    
+
     *p = NULL;
     va_end(ap);
-    
+
     return list;
 }
 
 T SList_append(T list, T tail) {
     T *p = &list;
-    
+
     while (*p) p = &(*p)->rest; /* find the end node, inefficient */
     *p = tail;
 
@@ -47,7 +52,7 @@ T SList_copy(T list) {
     T head, *p = &head;
 
     for ( ; list; list = list->rest) {
-        
+
         NEW(*p);
         (*p)->first = list->first;
         p = &(*p)->rest;
@@ -63,7 +68,7 @@ T SList_pop(T list, void **x) {
 
     if (list) {
         T head = list->rest;
-        
+
         if (x)
             *x = list->first;
 
@@ -98,7 +103,7 @@ void SList_free(T *list) {
 
     T next;
     assert(list);
-    
+
     for ( ; *list; *list = next) {
         next = (*list)->rest;
         FREE(*list);
