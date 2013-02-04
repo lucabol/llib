@@ -340,10 +340,12 @@ char	opterrorshorts[256];
 
 void
 getopt_usage(char* progname, char *short_desc, char *pre_options, char *post_options, const struct option *longopts) {
-    /*
-    If the value of argc is greater than zero, the string pointed to by argv[0] represents the program name;
-    argv[0][0] shall be the null character if the program name is not available from the host environment.
-    */
+    pre_options     = pre_options ? pre_options : "";
+    post_options    = post_options ? post_options : "";
+    short_desc      = short_desc ? short_desc : "";
+    assert(longopts);
+
+
     fprintf(stderr, "Usage: ");
     if(progname != NULL)
         fprintf(stderr, "\t%s [OPTION] %s\n", progname, short_desc);
@@ -367,13 +369,15 @@ getopt_usage(char* progname, char *short_desc, char *pre_options, char *post_opt
 #define SUCCESS  0
 
 int getopt_parse(int argc, char **argv, struct option *longopts, char *short_desc, char *pre_options, char *post_options) {
-    char shortopts[255];
+    char shortopts[255]; /* Don't support more than 255 options */
     char* p = shortopts;
     struct option* lp = longopts;
     int long_index = 0;
-    int opt= 0;
+    int opt = 0;
     int err_index = 0;
-    char* progname = argv[0];
+    char* progname = argv[0] ? argv[0] : "Program";
+
+    assert(longopts);
 
     *p = 'h';
     p++;
