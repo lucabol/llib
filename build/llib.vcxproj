@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\getopt.c" />
     <ClCompile Include="..\src\mem.c" />
     <ClCompile Include="..\src\portable_timer.c" />
     <ClCompile Include="..\src\ring.c" />
@@ -26,6 +27,7 @@
     <ClCompile Include="..\src\test.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\getopt.h" />
     <ClInclude Include="..\include\mem.h" />
     <ClInclude Include="..\include\ring.h" />
     <ClInclude Include="..\include\slist.h" />
