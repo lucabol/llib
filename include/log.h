@@ -21,7 +21,7 @@ extern void get_time(char*);
                                     if (level <= debug_level) { \
                                         char buf[80]; get_time(buf); \
                                         fprintf(dbgstream, buf); \
-                                        fprintf(dbgstream," %-10.20s:%-5.d    ", __FILE__, __LINE__); \
+                                        fprintf(dbgstream," %-10s:%-5.d    ", __FILE__, __LINE__); \
                                         fprintf(dbgstream, __VA_ARGS__); \
                                         fprintf(dbgstream, "\n"); \
                                         fflush(dbgstream); \

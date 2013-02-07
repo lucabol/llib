@@ -21,5 +21,11 @@
     <ClCompile Include="perf.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="getopttest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utf8test.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

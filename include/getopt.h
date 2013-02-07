@@ -5,6 +5,10 @@
 #ifndef GETOPT_H
 #define GETOPT_H
 
+#include "utils.h"  /* for begin_decl*/
+
+BEGIN_DECLS
+
 #define no_argument          0
 #define required_argument    1
 #define optional_argument    2
@@ -16,6 +20,13 @@
 
 #define getopt_unspecified	 0
 #define	getopt_specified	 1
+
+#define getopt_extraneous   '?'
+#define getopt_missingpar   ':'
+#define getopt_notnumber    '&'
+#define getopt_endchars     '*'
+#define getopt_overunderflow '>'
+
 
 /* struct option: The type of long option */
 struct option
@@ -36,8 +47,6 @@ struct option
     void* value;				  /* pointer to a location where to store the parameter value */
     int* specified;				  /* pointer to a location where to store 0 if option wasn't specified on command line, 1 if it was*/
 };
-
-BEGIN_DECLS
 
 /* externally-defined variables */
 extern char*	optarg;

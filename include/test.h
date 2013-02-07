@@ -11,7 +11,7 @@ BEGIN_DECLS
 #define TEST_FAILURE 0
 
 #define test_assert(e) STMT_START {                                                                 \
-    if((e) == 0) { printf("Test failed: \n" #e);                                                     \
+    if((e) == 0) { printf("Test failed: " #e "\n");                                                     \
              return TEST_FAILURE; }} STMT_END
 
 #define test_assert_str(s1, s2) STMT_START {                                                        \

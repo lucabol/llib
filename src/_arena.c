@@ -213,9 +213,9 @@ void Arena_remove_free_blocks() {
 
 void Arena_print_stats() {
 #ifndef NDEBUG
-    log_dbg("Allocated memory chunks");
-    log_dbg("---------------------------------------------");
-    log_dbg("%lu", chunk_allocations);
+    log_info("Allocated memory chunks");
+    log_info("---------------------------------------------");
+    log_info("%lu", chunk_allocations);
 #endif
 }
 

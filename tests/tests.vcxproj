@@ -82,8 +82,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="getopttest.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="perf.c" />
+    <ClCompile Include="utf8test.c" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\build\llib.vcxproj">

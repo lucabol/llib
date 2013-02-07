@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <float.h>
 
 #include "assert.h"
 #include "getopt.h"
@@ -104,12 +106,12 @@ getopt_internal (int argc, char **argv, const char *shortopts,
             case PERMUTE:
                 permute_from = optind;
                 num_nonopts = 0;
-                while (!is_option (argv[optind], only))
+                while (optind < argc && !is_option (argv[optind], only))
                 {
                     optind++;
                     num_nonopts++;
                 }
-                if (argv[optind] == NULL)
+                if (optind >= argc || argv[optind] == NULL)
                 {
                     /* no more options */
                     optind = (int)permute_from;
@@ -351,18 +353,13 @@ getopt_usage(char* progname, char *short_desc, char *pre_options, char *post_opt
         fprintf(stderr, "\t%s [OPTION] %s\n", progname, short_desc);
 
     fprintf(stderr, pre_options);
-    fprintf(stderr, "\n\n");
-
     fprintf(stderr, "Options:\n");
 
     while(longopts->name != NULL) {
         print_option(longopts);
         longopts++;
     }
-
-    fprintf(stderr, "\n");
     fprintf(stderr, post_options);
-    fprintf(stderr, "\n\n");
 }
 
 #define ERROR	-1
@@ -403,12 +400,15 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
 
 #define OPTSPEC if(lp->specified != NULL) *(lp->specified) = getopt_specified
 
+    memset(opterrorcodes, 0, 256);
+    memset(opterrorshorts, '\0', 256);
+
     while ((opt = getopt_long(argc, argv, shortopts, longopts, &long_index )) != EOF) {
         
         if(opt == ':' || opt == '?') { /* manage error cases */
             if(err_index < 256) {
                 opterrorcodes[err_index]	= opt;
-                opterrorshorts[err_index]	= longopts[long_index].val;
+                opterrorshorts[err_index]	= optopt;
                 err_index++;
             }
         } else {
@@ -432,11 +432,46 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
                             OPTSPEC;
                             lp->value = optarg;
                         } else if(lp->type == getopt_int) {
-                            OPTSPEC;
-                            *((int*)lp->value) = atoi(optarg);
+                            char* end;
+                            char errchar = ' ';
+                            const long sl = strtol(optarg, &end, 10);
+
+                            errno = 0;
+
+                            if(end == optarg) errchar = getopt_notnumber;
+                            else if('\0' != *end) errchar = getopt_endchars;
+                            else if((LONG_MIN == sl || LONG_MAX == sl) && ERANGE == errno) errchar = getopt_overunderflow;
+                            else if(sl > INT_MAX) errchar = getopt_overunderflow;
+                            else if(sl < INT_MIN) errchar = getopt_overunderflow;
+                            else {
+                                OPTSPEC;
+                                *((int*)lp->value) = (int)sl;
+                            }
+                            if(errchar != ' ') {
+                                if(opterr) fprintf(stderr, "%s: argument not a valid integer for option `-%c'\n", progname, opt);
+                                opterrorshorts[err_index] = opt;
+                                opterrorcodes[err_index++] = errchar;
+                                if(errchar != getopt_endchars) optind --;                            }
                         } else if(lp->type == getopt_double) {
-                            OPTSPEC;
-                            *((double*)lp->value) = atof(optarg);
+                            char* end;
+                            char errchar = ' ';
+                            const double sl = strtod(optarg, &end);
+
+                            errno = 0;
+
+                            if(end == optarg) errchar = getopt_notnumber;
+                            else if('\0' != *end) errchar = getopt_endchars;
+                            else if((DBL_MIN == sl || DBL_MAX == sl) && ERANGE == errno) errchar = getopt_overunderflow;
+                            else {
+                                OPTSPEC;
+                                *((double*)lp->value) = (double)sl;
+                            }
+                            if(errchar != ' ') {
+                                if(opterr) fprintf(stderr, "%s: argument not a valid floating point number for option `-%c'\n", progname, opt);
+                                opterrorshorts[err_index] = opt;
+                                opterrorcodes[err_index++] = errchar;
+                                if(errchar != getopt_endchars) optind --;
+                            }
                         } else {
                             assert(0); /* wrong specification for argument type */
                             return ERROR;

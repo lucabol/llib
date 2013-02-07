@@ -16,6 +16,7 @@
     <ClCompile Include="..\src\portable_timer.c" />
     <ClCompile Include="..\src\ring.c" />
     <ClCompile Include="..\src\slist.c" />
+    <ClCompile Include="..\src\utf8.c" />
     <ClCompile Include="..\src\_align.c" />
     <ClCompile Include="..\src\_arena.c" />
     <ClCompile Include="..\src\assert.c" />
@@ -32,6 +33,7 @@
     <ClInclude Include="..\include\ring.h" />
     <ClInclude Include="..\include\slist.h" />
     <ClInclude Include="..\include\timer.h" />
+    <ClInclude Include="..\include\utf8.h" />
     <ClInclude Include="..\include\_arena.h" />
     <ClInclude Include="..\include\assert.h" />
     <ClInclude Include="..\include\config.h" />
@@ -42,6 +44,9 @@
     <ClInclude Include="..\include\thread.h" />
     <ClInclude Include="..\include\portable.h" />
     <ClInclude Include="..\include\utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{733287C1-3852-4914-B50C-51BCE751E4F6}</ProjectGuid>

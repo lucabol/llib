@@ -57,6 +57,9 @@
     <ClCompile Include="..\src\getopt.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\utf8.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\except.h">
@@ -104,5 +107,11 @@
     <ClInclude Include="..\include\getopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\utf8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE" />
   </ItemGroup>
 </Project>

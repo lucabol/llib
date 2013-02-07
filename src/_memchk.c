@@ -217,19 +217,19 @@ void _Mem_print_stats() {
 
     init_freelist();
 
-    log_dbg("Allocated memory blocks (file:line size, ptr)");
-    log_dbg("---------------------------------------------");
+    log_info("Allocated memory blocks (file:line size, ptr)");
+    log_info("---------------------------------------------");
 
     for(i = 0; i < max_hashed ; i++) {
         for(bp = htab[i]; bp; bp = bp->link) {
             if(bp->free == NULL) {
-                log_dbg("%20s:%i%10li%10p", bp->file, bp->line, bp->size, bp->ptr);
+                log_info("%20s:%i%10li%10p", bp->file, bp->line, bp->size, bp->ptr);
                 found = 1;
             }
         }
     }
-    if(!found) log_dbg("No allocated blocks found.\n");
-    else log_dbg("\n");
+    if(!found) log_info("No allocated blocks found.\n");
+    else log_info("\n");
 }
 
 #endif /*NDEBUG*/

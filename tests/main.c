@@ -10,6 +10,9 @@
 #include <mem.h>
 #include <ring.h>
 
+#include "getopt.h"
+#include "log.h"
+
 int test_arena_resize() {
     Arena_T arena   = Arena_new();
     char * aChar;
@@ -32,7 +35,9 @@ int test_arena_resize() {
     test_assert_str(aChar, "abcdefghi");
 
     Mem_set_default();
+
     Arena_dispose(arena);
+    Arena_remove_free_blocks();
 
     return TEST_SUCCESS;
 }
@@ -84,20 +89,20 @@ int test_native_exceptions() {
     TRY {
         int a = 42;
         volatile int b = 0;
-        printf("%i", a / b);
+        log("%i", a / b);
         return TEST_FAILURE;
     } EXCEPT(Native_Exception) {
-        printf("%s", Except_frame.exception->reason);
+        log("%s", Except_frame.exception->reason);
         test_assert(1);
     } END_TRY;
 
     TRY {
         int* a = 0;
         *a = 43;
-        printf("%i", *a);
+        log("%i", *a);
         return TEST_FAILURE;
     } EXCEPT(Native_Exception) {
-        printf("%s", Except_frame.exception->reason);
+        log("%s", Except_frame.exception->reason);
         test_assert(1);
     } END_TRY;
 #endif /*NATIVE_EXCEPTIONS*/
@@ -106,6 +111,9 @@ int test_native_exceptions() {
 }
 
 int test_log() {
+    int dbg = debug_level;
+    FILE* file = dbgstream;
+
     log_set(NULL, LOG_DISABLE);
     log("Don't print this number: %i\n", 10);
 
@@ -114,6 +122,8 @@ int test_log() {
 
     log_set(NULL, LOG_DISABLE);
     log("Don't print this number: %i\n", 10);
+
+    log_set(file, dbg);
 
     return TEST_SUCCESS;
 }
@@ -149,16 +159,28 @@ int test_ring_apply() {
     return TEST_SUCCESS;
 }
 
+static int verbosity = 0;
+
+static struct option long_options[] = {
+    {"verbosity",      no_argument,       NULL,  'v' , "print out debug messages","", getopt_none, NULL ,&verbosity},
+};
+
 int test_mem_perf();
 int test_list();
 int test_list_perf();
+int test_getopt_parse();
+int test_utf8_roundtrip();
+int test_utf8_len();
 
-int main()
+int main(int argc, char *argv[])
 {
-    Arena_T arena; // needed to print Arena stats nicely below
     int res;
 
-    /* log_init(stderr, LOG_DBG); */
+    if(getopt_parse(argc, argv, long_options, "-- tests for llib", "", "") < 0)
+        exit(-3);
+
+    if(verbosity)
+        log_set(stderr, LOG_INFO);
 
     test_add("mem", "free",             test_mem_free);
     test_add("mem", "perf",             test_mem_perf);
@@ -168,20 +190,12 @@ int main()
     test_add("list", "basic",           test_list);
     test_add("list", "perf",            test_list_perf);
     test_add("ring", "apply",           test_ring_apply);
+    test_add("getopt", "parse",         test_getopt_parse);
+    test_add("utf8", "roundtrip",       test_utf8_roundtrip);
+    test_add("utf8", "strlen",          test_utf8_len);
     res = test_run_all();
 
-    Arena_remove_free_blocks();
-    log_set(NULL, LOG_DBG);
     Mem_print_stats();
-    log_set(NULL, LOG_DISABLE);
 
-    arena  = Arena_new();
-    Mem_set_arena(arena);
-
-    log_set(NULL, LOG_DBG);
-    Mem_print_stats();
-    log_set(NULL, LOG_DISABLE);
-
-    Arena_dispose(arena);
     return res;
 }

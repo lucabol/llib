@@ -72,9 +72,7 @@ int test_list_perf() {
     double res = test_perf(test_list);
     Arena_T arena;
 
-    log_set(NULL, LOG_DISABLE);
     log("List : %10.0f", res);
-    log_set(NULL, LOG_DISABLE);
 
     arena = Arena_new();
     /* Arena_config(10, 10 * 1024); */
@@ -83,9 +81,7 @@ int test_list_perf() {
     Arena_dispose(arena);
     Mem_set_default();
 
-    log_set(NULL, LOG_DISABLE);
     log("ListA: %10.0f", res);
-    log_set(NULL, LOG_DISABLE);
 
 
     return TEST_SUCCESS;
@@ -126,13 +122,11 @@ int test_mem_perf() {
     Mem_set_default();
     alignTime = Timer_elapsed_micro_dispose(t);
     
-    log_set(NULL, LOG_DISABLE);
     log("Mem  : %10.0f", memTime);
     log("Arena: %10.0f", arenaTime);
     log("Align: %10.0f", alignTime);
     log("Ratio: %10.0f", memTime / arenaTime);
     log("Ratio: %10.0f", alignTime / arenaTime);
-    log_set(NULL, LOG_DISABLE);
    
     return TEST_SUCCESS;
 }
