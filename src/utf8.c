@@ -8,11 +8,47 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdint.h>
+
+#include "mem.h"
+#include "assert.h"
+
 #ifdef _WIN32
 #include <malloc.h>
 #else
 #include <alloca.h>
 #endif
+
+/***************************************************************/
+/* Functions not exposed because not considered interesting   */
+
+/* is c the start of a utf8 sequence? High 2 bits are 0x or 11*/
+#define isutf(c) (((c)&0xC0) != 0x80)
+
+int u8_seqlen(const char *s); /* returns length of next utf-8 sequence */
+
+/* assuming src points to the character after a backslash, read an
+   escape sequence, storing the result in dest and returning the number of
+   input characters processed */
+int u8_read_escape_sequence(char *src, uint32_t *dest);
+
+/* given a wide character, convert it to an ASCII escape sequence stored in
+   buf, where buf is "sz" bytes. returns the number of characters output. */
+int u8_escape_wchar(char *buf, int sz, uint32_t ch);
+
+/* convert a string "src" containing escape sequences to UTF-8 */
+int u8_unescape(char *buf, int sz, char *src);
+
+/* convert UTF-8 "src" to ASCII with escape sequences.
+   if escape_quotes is nonzero, quote characters will be preceded by
+   backslashes as well. */
+int u8_escape(char *buf, int sz, char *src, int escape_quotes);
+
+/* utility predicates used by the above */
+int octal_digit(char c);
+int hex_digit(char c);
+
+/**************************************************************/
 
 #ifdef _MSC_VER /* C99 compatible snprintf */
 
@@ -74,7 +110,7 @@ static const char trailingBytesForUTF8[256] = {
 };
 
 /* returns length of next utf-8 sequence */
-int u8_seqlen(char *s)
+int u8_seqlen(const char *s)
 {
     return trailingBytesForUTF8[(unsigned int)(unsigned char)s[0]] + 1;
 }
@@ -89,10 +125,10 @@ int u8_seqlen(char *s)
    for all the characters.
    if sz = srcsz+1 (i.e. 4*srcsz+4 bytes), there will always be enough space.
 */
-int u8_toucs(uint32_t *dest, int sz, char *src, int srcsz)
+int u8_toucs(uint32_t *dest, int sz, const char *src, int srcsz)
 {
     uint32_t ch;
-    char *src_end = src + srcsz;
+    const char *src_end = src + srcsz;
     int nb;
     int i=0;
 
@@ -137,7 +173,7 @@ int u8_toucs(uint32_t *dest, int sz, char *src, int srcsz)
    the NUL as well.
    the destination string will never be bigger than the source string.
 */
-int u8_toutf8(char *dest, int sz, uint32_t *src, int srcsz)
+int u8_toutf8(char *dest, int sz, const uint32_t *src, int srcsz)
 {
     uint32_t ch;
     int i = 0;
@@ -208,7 +244,7 @@ int u8_wc_toutf8(char *dest, uint32_t ch)
 }
 
 /* charnum => byte offset */
-int u8_offset(char *str, int charnum)
+int u8_offset(const char *str, int charnum)
 {
     int offs=0;
 
@@ -222,7 +258,7 @@ int u8_offset(char *str, int charnum)
 }
 
 /* byte offset => charnum */
-int u8_charnum(char *s, int offset)
+int u8_charnum(const char *s, int offset)
 {
     int charnum = 0, offs=0;
 
@@ -235,7 +271,7 @@ int u8_charnum(char *s, int offset)
 }
 
 /* number of characters */
-int u8_strlen(char *s)
+int u8_strlen(const char *s)
 {
     int count = 0;
     int i = 0;
@@ -247,7 +283,7 @@ int u8_strlen(char *s)
 }
 
 /* reads the next utf-8 sequence out of a string, updating an index */
-uint32_t u8_nextchar(char *s, int *i)
+uint32_t u8_nextchar(const char *s, int *i)
 {
     uint32_t ch = 0;
     int sz = 0;
@@ -262,13 +298,13 @@ uint32_t u8_nextchar(char *s, int *i)
     return ch;
 }
 
-void u8_inc(char *s, int *i)
+void u8_inc(const char *s, int *i)
 {
     (void)(isutf(s[++(*i)]) || isutf(s[++(*i)]) ||
            isutf(s[++(*i)]) || ++(*i));
 }
 
-void u8_dec(char *s, int *i)
+void u8_dec(const char *s, int *i)
 {
     (void)(isutf(s[--(*i)]) || isutf(s[--(*i)]) ||
            isutf(s[--(*i)]) || --(*i));
@@ -439,7 +475,7 @@ char *u8_strchr(char *s, uint32_t ch, int *charn)
 
 char *u8_memchr(char *s, uint32_t ch, size_t sz, int *charn)
 {
-    int i = 0, lasti=0;
+    size_t i = 0, lasti=0;
     uint32_t c;
     int csz;
 
@@ -480,6 +516,29 @@ int u8_is_locale_utf8(char *locale)
     }
     return 0;
 }
+
+#define idx(i, len) ((i) <= 0 ? (i) + (len) : (i) - 1)
+
+#define convertu8(s, i, j) do { int len; \
+    assert(s); len = u8_strlen(s); \
+    i = idx(i, len); j = idx(j, len); \
+    if (i > j) { int t = i; i = j; j = t; } \
+    i = u8_offset(s, i); j = u8_offset(s, j); \
+    assert(i >= 0 && j <= len); } while (0)
+
+char *u8_sub (const char *s, int i, int j) {
+    char *str, *p;
+
+    convertu8(s, i, j);
+    p = str = ALLOC(j - i + 1);
+    
+    while (i < j)
+        *p++ = s[i++];
+    
+    *p = '\0';
+    return str;
+}
+
 
 int u8_vprintf(char *fmt, va_list ap)
 {

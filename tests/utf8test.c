@@ -5,6 +5,8 @@
 #include "test.h"
 #include "log.h"
 #include "locale.h"
+#include "str.h"
+#include "mem.h"
 
 int test(char* str) {
     uint32_t   ucsbuf[256];
@@ -35,6 +37,8 @@ static char kArabicSampleText[]      = {-40, -89, -39, -124, -40, -71, -40, -79,
 /* Spanish word "canon" with an "n" with "~" on top and an "o" with an acute accent. 5 chars*/
 static char kSpanishSampleText[]     = {99, 97, -61, -79, -61, -77, 110, 0};
 
+static char kAscii[]                 = "0123456789";
+
 #define mytest(str) if(test(str) == TEST_FAILURE) return TEST_FAILURE;
 
 int test_utf8_roundtrip() {
@@ -56,5 +60,20 @@ int test_utf8_len() {
     test_assert(u8_strlen(kChineseSampleText) == 2);
     test_assert(u8_strlen(kArabicSampleText) == 7);
     test_assert(u8_strlen(kSpanishSampleText) == 5);
+    return TEST_SUCCESS;
+}
+
+int test_utf8_sub() {
+    char* cu = u8_sub(kSpanishSampleText, 2, 4);
+    char ce[] = {97, -61, -79, 0}; 
+    char* au = u8_sub(kAscii, 2, 4);
+    char* a = Str_sub(kAscii, 2, 4);
+
+    test_assert_str(au, a);
+    test_assert_str(ce, cu);
+
+    FREE(cu);
+    FREE(au);
+    FREE(a);
     return TEST_SUCCESS;
 }

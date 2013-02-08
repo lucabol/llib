@@ -60,6 +60,9 @@
     <ClCompile Include="..\src\utf8.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\str.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\except.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\utf8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\str.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

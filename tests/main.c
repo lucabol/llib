@@ -171,6 +171,7 @@ int test_list_perf();
 int test_getopt_parse();
 int test_utf8_roundtrip();
 int test_utf8_len();
+int test_utf8_sub();
 
 int main(int argc, char *argv[])
 {
@@ -193,6 +194,7 @@ int main(int argc, char *argv[])
     test_add("getopt", "parse",         test_getopt_parse);
     test_add("utf8", "roundtrip",       test_utf8_roundtrip);
     test_add("utf8", "strlen",          test_utf8_len);
+    test_add("utf8", "sub",             test_utf8_sub);
     res = test_run_all();
 
     Mem_print_stats();

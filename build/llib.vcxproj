@@ -16,6 +16,7 @@
     <ClCompile Include="..\src\portable_timer.c" />
     <ClCompile Include="..\src\ring.c" />
     <ClCompile Include="..\src\slist.c" />
+    <ClCompile Include="..\src\str.c" />
     <ClCompile Include="..\src\utf8.c" />
     <ClCompile Include="..\src\_align.c" />
     <ClCompile Include="..\src\_arena.c" />
@@ -32,6 +33,7 @@
     <ClInclude Include="..\include\mem.h" />
     <ClInclude Include="..\include\ring.h" />
     <ClInclude Include="..\include\slist.h" />
+    <ClInclude Include="..\include\str.h" />
     <ClInclude Include="..\include\timer.h" />
     <ClInclude Include="..\include\utf8.h" />
     <ClInclude Include="..\include\_arena.h" />
