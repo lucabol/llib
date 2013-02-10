@@ -3,6 +3,7 @@
 #include <string.h>
 #include <errno.h>
 #include <float.h>
+#include <limits.h>
 
 #include "assert.h"
 #include "getopt.h"
@@ -69,7 +70,7 @@ getopt_internal (int argc, char **argv, const char *shortopts,
     char *possible_arg = NULL;
     int longopt_match = -1;
     int has_arg = -1;
-    char *cp;
+    char *cp = NULL;
     int arg_next = 0;
 
     /* first, deal with silly parameters and easy stuff */
@@ -165,7 +166,7 @@ getopt_internal (int argc, char **argv, const char *shortopts,
                         longopts[optindex].name, match_chars) == 0)
             {
                 /* do we have an exact match? */
-                if (match_chars == (int) (strlen (longopts[optindex].name)))
+                if (match_chars == (size_t) (strlen (longopts[optindex].name)))
                 {
                     longopt_match = optindex;
                     break;
@@ -362,8 +363,8 @@ getopt_usage(char* progname, char *short_desc, char *pre_options, char *post_opt
     fprintf(stderr, post_options);
 }
 
-#define ERROR	-1
-#define SUCCESS  0
+#define ERROR_G	-1
+#define SUCCESS_G  0
 
 int getopt_parse(int argc, char **argv, struct option *longopts, char *short_desc, char *pre_options, char *post_options) {
     char shortopts[255]; /* Don't support more than 255 options */
@@ -404,7 +405,7 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
     memset(opterrorshorts, '\0', 256);
 
     while ((opt = getopt_long(argc, argv, shortopts, longopts, &long_index )) != EOF) {
-        
+
         if(opt == ':' || opt == '?') { /* manage error cases */
             if(err_index < 256) {
                 opterrorcodes[err_index]	= opt;
@@ -415,7 +416,7 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
 
             if(opt == 'h') {
                 getopt_usage(progname, short_desc, pre_options, post_options, longopts);
-                return ERROR;
+                return ERROR_G;
             }
 
             /* search for the correct option*/
@@ -474,24 +475,24 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
                             }
                         } else {
                             assert(0); /* wrong specification for argument type */
-                            return ERROR;
+                            return ERROR_G;
                         }
                     } else if(lp->has_arg == no_argument) { /* parameter without an argument */
                         OPTSPEC;
                         break; /* processed option*/
                     } else {
                         assert(0); /* wrong argument type*/
-                        return ERROR;
+                        return ERROR_G;
                     }
 
                     break; /*exit while stmt as found the option*/
                 }
-            
+
                 lp++;
             }
         }
     }
-    return err_index == 0 ? SUCCESS : ERROR;
+    return err_index == 0 ? SUCCESS_G : ERROR_G;
 }
 
 

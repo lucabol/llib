@@ -63,6 +63,12 @@
     <ClCompile Include="..\src\str.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\token.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\except.h">
@@ -114,6 +120,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\str.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\token.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

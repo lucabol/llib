@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1359229822 source:c:\src\llib\tests\main.c
+1360355526 source:c:\src\llib\tests\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -9,6 +9,8 @@
 	<log.h>
 	<mem.h>
 	<ring.h>
+	"getopt.h"
+	"log.h"
 
 1357484019 c:\src\llib\\arena.h
 	"except.h"
@@ -17,8 +19,9 @@
 	<setjmp.h>
 	<windows.h>
 
-1358538743 c:\src\llib\include\test.h
+1360356039 c:\src\llib\include\test.h
 	<stdio.h>
+	<string.h>
 	"utils.h"
 
 1358279841 c:\src\llib\include\utils.h
@@ -50,12 +53,12 @@
 1358538743 c:\src\llib\include\mem.h
 	"except.h"
 
-1358538743 c:\src\llib\include\log.h
+1360352935 c:\src\llib\include\log.h
 	<stdio.h>
 	"portable.h"
 	"utils.h"
 
-1358541409 source:c:\src\llib\tests\perf.c
+1360352935 source:c:\src\llib\tests\perf.c
 	<string.h>
 	<test.h>
 	<mem.h>
@@ -69,4 +72,35 @@
 1359202426 c:\src\llib\include\slist.h
 
 1359203905 c:\src\llib\include\ring.h
+
+1360353553 source:c:\src\llib\tests\getopttest.c
+	<stddef.h>
+	<string.h>
+	"getopt.h"
+	"test.h"
+
+1360352935 c:\src\llib\include\getopt.h
+	"utils.h"
+
+1360356208 source:c:\src\llib\tests\utf8test.c
+	<stdint.h>
+	<string.h>
+	"utf8.h"
+	"test.h"
+	"log.h"
+	"locale.h"
+	"str.h"
+	"mem.h"
+
+1360352935 c:\src\llib\include\utf8.h
+	<stdarg.h>
+	<stdint.h>
+
+1360355562 c:\src\llib\include\str.h
+	<stdarg.h>
+
+1360357883 source:c:\src\llib\tests\strtest.c
+	"str.h"
+	"test.h"
+	"mem.h"
 

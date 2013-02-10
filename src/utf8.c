@@ -305,9 +305,9 @@ void u8_inc(const char *s, int *i)
 }
 
 void u8_dec(const char *s, int *i)
-{
+{       
     (void)(isutf(s[--(*i)]) || isutf(s[--(*i)]) ||
-           isutf(s[--(*i)]) || --(*i));
+           isutf(s[--(*i)]) || --(*i)); 
 }
 
 int octal_digit(char c)
@@ -408,6 +408,12 @@ int u8_unescape(char *buf, int sz, char *src)
     return c;
 }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat"
+#pragma GCC diagnostic ignored "-Wformat-extra-args"
+#endif
+
 int u8_escape_wchar(char *buf, int sz, uint32_t ch)
 {
     if (ch == L'\n')
@@ -435,6 +441,9 @@ int u8_escape_wchar(char *buf, int sz, uint32_t ch)
 
     return snprintf(buf, sz, "%c", (char)ch);
 }
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 int u8_escape(char *buf, int sz, char *src, int escape_quotes)
 {
@@ -517,28 +526,42 @@ int u8_is_locale_utf8(char *locale)
     return 0;
 }
 
-#define idx(i, len) ((i) <= 0 ? (i) + (len) : (i) - 1)
-
-#define convertu8(s, i, j) do { int len; \
-    assert(s); len = u8_strlen(s); \
-    i = idx(i, len); j = idx(j, len); \
-    if (i > j) { int t = i; i = j; j = t; } \
-    i = u8_offset(s, i); j = u8_offset(s, j); \
-    assert(i >= 0 && j <= len); } while (0)
-
 char *u8_sub (const char *s, int i, int j) {
     char *str, *p;
 
-    convertu8(s, i, j);
+    i = u8_offset(s, i);
+    j = u8_offset(s, j);
     p = str = ALLOC(j - i + 1);
-    
+
     while (i < j)
         *p++ = s[i++];
-    
+
     *p = '\0';
     return str;
 }
 
+char *u8_reverse(const char*s) {
+    size_t len;
+    char* str, *p;
+
+    len = strlen(s);
+    str = p = ALLOC(len + 1);
+    *(str+len) = '\0';
+
+    while(len) {
+        const char* r;
+        int sl;
+
+        u8_dec(s, &len);
+        r = s + len;
+        sl = u8_seqlen(r);
+        memcpy(p, r, sl);
+        p += sl;
+    }
+
+    return str;
+
+}
 
 int u8_vprintf(char *fmt, va_list ap)
 {

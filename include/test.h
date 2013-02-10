@@ -2,6 +2,7 @@
 #define TEST_INCLUDED
 
 #include <stdio.h>  /* for printf */
+#include <string.h> /* for strcmp */
 
 #include "utils.h"  /* for begin_decl*/
 
@@ -11,11 +12,11 @@ BEGIN_DECLS
 #define TEST_FAILURE 0
 
 #define test_assert(e) STMT_START {                                                                 \
-    if((e) == 0) { printf("Test failed: " #e "\n");                                                     \
+    if((e) == 0) { printf("%s:%i Test failed: " #e "\n", __FILE__, __LINE__);                                                     \
              return TEST_FAILURE; }} STMT_END
 
 #define test_assert_str(s1, s2) STMT_START {                                                        \
-    if(strcmp((s1), (s2)) != 0) { printf("Test failed (got, expected): %s == %s \n", (s1), (s2));   \
+    if(strcmp((s1), (s2)) != 0) { printf("%s:%i Test failed (got, expected): %s == %s \n", __FILE__, __LINE__, (s1), (s2));   \
         return TEST_FAILURE; } } STMT_END
 
 typedef int (*test_func) ();

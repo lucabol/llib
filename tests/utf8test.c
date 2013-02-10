@@ -11,7 +11,6 @@
 int test(char* str) {
     uint32_t   ucsbuf[256];
     char       u8buf[256];
-    char       escbuf[256];
 
     u8_toucs(ucsbuf, 256, str, -1);
     u8_toutf8(u8buf, 256, ucsbuf, -1);
@@ -23,8 +22,6 @@ int test(char* str) {
 
     test_assert_str(u8buf, str);
 
-    u8_escape(escbuf, 256, u8buf, 1);
-    log(escbuf);
     return TEST_SUCCESS;
 }
 
@@ -63,11 +60,27 @@ int test_utf8_len() {
     return TEST_SUCCESS;
 }
 
+#define trev(s, r) t = u8_reverse(s); test_assert_str(t, r); FREE(t);
+
+int test_utf8_rev() {
+    char* t;
+    char revSpanish[] = {110, -61, -77, -61, -79, 97, 99, 0};
+    char revChin[] = {-26, -106, -121, -28, -72, -83 ,0};
+
+    trev("0123", "3210");
+    trev("0", "0");
+    trev("", "");
+    trev(kSpanishSampleText, revSpanish);
+    trev(kChineseSampleText, revChin);
+
+    return TEST_SUCCESS;
+}
+
 int test_utf8_sub() {
     char* cu = u8_sub(kSpanishSampleText, 2, 4);
-    char ce[] = {97, -61, -79, 0}; 
+    char ce[] = {-61, -79, -61, -77, 0};
     char* au = u8_sub(kAscii, 2, 4);
-    char* a = Str_sub(kAscii, 2, 4);
+    char* a = Str_asub(kAscii, 2, 4);
 
     test_assert_str(au, a);
     test_assert_str(ce, cu);

@@ -82,9 +82,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="filetest.c" />
     <ClCompile Include="getopttest.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="perf.c" />
+    <ClCompile Include="strtest.c" />
+    <ClCompile Include="tokentest.c" />
     <ClCompile Include="utf8test.c" />
   </ItemGroup>
   <ItemGroup>

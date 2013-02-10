@@ -11,10 +11,10 @@ static double dbl = 0;
 static struct option long_options[] = {
     {"area",      no_argument,       NULL,  'a' , "calculate the area","", getopt_none, NULL ,&area_spec},
     {"perimeter", optional_argument, NULL,  'p' , "this is the perimeter", "P",getopt_int, &perimeter, &perimeter_spec},
-    {"length",    required_argument, NULL,  'l' , "length is important", "L", getopt_int, &length},
-    {"breadth",   required_argument, NULL,  'b' , "breadth as well", "B", getopt_int, &breadth},
-    {"dbl",       required_argument, NULL,  'd' , "an happy double", "B", getopt_double, &dbl},
-    {NULL,        no_argument,       NULL,  0   }
+    {"length",    required_argument, NULL,  'l' , "length is important", "L", getopt_int, &length, NULL},
+    {"breadth",   required_argument, NULL,  'b' , "breadth as well", "B", getopt_int, &breadth, NULL},
+    {"dbl",       required_argument, NULL,  'd' , "an happy double", "B", getopt_double, &dbl,NULL},
+    {NULL,        no_argument,       NULL,  0, "", "", getopt_none, NULL, NULL   }
 };
 
 void parse_argv(char** pargv, int* pargc, char* cline, int max_args) {
@@ -49,7 +49,7 @@ int test_getopt_parse() {
     char* argv[64];
     char cline[256];
     int r;
-    
+
     r = parse_vars(argv, &argc, cline, "calculator -l 10 -b 11");
     test_assert(r >=0 && length == 10 && breadth == 11 && perimeter_spec == getopt_unspecified
                 && area_spec == getopt_unspecified);

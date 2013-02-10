@@ -131,7 +131,7 @@ int test_log() {
 void by2(void** i, void* v) {
     int* ip;
     (void)v;
-    
+
     ip = (int*)*i;
     *ip = *ip * 2;
 }
@@ -172,6 +172,10 @@ int test_getopt_parse();
 int test_utf8_roundtrip();
 int test_utf8_len();
 int test_utf8_sub();
+int test_str();
+int test_utf8_rev();
+int test_token();
+int test_file();
 
 int main(int argc, char *argv[])
 {
@@ -195,6 +199,10 @@ int main(int argc, char *argv[])
     test_add("utf8", "roundtrip",       test_utf8_roundtrip);
     test_add("utf8", "strlen",          test_utf8_len);
     test_add("utf8", "sub",             test_utf8_sub);
+    test_add("utf8", "rev",             test_utf8_rev);
+    test_add("str", "all",              test_str);
+    test_add("token", "all",            test_token);
+    test_add("file", "all",             test_file);
     res = test_run_all();
 
     Mem_print_stats();

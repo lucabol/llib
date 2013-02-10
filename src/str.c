@@ -1,120 +1,112 @@
 #include <string.h>
 #include <limits.h>
+#include <stddef.h>
+#include <stdio.h>
 
 #include "assert.h"
-/* #include "fmt.h" */
 #include "str.h"
 #include "mem.h"
+#include "utf8.h"
 
-#define idx(i, len) ((i) <= 0 ? (i) + (len) : (i) - 1)
-
-#define convert(s, i, j) do { int len; \
-    assert(s); len = strlen(s); \
-    i = idx(i, len); j = idx(j, len); \
-    if (i > j) { int t = i; i = j; j = t; } \
-    assert(i >= 0 && j <= len); } while (0)
-
-
-char *Str_sub(const char *s, int i, int j) {
+char *Str_asub(const char *s, int i, int j) {
     char *str, *p;
+    assert(s);
+    assert(i <= j);
 
-    convert(s, i, j);
+    if(*s == '\0') {
+        p = ALLOC(1);
+        *p = '\0';
+        return p;
+    }
+
     p = str = ALLOC(j - i + 1);
-    
+
     while (i < j)
         *p++ = s[i++];
-    
+
     *p = '\0';
     return str;
 }
 
-char *Str_dup(const char *s, int i, int j, int n) {
-    int k;
-    char *str, *p;
+char *Str_adup(const char *s) {
+    size_t len;
+    void* s1;
 
-    assert(n >= 0);
-    convert(s, i, j);
-    
-    p = str = ALLOC(n*(j - i) + 1);
-    
-    if (j - i > 0)
-        while (n-- > 0)
-            for (k = i; k < j; k++)
-                *p++ = s[k];
-    
-    *p = '\0';
+    assert(s);
+
+    len = strlen (s) + 1;
+    s1 = ALLOC (len);
+    return (char *) memcpy (s1, s, len);
+}
+
+char *Str_areverse(const char *s) {
+    char* p, *str;
+    size_t len;
+
+    assert(s);
+
+    len = strlen(s);
+    str = p = ALLOC(len + 1);
+
+    *(str+len) = '\0';
+    while(len--)
+        *p++ = *(s + len);
+
     return str;
 }
 
-char *Str_reverse(const char *s, int i, int j) {
-    char *str, *p;
+char *Str_acat(const char *s1, const char *s2) {
+    size_t l1, l2;
+    char* t;
 
-    convert(s, i, j);
-    p = str = ALLOC(j - i + 1);
-    
-    while (j > i)
-        *p++ = s[--j];
-    
-    *p = '\0';
-    return str;
+    assert(s1);
+    assert(s2);
+
+    l1 = strlen(s1);
+    l2 = strlen(s2);
+
+    t = ALLOC(l1 + l2 + 1);
+    memcpy(t, s1, l1);
+    memcpy(t + l1, s2, l2);
+    *(t + l1 + l2) = '\0';
+    return t;
 }
 
-char *Str_cat(const char *s1, int i1, int j1, const char *s2, int i2, int j2) {
-    char *str, *p;
-    convert(s1, i1, j1);
-    convert(s2, i2, j2);
-
-    p = str = ALLOC(j1 - i1 + j2 - i2 + 1);
-    
-    while (i1 < j1)
-        *p++ = s1[i1++];
-    
-    while (i2 < j2)
-        *p++ = s2[i2++];
-    
-    *p = '\0';
-    return str;
-}
-
-char *Str_catv(const char *s, ...) {
+char *Str_acatvx(const char *s, ...) {
     char *str, *p;
     const char *save = s;
-    int i, j, len = 0;
-
+    int len = 0;
     va_list ap;
+
+    assert(s);
+
     va_start(ap, s);
-    
     while (s) {
-        i = va_arg(ap, int);
-        j = va_arg(ap, int);
-        convert(s, i, j);
-        len += j - i;
+        assert(s);
+        len += strlen(s);
         s = va_arg(ap, const char *);
     }
-
     va_end(ap);
+
     p = str = ALLOC(len + 1);
     s = save;
+
     va_start(ap, s);
-    
     while (s) {
-        i = va_arg(ap, int);
-        j = va_arg(ap, int);
-        convert(s, i, j);
-    
-        while (i < j)
-            *p++ = s[i++];
-        
+        assert(s);
+        while (*s)
+            *p++ = *s++;
+
         s = va_arg(ap, const char *);
     }
-    
+
     va_end(ap);
     *p = '\0';
     return str;
 }
 
-char *Str_map(const char *s, int i, int j, const char *from, const char *to) {
-    static char map[256] = { 0 };
+char *Str_amap(const char *s, const char *from, const char *to) {
+    char map[256] = { 0 };
 
     if (from && to) {
         unsigned c;
@@ -123,7 +115,7 @@ char *Str_map(const char *s, int i, int j, const char *from, const char *to) {
 
         while (*from && *to)
             map[(unsigned char)*from++] = *to++;
-        
+
         assert(*from == 0 && *to == 0);
     } else {
         assert(from == NULL && to == NULL && s);
@@ -132,225 +124,112 @@ char *Str_map(const char *s, int i, int j, const char *from, const char *to) {
 
     if (s) {
         char *str, *p;
-        convert(s, i, j);
-        p = str = ALLOC(j - i + 1);
-
-        while (i < j)
-            *p++ = map[(unsigned char)s[i++]];
         
+        p = str = ALLOC(strlen(s) + 1);
+
+        while (*s)
+            *p++ = map[(unsigned char)*s++];
+
         *p = '\0';
         return str;
     } else
         return NULL;
 }
 
-int Str_pos(const char *s, int i) {
-    int len;
-    assert(s);
+char* Str_avsprintf(const char *fmt, va_list ap)
+{
+    int cnt, sz=0;
+    char *buf;
 
-    len = strlen(s);
-    i = idx(i, len);
-    
-    assert(i >= 0 && i <= len);
-    return i + 1;
-}
+    sz = 512;
+    buf = (char*)ALLOC(sz);
+ try_print:
+    cnt = vsnprintf(buf, sz, fmt, ap);
+    if (cnt == -1) {
+        /* Clear indication that output was truncated, but no
+            * clear indication of how big buffer needs to be, so
+            * simply double existing buffer size for next time.
+            */
+        cnt = sz * 2;
 
-int Str_len(const char *s, int i, int j) {
-    convert(s, i, j);
-    return j - i;
-}
+    } else if (cnt == sz) {
+        /* Output was truncated (since at least the \0 could
+            * not fit), but no indication of how big the buffer
+            * needs to be, so just double existing buffer size
+            * for next time.
+            */
+        cnt = sz * 2;
 
-int Str_cmp(const char *s1, int i1, int j1, const char *s2, int i2, int j2) {
-    convert(s1, i1, j1);
-    convert(s2, i2, j2);
+    } else if (cnt > sz) {
+        /* Output was truncated, but we were told exactly how
+            * big the buffer needs to be next time. Add two chars
+            * to the returned size. One for the \0, and one to
+            * prevent ambiguity in the next case below.
+            */
+        cnt = cnt + 2;
 
-    s1 += i1;
-    s2 += i2;
-    
-    if (j1 - i1 < j2 - i2) {
-        int cond = strncmp(s1, s2, j1 - i1);
-        return cond == 0 ? -1 : cond;
-    } else if (j1 - i1 > j2 - i2) {
-        int cond = strncmp(s1, s2, j2 - i2);
-        return cond == 0 ? +1 : cond;
-    } else
-        return strncmp(s1, s2, j1 - i1);
-}
+    } else if (cnt == sz - 1) {
+        /* This is ambiguous. May mean that the output string
+            * exactly fits, but on some systems the output string
+            * may have been trucated. We can't tell.
+            * Just double the buffer size for next time.
+            */
+        cnt = sz * 2;
 
-int Str_chr(const char *s, int i, int j, int c) {
-    convert(s, i, j);
-
-    for ( ; i < j; i++)
-        if (s[i] == c)
-            return i + 1;
-    return 0;
-}
-
-int Str_rchr(const char *s, int i, int j, int c) {
-    convert(s, i, j);
-    
-    while (j > i)
-        if (s[--j] == c)
-            return j + 1;
-    
-    return 0;
-}
-
-int Str_upto(const char *s, int i, int j, const char *set) {
-    assert(set);
-    convert(s, i, j);
-
-    for ( ; i < j; i++)
-        if (strchr(set, s[i]))
-            return i + 1;
-    
-    return 0;
-}
-
-int Str_rupto(const char *s, int i, int j, const char *set) {
-    assert(set);
-    convert(s, i, j);
-
-    while (j > i)
-        if (strchr(set, s[--j]))
-            return j + 1;
-
-    return 0;
-}
-
-int Str_find(const char *s, int i, int j, const char *str) {
-    int len;
-    convert(s, i, j);
-    assert(str);
-    len = strlen(str);
-
-    if (len == 0)
-        return i + 1;
-    else if (len == 1) {
-        for ( ; i < j; i++)
-            if (s[i] == *str)
-                return i + 1;
-    } else
-        for ( ; i + len <= j; i++)
-            if ((strncmp(&s[i], str, len) == 0))
-                return i + 1;
-
-    return 0;
-}
-
-int Str_rfind(const char *s, int i, int j, const char *str) {
-    int len;
-    convert(s, i, j);
-    assert(str);
-    len = strlen(str);
-
-    if (len == 0)
-        return j + 1;
-    else if (len == 1) {
-        while (j > i)
-            if (s[--j] == *str)
-                return j + 1;
-    } else
-        for ( ; j - len >= i; j--)
-            if (strncmp(&s[j-len], str, len) == 0)
-                return j - len + 1;
-    
-    return 0;
-}
-
-int Str_any(const char *s, int i, const char *set) {
-    int len;
-    assert(s);
-    assert(set);
-    len = strlen(s);
-
-    i = idx(i, len);
-    assert(i >= 0 && i <= len);
-    
-    if (i < len && strchr(set, s[i]))
-        return i + 2;
-
-    return 0;
-}
-
-int Str_many(const char *s, int i, int j, const char *set) {
-    assert(set);
-    convert(s, i, j);
-
-    if (i < j && strchr(set, s[i])) {
-        do
-            i++;
-        while (i < j && strchr(set, s[i]));
-        
-        return i + 1;
+    }
+    if (cnt >= sz) {
+        buf = (char*)ALLOC(cnt + 1);
+        sz = cnt + 1;
+        goto try_print;
     }
 
-    return 0;
+    return buf;
 }
 
-int Str_rmany(const char *s, int i, int j, const char *set) {
-    assert(set);
-    convert(s, i, j);
+char* Str_asprintf(const char *fmt, ...)
+{
+    char* buf;
+    va_list args;
 
-    if (j > i && strchr(set, s[j-1])) {
-        do
-            --j;
-        while (j >= i && strchr(set, s[j]));
-        return j + 2;
+    va_start(args, fmt);
+
+    buf = Str_avsprintf(fmt, args);
+
+    va_end(args);
+    return buf;
+}
+
+char** Str_split(char* s, const char* delimiters, int empties) {
+    tokenizer_t tok = tokenizer( s, delimiters, empties );
+    char** buf = CALLOC(512, sizeof(char*));
+    int n = 0;
+    char* token;
+    int allocs = 1;
+
+    assert(s);
+    assert(delimiters);
+    assert(empties == TOKENIZER_EMPTIES_OK || empties == TOKENIZER_NO_EMPTIES);
+    assert(*delimiters != '\0');
+
+    while (token = tokenize( &tok )) {
+        buf[n++] = token;
+        if(n >= 512 * allocs) {
+            buf = REALLOC(buf, 512 * allocs * sizeof(char*));
+            allocs++;
+        }
     }
-
-    return 0;
+    buf[n] = NULL;
+    return REALLOC(buf, (n+1) * allocs * sizeof(char*));
 }
 
-int Str_match(const char *s, int i, int j, const char *str) {
-    int len;
-    convert(s, i, j);
-    assert(str);
-    len = strlen(str);
-
-    if (len == 0)
-        return i + 1; 
-    else if (len == 1) {
-        if (i < j && s[i] == *str)
-            return i + 2;
-    } else if (i + len <= j && (strncmp(&s[i], str, len) == 0))
-        return i + len + 1;
-
-    return 0;
+uint32_t* Str_atoucs   (const char *src) {
+    size_t len = strlen(src);
+    size_t wlen = (len+1) * sizeof(uint32_t);
+    uint32_t* buf = ALLOC(wlen);
+    int bytes = u8_toucs(buf, wlen, src, len); 
+    REALLOC(buf, bytes);
+    return buf;
 }
 
-int Str_rmatch(const char *s, int i, int j,
-    const char *str) {
-    int len;
-    convert(s, i, j);
-    assert(str);
-    len = strlen(str);
+extern char*     Str_atoutf8   (const uint32_t *src);
 
-    if (len == 0)
-        return j + 1;
-    else if (len == 1) {
-        if (j > i && s[j-1] == *str)
-            return j;
-    } else if (j - len >= i && strncmp(&s[j-len], str, len) == 0)
-        return j - len + 1;
-
-    return 0;
-}
-
-/*
-void Str_fmt(int code, va_list_box *box, int put(int c, void *cl), void *cl,
-             unsigned char flags[], int width, int precision) {
-    char *s;
-    int i, j;
-
-    assert(box && flags);
-    
-    s = va_arg(box->ap, char *);
-    i = va_arg(box->ap, int);
-    j = va_arg(box->ap, int);
-    
-    convert(s, i, j);
-    Fmt_puts(s + i, j - i, put, cl, flags,
-        width, precision);
-}
-*/

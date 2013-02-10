@@ -11,12 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\file.c" />
     <ClCompile Include="..\src\getopt.c" />
     <ClCompile Include="..\src\mem.c" />
     <ClCompile Include="..\src\portable_timer.c" />
     <ClCompile Include="..\src\ring.c" />
     <ClCompile Include="..\src\slist.c" />
     <ClCompile Include="..\src\str.c" />
+    <ClCompile Include="..\src\token.c" />
     <ClCompile Include="..\src\utf8.c" />
     <ClCompile Include="..\src\_align.c" />
     <ClCompile Include="..\src\_arena.c" />
@@ -29,12 +31,14 @@
     <ClCompile Include="..\src\test.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\file.h" />
     <ClInclude Include="..\include\getopt.h" />
     <ClInclude Include="..\include\mem.h" />
     <ClInclude Include="..\include\ring.h" />
     <ClInclude Include="..\include\slist.h" />
     <ClInclude Include="..\include\str.h" />
     <ClInclude Include="..\include\timer.h" />
+    <ClInclude Include="..\include\token.h" />
     <ClInclude Include="..\include\utf8.h" />
     <ClInclude Include="..\include\_arena.h" />
     <ClInclude Include="..\include\assert.h" />

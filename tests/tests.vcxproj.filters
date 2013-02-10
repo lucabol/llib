@@ -27,5 +27,14 @@
     <ClCompile Include="utf8test.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="strtest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tokentest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filetest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

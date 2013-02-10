@@ -41,10 +41,19 @@
 			<Add option="-Wall" />
 			<Add directory="../include" />
 		</Compiler>
+		<Unit filename="getopttest.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="perf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="strtest.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="utf8test.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
