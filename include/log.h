@@ -36,11 +36,11 @@ extern void get_time(char*);
 #define log_dbg(...)    LOG_LEVEL(LOG_DBG, __VA_ARGS__)
 
 extern thread_local FILE *dbgstream;
-extern thread_local int  debug_level;
+extern thread_local unsigned  debug_level;
 
 /* If FILE is NULL, set it to stderr, if level is NULL, set it to 0 */
 
-extern void log_set(FILE* where, int level);
+extern void log_set(FILE* where, unsigned level);
 
 END_DECLS
 

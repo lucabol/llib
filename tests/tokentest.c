@@ -7,6 +7,7 @@
 
 int test_token() {
     char s[] = ",,afaf,,bafa,,";
+    char** p;
 
     tokenizer_t tok = tokenizer( s, ",", TOKENIZER_NO_EMPTIES );
     const char* token;
@@ -39,10 +40,11 @@ int test_token() {
     test_assert(splitbuf);
     
     n = 0;
-    while(*splitbuf++) {
+    p = splitbuf;
+    while(*p++) {
         n++;
     }
+    FREE(splitbuf);
     test_assert(n == 7);
-
     return TEST_SUCCESS;
 }

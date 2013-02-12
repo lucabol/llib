@@ -12,7 +12,7 @@ struct T {
 		struct node *llink, *rlink;
 		void *value;
 	} *head;
-	int length;
+	unsigned length;
 };
 
 T Ring_new(void) {
@@ -42,7 +42,7 @@ void Ring_free(T *ring) {
 	assert(ring && *ring);
 
 	if ((p = (*ring)->head) != NULL) {
-		int n = (*ring)->length;
+		unsigned n = (*ring)->length;
 
 		for ( ; n-- > 0; p = q) {
 			q = p->rlink;
@@ -57,13 +57,13 @@ int Ring_length(T ring) {
 	return ring->length;
 }
 
-void *Ring_get(T ring, int i) {
+void *Ring_get(T ring, unsigned i) {
 	struct node *q;
 	assert(ring);
-	assert(i >= 0 && i < ring->length);
+	assert(i < ring->length);
 
 	{
-		int n;
+		unsigned n;
 		q = ring->head;
 		if (i <= ring->length/2)
 			for (n = i; n-- > 0; )
@@ -76,14 +76,14 @@ void *Ring_get(T ring, int i) {
 	return q->value;
 }
 
-void *Ring_put(T ring, int i, void *x) {
+void *Ring_put(T ring, unsigned i, void *x) {
 	struct node *q;
 	void *prev;
 	assert(ring);
-	assert(i >= 0 && i < ring->length);
+	assert(i < ring->length);
 
 	{
-		int n;
+		unsigned n;
 		q = ring->head;
 		if (i <= ring->length/2)
 			for (n = i; n-- > 0; )
@@ -126,19 +126,19 @@ void *Ring_push_back(T ring, void *x) {
 	return x;
 }
 
-void *Ring_add(T ring, int pos, void *x) {
+void *Ring_add(T ring, signed pos, void *x) {
 	assert(ring);
-	assert(pos >= -ring->length && pos<=ring->length+1);
+	assert(pos >= -(signed)ring->length && pos<=(signed)ring->length+1);
 
-	if (pos == 1 || pos == -ring->length)
+	if (pos == 1 || pos == -(signed)ring->length)
 		return Ring_push_back(ring, x);
 	else if (pos == 0 || pos == ring->length + 1)
 		return Ring_push_front(ring, x);
 	else {
 		struct node *p, *q;
-		int i = pos < 0 ? pos + ring->length : pos - 1;
+		unsigned i = pos < 0 ? pos + ring->length : pos - 1;
 		{
-			int n;
+			unsigned n;
 			q = ring->head;
 			if (i <= ring->length/2)
 				for (n = i; n-- > 0; )
@@ -159,15 +159,15 @@ void *Ring_add(T ring, int pos, void *x) {
 	}
 }
 
-void *Ring_remove(T ring, int i) {
+void *Ring_remove(T ring, unsigned i) {
 	void *x;
 	struct node *q;
 	assert(ring);
 	assert(ring->length > 0);
-	assert(i >= 0 && i < ring->length);
+	assert(i < ring->length);
 
 	{
-		int n;
+		unsigned n;
 		q = ring->head;
 		if (i <= ring->length/2)
 			for (n = i; n-- > 0; )
@@ -219,16 +219,16 @@ void Ring_rotate(T ring, int n) {
 	struct node *q;
 	int i;
 	assert(ring);
-	assert(n >= -ring->length && n <= ring->length);
+	assert(n >= -(signed)ring->length && n <= (signed)ring->length);
 
 	if (n >= 0)
 		i = n%ring->length;
 	else
 		i = n + ring->length;
 	{
-		int n;
+		unsigned n;
 		q = ring->head;
-		if (i <= ring->length/2)
+		if (i <= (signed)ring->length/2)
 			for (n = i; n-- > 0; )
 				q = q->rlink;
 		else
@@ -243,7 +243,7 @@ void Ring_map(T ring, void apply(void **x, void *cl), void *cl) {
 	assert(ring && apply);
 
 	if ((p = ring->head) != NULL) {
-		int n = ring->length;
+		unsigned n = ring->length;
 
 		for ( ; n-- > 0; p = q) {
 			q = p->rlink;

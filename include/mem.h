@@ -16,10 +16,10 @@ extern const Except_T Mem_Failed;
 #define REALLOC(ptr, nbytes) 	((ptr) = Mem_functions.realloc((ptr), (nbytes), __FILE__, __LINE__))
 
 typedef struct MemFuncs {
-    void* (*alloc)  (long nbytes, const char *file, int line);
-    void* (*calloc) (long count, long nbytes, const char *file, int line);
+    void* (*alloc)  (size_t nbytes, const char *file, int line);
+    void* (*calloc) (size_t count, size_t nbytes, const char *file, int line);
     void  (*free)   (void *ptr, const char *file, int line);
-    void* (*realloc)(void *ptr, long nbytes, const char *file, int line);
+    void* (*realloc)(void *ptr, size_t nbytes, const char *file, int line);
     void  (*print_stats) ();
 } MemFuncs;
 
@@ -33,7 +33,7 @@ extern MemFuncs Mem_set_arena(Arena_T arena);
 extern MemFuncs Mem_set_default();
 
 extern Arena_T  Arena_new       (void);
-extern void     Arena_config    (int chunks, long size);
+extern void     Arena_config    (unsigned int chunks, size_t size);
 extern void     Arena_dispose   (Arena_T ap);
 extern void     Arena_free     (Arena_T arena);
 extern void     Arena_remove_free_blocks();

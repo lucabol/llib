@@ -27,7 +27,7 @@ union align {
 #endif
 };
 
-#define hash(p, t) (((unsigned long)(p)>>3) & (sizeof (t) / sizeof ((t)[0])-1))
+#define hash(p, t) (((uintptr_t)(p)>>3) & (sizeof (t) / sizeof ((t)[0])-1))
 
 #define NDESCRIPTORS 512
 
@@ -42,7 +42,7 @@ static thread_local  struct descriptor {
     struct descriptor *free;
     struct descriptor *link;
     const void *ptr;
-    long size;
+    size_t size;
     const char *file;
     int line;
 } *htab[max_hashed];
@@ -75,7 +75,7 @@ void _Mem_free(void *ptr, const char *file, int line) {
             . free on pointer not given out with malloc
             . free pointer twice
         */
-        int is_not_aligned = ((unsigned long)ptr) % (sizeof (union align)) != 0;
+        unsigned int is_not_aligned = ((size_t)ptr) % (sizeof (union align)) != 0;
         bp = find(ptr);
         if ( is_not_aligned || bp == NULL || bp->free)
             Except_raise(&Assert_Failed, file, line);
@@ -87,12 +87,11 @@ void _Mem_free(void *ptr, const char *file, int line) {
     }
 }
 
-void *_Mem_realloc(void *ptr, long nbytes, const char *file, int line) {
+void *_Mem_realloc(void *ptr, size_t nbytes, const char *file, int line) {
     struct descriptor *bp;
     void *newptr;
 
     assert(ptr);
-    assert(nbytes > 0);
 
     init_freelist();
 
@@ -106,7 +105,7 @@ void *_Mem_realloc(void *ptr, long nbytes, const char *file, int line) {
     if(!nbytes)
         _Mem_free(ptr, file, line);
 
-    if (((unsigned long)ptr)%(sizeof (union align)) != 0 || (bp = find(ptr)) == NULL || bp->free)
+    if (((size_t)ptr)%(sizeof (union align)) != 0 || (bp = find(ptr)) == NULL || bp->free)
         Except_raise(&Assert_Failed, file, line);
 
     newptr = _Mem_alloc(nbytes, file, line);
@@ -116,10 +115,8 @@ void *_Mem_realloc(void *ptr, long nbytes, const char *file, int line) {
     return newptr;
 }
 
-void *_Mem_calloc(long count, long nbytes, const char *file, int line) {
+void *_Mem_calloc(size_t count, size_t nbytes, const char *file, int line) {
     void *ptr;
-    assert(count > 0);
-    assert(nbytes > 0);
 
     init_freelist();
 
@@ -131,13 +128,13 @@ void *_Mem_calloc(long count, long nbytes, const char *file, int line) {
 }
 
 /* Initialize the avail descriptor in the list (allocates more if needed) */
-static struct descriptor *dalloc(void *ptr, long size, const char *file, int line) {
+static struct descriptor *dalloc(void *ptr, size_t size, const char *file, int line) {
     static struct descriptor *avail;
-    static int nleft;
+    static unsigned int nleft;
 
     init_freelist();
 
-    if (nleft <= 0) {
+    if (nleft == 0) {
         avail = malloc(NDESCRIPTORS*sizeof (*avail));
         if (avail == NULL)
             return NULL;
@@ -154,10 +151,9 @@ static struct descriptor *dalloc(void *ptr, long size, const char *file, int lin
     return avail++;
 }
 
-void *_Mem_alloc(long nbytes, const char *file, int line){
+void *_Mem_alloc(size_t nbytes, const char *file, int line){
     struct descriptor *bp;
     void *ptr;
-    assert(nbytes > 0);
 
     init_freelist();
 
@@ -171,7 +167,7 @@ void *_Mem_alloc(long nbytes, const char *file, int line){
             ptr = (char *)bp->ptr + bp->size;
 
             if ((bp = dalloc(ptr, nbytes, file, line)) != NULL) {
-                unsigned h = hash(ptr, htab);
+                size_t h = hash(ptr, htab);
                 bp->link = htab[h];
                 htab[h] = bp;
                 return ptr;
@@ -212,8 +208,8 @@ void *_Mem_alloc(long nbytes, const char *file, int line){
 
 void _Mem_print_stats() {
     struct descriptor* bp;
-    int i;
-    int found = 0;
+    unsigned int i;
+    unsigned found = 0;
 
     init_freelist();
 

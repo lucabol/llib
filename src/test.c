@@ -46,13 +46,13 @@ void test_add(char* library, char* feature, test_func f) {
     }
 }
 
-int test_run_all() {
+unsigned test_run_all() {
     struct test_node* p;
-    int code = 0;
+    unsigned code = 0;
 
     /* Execute tests*/
     for(p = head; p; p = p->next) {
-        int status = 0;
+        unsigned status = 0;
         
         status = p->func();
         printf("/%s/%s/ %s\n", p->library, p->feature, status == TEST_SUCCESS ? "Ok" : "Failed!!!");

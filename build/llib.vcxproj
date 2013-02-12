@@ -19,6 +19,7 @@
     <ClCompile Include="..\src\slist.c" />
     <ClCompile Include="..\src\str.c" />
     <ClCompile Include="..\src\token.c" />
+    <ClCompile Include="..\src\uniconv.c" />
     <ClCompile Include="..\src\utf8.c" />
     <ClCompile Include="..\src\_align.c" />
     <ClCompile Include="..\src\_arena.c" />
@@ -39,6 +40,7 @@
     <ClInclude Include="..\include\str.h" />
     <ClInclude Include="..\include\timer.h" />
     <ClInclude Include="..\include\token.h" />
+    <ClInclude Include="..\include\uniconv.h" />
     <ClInclude Include="..\include\utf8.h" />
     <ClInclude Include="..\include\_arena.h" />
     <ClInclude Include="..\include\assert.h" />
@@ -88,6 +90,8 @@
     <IntDir>$(SolutionDir)..\obj\$(Configuration)msvc\</IntDir>
     <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath)</IncludePath>
     <TargetName>$(ProjectName)d</TargetName>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\lib\</OutDir>
@@ -95,6 +99,7 @@
     <IntDir>$(SolutionDir)..\obj\$(Configuration)msvc\</IntDir>
     <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath)</IncludePath>
     <TargetName>$(ProjectName)r</TargetName>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -104,6 +109,7 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -119,6 +125,7 @@
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG; _CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

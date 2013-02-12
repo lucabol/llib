@@ -90,9 +90,9 @@ T SList_reverse(T list) {
     return head;
 }
 
-int SList_length(T list) {
+unsigned SList_length(T list) {
 
-    int n;
+    unsigned n;
     for (n = 0; list; list = list->rest)
         n++;
 
@@ -118,7 +118,7 @@ void SList_map(T list, void apply(void **x, void *cl), void *cl) {
 }
 
 void **SList_toArray(T list, void *end) {
-    int i, n = SList_length(list);
+    unsigned i, n = SList_length(list);
 
     void **array = ALLOC((n + 1)*sizeof (*array));
     for (i = 0; i < n; i++) {

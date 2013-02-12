@@ -19,16 +19,16 @@ TODO: decrease memory usage, look in existing chunks to find one that has enough
 const Except_T Arena_NewFailed = { "Arena Creation Failed" };
 const Except_T Arena_Failed    = { "Arena Allocation Failed" };
 
-static thread_local int  Arena_chunk_n           = 10;
-static thread_local long Arena_additional_size   = 10 * 1024;
+static thread_local unsigned int  Arena_chunk_n    = 10;
+static thread_local size_t Arena_additional_size   = 10 * 1024;
 
 /* for stats */
 #ifndef NDEBUG
 static thread_local unsigned long chunk_allocations = 0;
 #endif
 
-#define RESERVED_SIZE sizeof(long) /* luca to store the size of the allocated memory */
-#define BLOCK_START(ptr) ((long*)(((char*)ptr) - RESERVED_SIZE))
+#define RESERVED_SIZE sizeof(size_t) /* luca to store the size of the allocated memory */
+#define BLOCK_START(ptr) ((size_t*)(((char*)ptr) - RESERVED_SIZE))
 
 struct T {
     T prev;
@@ -57,12 +57,9 @@ union header {
 };
 
 static T freechunks;
-static int nfree;
+static unsigned int nfree;
 
-void Arena_config (int chunks, long size) {
-    assert(chunks > 0);
-    assert(size > 0);
-
+void Arena_config (unsigned int chunks, size_t size) {
     Arena_chunk_n           = chunks;
     Arena_additional_size   = size;
 }
@@ -79,6 +76,8 @@ T Arena_new(void) {
 
 void Arena_dispose(T ap) {
     assert(ap);
+    assert(ap->limit >= ap->avail);
+
     log_dbg("%p dispose arena", ap);
 
     Arena_free(ap);
@@ -87,15 +86,15 @@ void Arena_dispose(T ap) {
     ap = NULL;
 }
 
-void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
+void *Arena_alloc(T arena, size_t nbytes, const char *file, int line) {
     void* ptr;
     assert(arena);
-    assert(nbytes > 0);
+    assert(arena->limit >= arena->avail);
 
     /* A space of nbytes + RESERVED_SIZE or more bytes that is a multiple of sizeof (union align) */
     nbytes = ((nbytes + RESERVED_SIZE + sizeof (union align) - 1)/ (sizeof (union align)))*(sizeof (union align));
 
-    while (nbytes > arena->limit - arena->avail) {
+    while (nbytes > (size_t)(arena->limit - arena->avail)) {
         T ptr;
         char *limit;
 
@@ -105,7 +104,7 @@ void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
             limit = ptr->limit;
             log_dbg("%p arena reusing chunk, left %i chunks", freechunks, nfree);
         } else {
-            long m = sizeof (union header) + nbytes + Arena_additional_size;
+            size_t m = sizeof (union header) + nbytes + Arena_additional_size;
             ptr = _Mem_alloc(m, __FILE__, __LINE__);
 
 #ifndef NDEBUG
@@ -128,7 +127,7 @@ void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
         arena->prev  = ptr;
     }
 
-    *((long*)arena->avail) = nbytes; /* luca storing the size */
+    *((size_t*)arena->avail) = nbytes; /* luca storing the size */
     arena->avail += nbytes;
     ptr = arena->avail - nbytes + RESERVED_SIZE; /* luca */
 
@@ -136,9 +135,9 @@ void *Arena_alloc(T arena, long nbytes, const char *file, int line) {
     return ptr;
 }
 
-void *Arena_calloc(T arena, long count, long nbytes, const char *file, int line) {
+void *Arena_calloc(T arena, size_t count, size_t nbytes, const char *file, int line) {
     void *ptr;
-    assert(count > 0);
+   assert(arena->limit >= arena->avail);
 
     ptr = Arena_alloc(arena, count*nbytes, file, line);
     memset(ptr, '\0', count*nbytes);
@@ -147,11 +146,11 @@ void *Arena_calloc(T arena, long count, long nbytes, const char *file, int line)
     return ptr;
 }
 
-void *Arena_realloc  (T arena, void *ptr, long nbytes, const char *file, int line) {
-    long bsize;
+void *Arena_realloc  (T arena, void *ptr, size_t nbytes, const char *file, int line) {
+    size_t bsize;
     void* p;
     assert(arena);
-    assert(nbytes > 0);
+    assert(arena->limit >= arena->avail);
 
     if(!nbytes) /* doesn't set ptr to NULL as it is not required */
         return NULL;
@@ -164,12 +163,16 @@ void *Arena_realloc  (T arena, void *ptr, long nbytes, const char *file, int lin
 
     bsize = *BLOCK_START(ptr);
 
-#ifdef NDEBUG /* Optimized for the case when the requested block fits into existing one*/
-    if(nbytes <= bsize) {
+    if(nbytes <= bsize) { /* resizing to smaller size, reuse the pointer*/
+        if((char*)ptr + bsize >= arena->avail) { /* if the last block, reclaim additional space*/
+            arena->avail = (char*)ptr + nbytes;
+        }
         *BLOCK_START(ptr) = nbytes;
+#ifndef NDEBUG
+        memset((char*)ptr + nbytes, '\0', bsize - nbytes);
+#endif
         return ptr;
     }
-#endif
 
     p               = Arena_alloc(arena, nbytes, file, line); /* allocate the requested size */
     *BLOCK_START(p) = nbytes;
@@ -183,6 +186,7 @@ void *Arena_realloc  (T arena, void *ptr, long nbytes, const char *file, int lin
 
 void Arena_free(T arena) {
     assert(arena);
+    assert(arena->limit >= arena->avail);
     log_dbg("%p arena freed", arena);
 
     while (arena->prev) {

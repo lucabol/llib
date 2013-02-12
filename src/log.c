@@ -3,10 +3,10 @@
 #include "assert.h"
 #include "log.h"
 
-thread_local  FILE *dbgstream     = NULL;
-thread_local int  debug_level    = LOG_DISABLE;
+thread_local FILE *dbgstream     = NULL;
+thread_local unsigned  debug_level    = LOG_DISABLE;
 
-void log_set(FILE* where, int level) {
+void log_set(FILE* where, unsigned level) {
     if(!where) where = stderr;
     if(!level) level = LOG_DISABLE;
 

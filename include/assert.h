@@ -15,4 +15,13 @@ BEGIN_DECLS
 #  define assert(e) ((void)((e)||(BREAKPOINT,0)))
 # endif /* REMOVE_ASSERTS */
 
+#ifndef NDEBUG
+#ifdef REMOVE_ASSERTS
+# define assert_slow(e) ((void)0)
+# else
+#  define assert_slow(e) ((void)((e)||(BREAKPOINT,0)))
+# endif /* REMOVE_ASSERTS */
+
+#endif
+
 END_DECLS

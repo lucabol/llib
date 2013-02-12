@@ -5,7 +5,7 @@
 #include "str.h"
 #include "assert.h"
 
-tokenizer_t tokenizer(char* s, const char* delimiters, int empties) {
+tokenizer_t tokenizer(char* s, const char* delimiters, unsigned empties) {
     tokenizer_t result ;
     assert(s);
     assert(delimiters);

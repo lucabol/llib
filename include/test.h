@@ -19,10 +19,10 @@ BEGIN_DECLS
     if(strcmp((s1), (s2)) != 0) { printf("%s:%i Test failed (got, expected): %s == %s \n", __FILE__, __LINE__, (s1), (s2));   \
         return TEST_FAILURE; } } STMT_END
 
-typedef int (*test_func) ();
+typedef unsigned (*test_func) ();
 
 extern void test_add(char* kind, char* feature, test_func f);
-extern int test_run_all();
+extern unsigned test_run_all();
 extern double test_perf(test_func f);
 
 END_DECLS

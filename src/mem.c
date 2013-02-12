@@ -28,11 +28,11 @@ void Mem_print_stats() {
 
 static thread_local  Arena_T Arena_default;
 
-void* a_alloc  (long nbytes, const char *file, int line) {
+void* a_alloc  (size_t nbytes, const char *file, int line) {
     return Arena_alloc(Arena_default, nbytes, file, line);
 }
 
-void* a_calloc (long count, long nbytes, const char *file, int line) {
+void* a_calloc (size_t count, size_t nbytes, const char *file, int line) {
     return Arena_calloc(Arena_default, count, nbytes, file, line);
 }
 
@@ -40,7 +40,7 @@ void  a_free   (void *ptr, const char *file, int line) {
     (void) ptr, (void)file, (void)line;
 }
 
-void* a_realloc(void *ptr, long nbytes, const char *file, int line) {
+void* a_realloc(void *ptr, size_t nbytes, const char *file, int line) {
     return Arena_realloc(Arena_default, ptr, nbytes, file, line);
 }
 void  a_print_stats () { Arena_print_stats();}

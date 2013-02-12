@@ -34,6 +34,15 @@ int test_arena_resize() {
     REALLOC(aChar, 100000);
     test_assert_str(aChar, "abcdefghi");
 
+    REALLOC(aChar, 1);
+    test_assert_str(aChar, "a");
+
+    REALLOC(aChar, 100);
+    strcpy(aChar, "abcd");
+    REALLOC(aChar, 2);
+    test_assert_str(aChar, "ab");
+
+
     Mem_set_default();
 
     Arena_dispose(arena);

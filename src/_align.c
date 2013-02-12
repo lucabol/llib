@@ -8,7 +8,7 @@
 #define ALIGNMENT   64
 
 static
-void *align_alloc(long nbytes, const char *file, int line){
+void *align_alloc(size_t nbytes, const char *file, int line){
     void *ptr;
     assert(nbytes > 0);
 
@@ -25,7 +25,7 @@ void *align_alloc(long nbytes, const char *file, int line){
 }
 
 static
-void *align_calloc(long count, long nbytes, const char *file, int line) {
+void *align_calloc(size_t count, size_t nbytes, const char *file, int line) {
     void *ptr;
     assert(count > 0);
     assert(nbytes > 0);
@@ -53,7 +53,7 @@ void align_free(void *ptr, const char *file, int line) {
 }
 
 static
-void *align_realloc(void *ptr, long nbytes, const char *file, int line) {
+void *align_realloc(void *ptr, size_t nbytes, const char *file, int line) {
     assert(ptr);
     assert(nbytes > 0);
 

@@ -372,7 +372,7 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
     struct option* lp = longopts;
     int long_index = 0;
     int opt = 0;
-    int err_index = 0;
+    unsigned int err_index = 0;
     char* progname = argv[0] ? argv[0] : "Program";
 
     assert(longopts);
@@ -450,8 +450,10 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
                             }
                             if(errchar != ' ') {
                                 if(opterr) fprintf(stderr, "%s: argument not a valid integer for option `-%c'\n", progname, opt);
-                                opterrorshorts[err_index] = opt;
-                                opterrorcodes[err_index++] = errchar;
+                                if(err_index < 256) {
+                                    opterrorshorts[err_index] = opt;
+                                    opterrorcodes[err_index++] = errchar;
+                                }
                                 if(errchar != getopt_endchars) optind --;                            }
                         } else if(lp->type == getopt_double) {
                             char* end;
@@ -469,8 +471,10 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
                             }
                             if(errchar != ' ') {
                                 if(opterr) fprintf(stderr, "%s: argument not a valid floating point number for option `-%c'\n", progname, opt);
-                                opterrorshorts[err_index] = opt;
-                                opterrorcodes[err_index++] = errchar;
+                                if(err_index < 256) {
+                                    opterrorshorts[err_index] = opt;
+                                    opterrorcodes[err_index++] = errchar;
+                                }
                                 if(errchar != getopt_endchars) optind --;
                             }
                         } else {

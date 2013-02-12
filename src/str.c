@@ -7,8 +7,9 @@
 #include "str.h"
 #include "mem.h"
 #include "utf8.h"
+#include "except.h"
 
-char *Str_asub(const char *s, int i, int j) {
+char *Str_asub(const char *s, size_t i, size_t j) {
     char *str, *p;
     assert(s);
     assert(i <= j);
@@ -75,7 +76,7 @@ char *Str_acat(const char *s1, const char *s2) {
 char *Str_acatvx(const char *s, ...) {
     char *str, *p;
     const char *save = s;
-    int len = 0;
+    size_t len = 0;
     va_list ap;
 
     assert(s);
@@ -138,7 +139,8 @@ char *Str_amap(const char *s, const char *from, const char *to) {
 
 char* Str_avsprintf(const char *fmt, va_list ap)
 {
-    int cnt, sz=0;
+    signed cnt = 0;
+    size_t sz = 0;
     char *buf;
 
     sz = 512;
@@ -152,7 +154,7 @@ char* Str_avsprintf(const char *fmt, va_list ap)
             */
         cnt = sz * 2;
 
-    } else if (cnt == sz) {
+    } else if (cnt == (signed) sz) {
         /* Output was truncated (since at least the \0 could
             * not fit), but no indication of how big the buffer
             * needs to be, so just double existing buffer size
@@ -160,7 +162,7 @@ char* Str_avsprintf(const char *fmt, va_list ap)
             */
         cnt = sz * 2;
 
-    } else if (cnt > sz) {
+    } else if (cnt > (signed) sz) {
         /* Output was truncated, but we were told exactly how
             * big the buffer needs to be next time. Add two chars
             * to the returned size. One for the \0, and one to
@@ -168,7 +170,7 @@ char* Str_avsprintf(const char *fmt, va_list ap)
             */
         cnt = cnt + 2;
 
-    } else if (cnt == sz - 1) {
+    } else if (cnt == (signed)(sz - 1)) {
         /* This is ambiguous. May mean that the output string
             * exactly fits, but on some systems the output string
             * may have been trucated. We can't tell.
@@ -177,7 +179,10 @@ char* Str_avsprintf(const char *fmt, va_list ap)
         cnt = sz * 2;
 
     }
-    if (cnt >= sz) {
+    if( cnt < 0) /* capture the case where sz overflowed cnt*/
+        RAISE(Mem_Failed);
+
+    if (cnt >= (signed) sz) {
         buf = (char*)ALLOC(cnt + 1);
         sz = cnt + 1;
         goto try_print;
@@ -199,12 +204,12 @@ char* Str_asprintf(const char *fmt, ...)
     return buf;
 }
 
-char** Str_split(char* s, const char* delimiters, int empties) {
+char** Str_split(char* s, const char* delimiters, unsigned empties) {
     tokenizer_t tok = tokenizer( s, delimiters, empties );
-    char** buf = CALLOC(512, sizeof(char*));
-    int n = 0;
+    char** buf = ALLOC(512 * sizeof(char*));
+    unsigned n = 0;
     char* token;
-    int allocs = 1;
+    unsigned allocs = 1;
 
     assert(s);
     assert(delimiters);
@@ -224,12 +229,21 @@ char** Str_split(char* s, const char* delimiters, int empties) {
 
 uint32_t* Str_atoucs   (const char *src) {
     size_t len = strlen(src);
-    size_t wlen = (len+1) * sizeof(uint32_t);
+    size_t wlen = (len + 1) * sizeof(uint32_t);
+
     uint32_t* buf = ALLOC(wlen);
-    int bytes = u8_toucs(buf, wlen, src, len); 
-    REALLOC(buf, bytes);
+    int bytes = u8_toucs(buf, len + 1, src, -1); 
+    
+    REALLOC(buf, bytes + 1);
     return buf;
 }
 
-extern char*     Str_atoutf8   (const uint32_t *src);
+char* Str_atoutf8   (const uint32_t *src) {
+    size_t len = strlen((char*)src);
+
+    char* buf = ALLOC(len);
+    int chars = u8_toutf8(buf, len, src, -1);
+    REALLOC(buf, (chars + 1) * sizeof(uint32_t));
+    return buf;
+}
 

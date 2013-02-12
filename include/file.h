@@ -1,19 +1,37 @@
-#ifndef TINYDIR_H
-#define TINYDIR_H
+#ifndef FILE_H
+#define FILE_H
 
-#include <stdio.h> /* FILENAME_MAX */
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#ifdef _MSC_VER
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#else
+#include <dirent.h>
+#include <sys/stat.h>
+#endif
 
-#include "except.h"
 
-#define D dir
-typedef struct D* D;
+/* types */
 
-#define PATH_MAX 4096
+#define _TINYDIR_PATH_MAX 4096
+#ifdef _MSC_VER
+/* extra chars for the "\\*" mask */
+#define _TINYDIR_PATH_EXTRA 2
+#else
+#define _TINYDIR_PATH_EXTRA 0
+#endif
+#define _TINYDIR_FILENAME_MAX 256
 
-struct fileinfo
+#ifdef _MSC_VER
+#define strncasecmp _strnicmp
+#endif
+
+typedef struct
 {
-	char path[PATH_MAX];
-	char name[FILENAME_MAX];
+	char path[_TINYDIR_PATH_MAX];
+	char name[_TINYDIR_FILENAME_MAX];
 	int is_dir;
 	int is_reg;
 
@@ -21,22 +39,36 @@ struct fileinfo
 #else
 	struct stat _s;
 #endif
-};
+} tinydir_file;
 
-#define F fileinfo
-typedef struct F* F;
+typedef struct
+{
+	char path[_TINYDIR_PATH_MAX];
+	int has_next;
+	int n_files;
 
-extern const Except_T File_Error;
+	tinydir_file *_files;
+#ifdef _MSC_VER
+	HANDLE _h;
+	WIN32_FIND_DATA _f;
+#else
+	DIR *_d;
+	struct dirent *_e;
+#endif
+} tinydir_dir;
 
-D dir_open(const char *path);
-int dir_open_sorted(D dir, const char *path);
-void dir_close(D dir);
 
-int dir_next(D dir);
-F dir_readfile(D dir);
-int dir_readfile_n(D dir, F file, int i);
-int dir_open_subdir_n(D dir, int i);
+/* declarations */
 
-#undef T
-#undef F
+int tinydir_open(tinydir_dir *dir, const char *path);
+int tinydir_open_sorted(tinydir_dir *dir, const char *path);
+void tinydir_close(tinydir_dir *dir);
+
+int tinydir_next(tinydir_dir *dir);
+int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file);
+int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i);
+int tinydir_open_subdir_n(tinydir_dir *dir, int i);
+
+int _tinydir_file_cmp(const void *a, const void *b);
+
 #endif
