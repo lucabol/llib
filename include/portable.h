@@ -59,4 +59,18 @@ extern void Except_hook_signal();
 # else
 # endif
 
+#if defined(_MSC_VER)
+  #define P_SIZE_T    "%Iu"
+  #define P_SSIZE_T   "%Id"
+  #define P_PTRDIFF_T "%Id"
+#elif defined(__GNUC__)
+  #define PR_SIZE_T    "%zu"
+  #define PR_SSIZE_T   "%zd"
+  #define PR_PTRDIFF_T "%zd"
+#else
+  #define PR_SIZE_T    "%zu"
+  #define PR_SSIZE_T   "%zd"
+  #define PR_PTRDIFF_T "%zd"
+#endif
+
 #endif /* PORTABLE_INCLUDED */

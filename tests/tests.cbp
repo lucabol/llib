@@ -41,6 +41,9 @@
 			<Add option="-Wall" />
 			<Add directory="../include" />
 		</Compiler>
+		<Unit filename="filetest.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="getopttest.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -51,6 +54,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="strtest.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="tokentest.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="utf8test.c">

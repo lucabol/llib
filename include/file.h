@@ -4,7 +4,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef _MSC_VER
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #else
@@ -16,7 +16,7 @@
 /* types */
 
 #define _TINYDIR_PATH_MAX 4096
-#ifdef _MSC_VER
+#ifdef _WIN32
 /* extra chars for the "\\*" mask */
 #define _TINYDIR_PATH_EXTRA 2
 #else
@@ -24,7 +24,7 @@
 #endif
 #define _TINYDIR_FILENAME_MAX 256
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #define strncasecmp _strnicmp
 #endif
 
@@ -35,7 +35,7 @@ typedef struct
 	int is_dir;
 	int is_reg;
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #else
 	struct stat _s;
 #endif
@@ -48,7 +48,7 @@ typedef struct
 	int n_files;
 
 	tinydir_file *_files;
-#ifdef _MSC_VER
+#ifdef _WIN32
 	HANDLE _h;
 	WIN32_FIND_DATA _f;
 #else

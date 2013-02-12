@@ -125,7 +125,7 @@ char *Str_amap(const char *s, const char *from, const char *to) {
 
     if (s) {
         char *str, *p;
-        
+
         p = str = ALLOC(strlen(s) + 1);
 
         while (*s)
@@ -216,10 +216,10 @@ char** Str_split(char* s, const char* delimiters, unsigned empties) {
     assert(empties == TOKENIZER_EMPTIES_OK || empties == TOKENIZER_NO_EMPTIES);
     assert(*delimiters != '\0');
 
-    while (token = tokenize( &tok )) {
+    while ( (token = tokenize( &tok )) != NULL) {
         buf[n++] = token;
         if(n >= 512 * allocs) {
-            buf = REALLOC(buf, 512 * allocs * sizeof(char*));
+            REALLOC(buf, 512 * allocs * sizeof(char*));
             allocs++;
         }
     }
@@ -232,8 +232,8 @@ uint32_t* Str_atoucs   (const char *src) {
     size_t wlen = (len + 1) * sizeof(uint32_t);
 
     uint32_t* buf = ALLOC(wlen);
-    int bytes = u8_toucs(buf, len + 1, src, -1); 
-    
+    int bytes = u8_toucs(buf, len + 1, src, -1);
+
     REALLOC(buf, bytes + 1);
     return buf;
 }

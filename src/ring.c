@@ -98,7 +98,7 @@ void *Ring_put(T ring, unsigned i, void *x) {
 	return prev;
 }
 
-void *Ring_push_front(T ring, void *x) {
+T Ring_push_front(T ring, void *x) {
 	struct node *p, *q;
 	assert(ring);
 
@@ -114,16 +114,17 @@ void *Ring_push_front(T ring, void *x) {
 		ring->head = p->llink = p->rlink = p;
 
 	ring->length++;
-	return p->value = x;
+	p->value = x;
+    return ring;
 }
 
-void *Ring_push_back(T ring, void *x) {
+T Ring_push_back(T ring, void *x) {
 	assert(ring);
 
 	Ring_push_front(ring, x);
 	ring->head = ring->head->llink;
 
-	return x;
+	return ring;
 }
 
 void *Ring_add(T ring, signed pos, void *x) {
@@ -132,11 +133,11 @@ void *Ring_add(T ring, signed pos, void *x) {
 
 	if (pos == 1 || pos == -(signed)ring->length)
 		return Ring_push_back(ring, x);
-	else if (pos == 0 || pos == ring->length + 1)
+	else if (pos == 0 || pos == (signed) ring->length + 1)
 		return Ring_push_front(ring, x);
 	else {
 		struct node *p, *q;
-		unsigned i = pos < 0 ? pos + ring->length : pos - 1;
+		unsigned i = pos < 0 ? (unsigned) (pos + (signed) ring->length) : (unsigned) pos - 1;
 		{
 			unsigned n;
 			q = ring->head;

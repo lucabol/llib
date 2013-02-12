@@ -5,7 +5,7 @@
 #include "mem.h"
 #include "str.h"
 
-int test_token() {
+unsigned test_token() {
     char s[] = ",,afaf,,bafa,,";
     char** p;
 
@@ -15,7 +15,7 @@ int test_token() {
     char** splitbuf;
 
     n = 0;
-    while (token = tokenize( &tok )) {
+    while ((token = tokenize( &tok )) != NULL) {
         n += 1;
     }
     test_assert(n == 2);
@@ -23,14 +23,14 @@ int test_token() {
     strcpy(s, ",,afaf,,bafa,,");
     tok = tokenizer( s, ",", TOKENIZER_EMPTIES_OK );
     n = 0;
-    while (token = tokenize( &tok )) {
+    while ((token = tokenize( &tok )) != NULL) {
         n += 1;
     }
     test_assert(n == 7);
 
     tok = tokenizer("", ",", TOKENIZER_NO_EMPTIES );
     n = 0;
-    while (token = tokenize( &tok )) {
+    while ((token = tokenize( &tok )) != NULL) {
         n += 1;
     }
     test_assert(n == 0);
@@ -38,7 +38,7 @@ int test_token() {
     strcpy(s, ",,afaf,,bafa,,");
     splitbuf = Str_split(s, ",", TOKENIZER_EMPTIES_OK);
     test_assert(splitbuf);
-    
+
     n = 0;
     p = splitbuf;
     while(*p++) {

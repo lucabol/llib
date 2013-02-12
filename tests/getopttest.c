@@ -37,14 +37,14 @@ void clear_vars() {
 }
 
 static
-int parse_vars(char** pargv, int* pargc, char* cline, char* cmsg) {
+unsigned parse_vars(char** pargv, int* pargc, char* cline, char* cmsg) {
     clear_vars();
     strcpy(cline, cmsg);
     parse_argv(pargv, pargc, cline, 64);
     return getopt_parse(*pargc, pargv, long_options, "", "", "");
 }
 
-int test_getopt_parse() {
+unsigned test_getopt_parse() {
     int argc;
     char* argv[64];
     char cline[256];

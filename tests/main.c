@@ -13,7 +13,7 @@
 #include "getopt.h"
 #include "log.h"
 
-int test_arena_resize() {
+unsigned test_arena_resize() {
     Arena_T arena   = Arena_new();
     char * aChar;
 
@@ -35,11 +35,13 @@ int test_arena_resize() {
     test_assert_str(aChar, "abcdefghi");
 
     REALLOC(aChar, 1);
+    aChar[1] = '\0';
     test_assert_str(aChar, "a");
 
     REALLOC(aChar, 100);
     strcpy(aChar, "abcd");
     REALLOC(aChar, 2);
+    aChar[2] = '\0';
     test_assert_str(aChar, "ab");
 
 
@@ -51,7 +53,7 @@ int test_arena_resize() {
     return TEST_SUCCESS;
 }
 
-int test_mem_free() {
+unsigned test_mem_free() {
 
     int result = TEST_SUCCESS;
 
@@ -90,7 +92,7 @@ int test_mem_free() {
     return result;
 }
 
-int test_native_exceptions() {
+unsigned test_native_exceptions() {
 
 #ifdef NATIVE_EXCEPTIONS
 
@@ -119,7 +121,7 @@ int test_native_exceptions() {
     return TEST_SUCCESS;
 }
 
-int test_log() {
+unsigned test_log() {
     int dbg = debug_level;
     FILE* file = dbgstream;
 
@@ -145,7 +147,7 @@ void by2(void** i, void* v) {
     *ip = *ip * 2;
 }
 
-int test_ring_apply() {
+unsigned test_ring_apply() {
     int k = 0, *p, i, sum = 0;
     Ring_T ring = Ring_new();
 
@@ -174,17 +176,17 @@ static struct option long_options[] = {
     {"verbosity",      no_argument,       NULL,  'v' , "print out debug messages","", getopt_none, NULL ,&verbosity},
 };
 
-int test_mem_perf();
-int test_list();
-int test_list_perf();
-int test_getopt_parse();
-int test_utf8_roundtrip();
-int test_utf8_len();
-int test_utf8_sub();
-int test_str();
-int test_utf8_rev();
-int test_token();
-int test_file();
+unsigned test_mem_perf();
+unsigned test_list();
+unsigned test_list_perf();
+unsigned test_getopt_parse();
+unsigned test_utf8_roundtrip();
+unsigned test_utf8_len();
+unsigned test_utf8_sub();
+unsigned test_str();
+unsigned test_utf8_rev();
+unsigned test_token();
+unsigned test_file();
 
 int main(int argc, char *argv[])
 {

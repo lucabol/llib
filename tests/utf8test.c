@@ -38,7 +38,7 @@ static char kAscii[]                 = "0123456789";
 
 #define mytest(str) if(test(str) == TEST_FAILURE) return TEST_FAILURE;
 
-int test_utf8_roundtrip() {
+unsigned test_utf8_roundtrip() {
 
 #ifdef _WIN32 /* windows doesn't support utf-8 locale */
     char* locale = setlocale(LC_ALL, "");
@@ -53,7 +53,7 @@ int test_utf8_roundtrip() {
     return TEST_SUCCESS;
 }
 
-int test_utf8_len() {
+unsigned test_utf8_len() {
     test_assert(u8_strlen(kChineseSampleText) == 2);
     test_assert(u8_strlen(kArabicSampleText) == 7);
     test_assert(u8_strlen(kSpanishSampleText) == 5);
@@ -62,7 +62,7 @@ int test_utf8_len() {
 
 #define trev(s, r) t = u8_reverse(s); test_assert_str(t, r); FREE(t);
 
-int test_utf8_rev() {
+unsigned test_utf8_rev() {
     char* t;
     char revSpanish[] = {110, -61, -77, -61, -79, 97, 99, 0};
     char revChin[] = {-26, -106, -121, -28, -72, -83 ,0};

@@ -3,6 +3,7 @@
 
 #include <string.h> /* for memcpy */
 #include <stdio.h> /* for printf */
+#include <stdint.h>
 
 #include "portable.h" /* for thread_local */
 #include "assert.h"
@@ -95,7 +96,7 @@ void *_Mem_realloc(void *ptr, size_t nbytes, const char *file, int line) {
 
     init_freelist();
 
-    log_dbg("%p realloc %li bytes", ptr, nbytes);
+    log_dbg("%p realloc %lu bytes", ptr, (unsigned long) nbytes);
 
     /* This is rather error prone, but it is needed to conform to realloc spec */
     if(!ptr)
@@ -123,7 +124,7 @@ void *_Mem_calloc(size_t count, size_t nbytes, const char *file, int line) {
     ptr = _Mem_alloc(count*nbytes, file, line);
     memset(ptr, '\0', count*nbytes);
 
-    log_dbg("%p calloc %li bytes", ptr, nbytes);
+    log_dbg("%p calloc %lu bytes", ptr, (unsigned long) nbytes);
     return ptr;
 }
 
@@ -195,7 +196,7 @@ void *_Mem_alloc(size_t nbytes, const char *file, int line){
                     else
                         Except_raise(&Mem_Failed, file, line);
                 }
-            log_dbg("%p alloc %li bytes", ptr, nbytes + NALLOC);
+            log_dbg("%p alloc %lu bytes", ptr, (unsigned long) nbytes + NALLOC);
             /* Add the block as the first one in the free list. It will be picked up in the next iteration. */
             newptr->free = freelist.free;
             freelist.free = newptr;
@@ -219,7 +220,7 @@ void _Mem_print_stats() {
     for(i = 0; i < max_hashed ; i++) {
         for(bp = htab[i]; bp; bp = bp->link) {
             if(bp->free == NULL) {
-                log_info("%20s:%i%10li%10p", bp->file, bp->line, bp->size, bp->ptr);
+                log_info("%20s:%i%10lu%10p", bp->file, bp->line, (unsigned long) bp->size, bp->ptr);
                 found = 1;
             }
         }

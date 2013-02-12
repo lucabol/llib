@@ -110,7 +110,7 @@ void *Arena_alloc(T arena, size_t nbytes, const char *file, int line) {
 #ifndef NDEBUG
             chunk_allocations = chunk_allocations + 1;
 #endif
-            log_dbg("%p arena alloc new chunk %li", ptr, m);
+            log_dbg("%p arena alloc new chunk %lu", ptr, (unsigned long) m);
 
             if (ptr == NULL) {
                 if (file == NULL)
@@ -131,7 +131,7 @@ void *Arena_alloc(T arena, size_t nbytes, const char *file, int line) {
     arena->avail += nbytes;
     ptr = arena->avail - nbytes + RESERVED_SIZE; /* luca */
 
-    log_dbg("%p arena %li bytes", ptr, nbytes);
+    log_dbg("%p arena %lu bytes", ptr, (unsigned long)nbytes);
     return ptr;
 }
 
@@ -142,7 +142,7 @@ void *Arena_calloc(T arena, size_t count, size_t nbytes, const char *file, int l
     ptr = Arena_alloc(arena, count*nbytes, file, line);
     memset(ptr, '\0', count*nbytes);
 
-    log_dbg("%p arena %li bytes", ptr, nbytes);
+    log_dbg("%p arena %lu bytes", ptr, (unsigned long)nbytes);
     return ptr;
 }
 
@@ -180,7 +180,7 @@ void *Arena_realloc  (T arena, void *ptr, size_t nbytes, const char *file, int l
     bsize           = bsize < nbytes ? bsize : nbytes;
     memcpy(p, ptr, bsize); /* memcopy the minimum of the two, this is why we are keeping track of size */
 
-    log_dbg("%p arena %li bytes", p, nbytes);
+    log_dbg("%p arena %lu bytes", p, (unsigned long) nbytes);
     return p;
 }
 

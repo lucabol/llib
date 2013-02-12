@@ -305,9 +305,9 @@ void u8_inc(const char *s, int *i)
 }
 
 void u8_dec(const char *s, int *i)
-{       
+{
     (void)(isutf(s[--(*i)]) || isutf(s[--(*i)]) ||
-           isutf(s[--(*i)]) || --(*i)); 
+           isutf(s[--(*i)]) || --(*i));
 }
 
 int octal_digit(char c)
@@ -541,7 +541,7 @@ char *u8_sub (const char *s, int i, int j) {
 }
 
 char *u8_reverse(const char*s) {
-    size_t len;
+    int len;
     char* str, *p;
 
     len = strlen(s);

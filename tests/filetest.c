@@ -2,7 +2,7 @@
 #include "test.h"
 #include "mem.h"
 
-int test_file() {
+unsigned test_file() {
     tinydir_dir dir;
     if (tinydir_open(&dir, ".") == -1)
     {

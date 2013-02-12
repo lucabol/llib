@@ -1,3 +1,5 @@
+#include <stddef.h>
+
 #include "str.h"
 #include "test.h"
 #include "mem.h"
@@ -9,7 +11,7 @@
 #define tmap(s, from, to, r) t = Str_amap(s, from, to); test_assert_str(t, r); FREE(t);
 #define tasp(r, fmt, ...) t = Str_asprintf(fmt, __VA_ARGS__); test_assert_str(t, r); FREE(t);
 
-int test_str() {
+unsigned test_str() {
     char* t;
 
     tcat("ab", "cd", "abcd");

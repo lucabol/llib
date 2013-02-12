@@ -4,74 +4,68 @@
 #include "assert.h"
 #include "test.h"
 #include "timer.h"
+#include "ring.h"
+#include "mem.h"
 
-/* Use the list module */
-
-struct test_node {
-    struct test_node* next;
+struct test_data {
     char* library;
     char* feature;
     test_func func;
-} *head = NULL, *tail = NULL;
+};
+
+static Ring_T tests = NULL;
 
 static
 char* test_strdup (const char *s) {
-    char *d = malloc (strlen (s) + 1);
+    char *d = ALLOC (strlen (s) + 1);
     assert(d);
 
     strcpy (d,s);
-    return d; 
+    return d;
 }
 
 void test_add(char* library, char* feature, test_func f) {
-    struct test_node* p = NULL;
+    struct test_data* p = NULL;
 
     assert(library);
     assert(feature);
     assert(f);
 
-    p           = malloc(sizeof(*p)); /* use mem */
-    assert(p);
+    if(!tests) tests = Ring_new();
+
+    NEW(p);
 
     p->func     = f;
     p->library  = test_strdup(library);
     p->feature  = test_strdup(feature);
-    p->next     = NULL;
+    tests = Ring_push_front(tests, p);
+}
 
-    if(!head) {
-        head        = tail = p;
-    } else {
-        tail->next = p;
-        tail        = p;
-    }
+void apply(void **x, void *cl) {
+    struct test_data* p = (struct test_data*)*x;
+    unsigned* code = (unsigned*) cl;
+    unsigned status;
+
+    status = p->func();
+    printf("/%s/%s/ %s\n", p->library, p->feature, status == TEST_SUCCESS ? "Ok" : "Failed!!!");
+    if(status == TEST_FAILURE) *code = 3;
+}
+
+void freetest(void **x, void *cl) {
+    (void)cl;
+    FREE(*x);
 }
 
 unsigned test_run_all() {
-    struct test_node* p;
     unsigned code = 0;
 
     /* Execute tests*/
-    for(p = head; p; p = p->next) {
-        unsigned status = 0;
-        
-        status = p->func();
-        printf("/%s/%s/ %s\n", p->library, p->feature, status == TEST_SUCCESS ? "Ok" : "Failed!!!");
-        /* A positive value is failure code supposed to be returned from main */
-        if(status == TEST_FAILURE) code = 3; 
-    }
+    Ring_map(tests, apply, &code);
     printf("\n");
 
     /* Free tests */
-    while (head) {
-        struct test_node* q = head->next;
-
-        free(head->library);
-        free(head->feature);
-        free(head);
-
-        head = q;
-    }
-
+    Ring_map(tests, freetest, NULL);
+    Ring_free(&tests);
     return code;
 }
 

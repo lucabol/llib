@@ -18,7 +18,7 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 
     /* initialise dir */
     dir->_files = NULL;
-#ifdef _MSC_VER
+#ifdef _WIN32
     dir->_h = INVALID_HANDLE_VALUE;
 #else
     dir->_d = NULL;
@@ -26,14 +26,12 @@ int tinydir_open(tinydir_dir *dir, const char *path)
     tinydir_close(dir);
 
     strcpy(dir->path, path);
-#ifdef _MSC_VER
+#ifdef _WIN32
     strcat(dir->path, "\\*");
     {
-        uint16_t* path = u8_to_u16(dir->path);
-        dir->_h = FindFirstFile((LPCWSTR)path, &dir->_f);
+        uint16_t* path = u8_to_u16((const uint8_t*)dir->path);
+        dir->_h = FindFirstFileW((LPCWSTR)path, &dir->_f);
         FREE(path);
-        //dir->_h = FindFirstFile(dir->path, &dir->_f);
-
     }
     dir->path[strlen(dir->path) - 2] = '\0';
     if (dir->_h == INVALID_HANDLE_VALUE)
@@ -48,7 +46,7 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 
     /* read first file */
     dir->has_next = 1;
-#ifndef _MSC_VER
+#ifndef _WIN32
     dir->_e = readdir(dir->_d);
     if (dir->_e == NULL)
     {
@@ -115,7 +113,7 @@ void tinydir_close(tinydir_dir *dir)
         free(dir->_files);
     }
     dir->_files = NULL;
-#ifdef _MSC_VER
+#ifdef _WIN32
     if (dir->_h != INVALID_HANDLE_VALUE)
     {
         FindClose(dir->_h);
@@ -144,7 +142,7 @@ int tinydir_next(tinydir_dir *dir)
         return -1;
     }
 
-#ifdef _MSC_VER
+#ifdef _WIN32
     if (FindNextFile(dir->_h, &dir->_f) == 0)
 #else
     dir->_e = readdir(dir->_d);
@@ -154,7 +152,7 @@ int tinydir_next(tinydir_dir *dir)
         dir->has_next = 0;
     }
 
-#ifdef _MSC_VER
+#ifdef _WIN32
     if (GetLastError() != ERROR_SUCCESS &&
         GetLastError() != ERROR_NO_MORE_FILES)
     {
@@ -169,7 +167,7 @@ int tinydir_next(tinydir_dir *dir)
 
 int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 {
-#ifdef _MSC_VER
+#ifdef _WIN32
     char* filename;
 #endif
 
@@ -178,7 +176,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
         errno = EINVAL;
         return -1;
     }
-#ifdef _MSC_VER
+#ifdef _WIN32
     if (dir->_h == INVALID_HANDLE_VALUE)
 #else
     if (dir->_e == NULL)
@@ -187,12 +185,12 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
         errno = ENOENT;
         return -1;
     }
-#ifdef _MSC_VER
-    filename = Str_atoutf8((const uint32_t*) dir->_f.cFileName);
+#ifdef _WIN32
+    filename = (char*)u16_to_u8((const uint16_t*) dir->_f.cFileName);
 #endif
     if (strlen(dir->path) +
         strlen(
-#ifdef _MSC_VER
+#ifdef _WIN32
             filename
 #else
             dir->_e->d_name
@@ -205,7 +203,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
         return -1;
     }
     if (strlen(
-#ifdef _MSC_VER
+#ifdef _WIN32
             filename
 #else
             dir->_e->d_name
@@ -219,32 +217,32 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
     strcpy(file->path, dir->path);
     strcat(file->path, "/");
     strcpy(file->name,
-#ifdef _MSC_VER
+#ifdef _WIN32
         filename
 #else
         dir->_e->d_name
 #endif
     );
     strcat(file->path, file->name);
-#ifndef _MSC_VER
+#ifndef _WIN32
     if (stat(file->path, &file->_s) == -1)
     {
         return -1;
     }
 #endif
     file->is_dir =
-#ifdef _MSC_VER
+#ifdef _WIN32
         !!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
 #else
         S_ISDIR(file->_s.st_mode);
 #endif
     file->is_reg =
-#ifdef _MSC_VER
+#ifdef _WIN32
         !!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_NORMAL);
 #else
         S_ISREG(file->_s.st_mode);
 #endif
-#ifdef _MSC_VER
+#ifdef _WIN32
     FREE(filename);
 #endif
     return 0;

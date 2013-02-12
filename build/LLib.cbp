@@ -33,6 +33,8 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-DUNICODE" />
+			<Add option="-D_UNICODE" />
 			<Add directory="../include" />
 		</Compiler>
 		<Linker>
@@ -44,6 +46,7 @@
 		<Unit filename="../include/assert.h" />
 		<Unit filename="../include/config.h" />
 		<Unit filename="../include/except.h" />
+		<Unit filename="../include/file.h" />
 		<Unit filename="../include/getopt.h" />
 		<Unit filename="../include/log.h" />
 		<Unit filename="../include/mem.h" />
@@ -54,6 +57,8 @@
 		<Unit filename="../include/test.h" />
 		<Unit filename="../include/thread.h" />
 		<Unit filename="../include/timer.h" />
+		<Unit filename="../include/token.h" />
+		<Unit filename="../include/uniconv.h" />
 		<Unit filename="../include/utf8.h" />
 		<Unit filename="../include/utils.h" />
 		<Unit filename="../src/_align.c">
@@ -72,6 +77,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/except.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/file.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/getopt.c">
@@ -99,6 +107,12 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/token.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/uniconv.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/utf8.c">

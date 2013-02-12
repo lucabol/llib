@@ -51,12 +51,12 @@ void free_person_wrap(void** p, void* cl) {
     free_person((Person*)*p);
 }
 
-int test_list() {
+unsigned test_list() {
 #define loop 100
     int i, base;
 
     for(base = 0; base < loop; base++) {
-        
+
         SList_T l = NULL;
         for(i = 0; i < loop; i++) {
             l = SList_push_front(l, new_person(base, i+1, (i+1) * 2));
@@ -68,7 +68,7 @@ int test_list() {
     return TEST_SUCCESS;
 }
 
-int test_list_perf() {
+unsigned test_list_perf() {
     double res = test_perf(test_list);
     Arena_T arena;
 
@@ -87,7 +87,7 @@ int test_list_perf() {
     return TEST_SUCCESS;
 }
 
-int test_mem_perf() {
+unsigned test_mem_perf() {
     Timer_T t;
     double memTime, arenaTime, alignTime;
     Arena_T arena;
@@ -121,12 +121,12 @@ int test_mem_perf() {
 
     Mem_set_default();
     alignTime = Timer_elapsed_micro_dispose(t);
-    
+
     log("Mem  : %10.0f", memTime);
     log("Arena: %10.0f", arenaTime);
     log("Align: %10.0f", alignTime);
     log("Ratio: %10.0f", memTime / arenaTime);
     log("Ratio: %10.0f", alignTime / arenaTime);
-   
+
     return TEST_SUCCESS;
 }

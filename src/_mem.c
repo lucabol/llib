@@ -25,7 +25,7 @@ void *_Mem_alloc(size_t nbytes, const char *file, int line){
     return ptr;
 }
 
-void *_Mem_calloc(size_t count, long size_t, const char *file, int line) {
+void *_Mem_calloc(size_t count, size_t nbytes, const char *file, int line) {
     void *ptr;
 
     ptr = calloc(count, nbytes);
@@ -37,7 +37,7 @@ void *_Mem_calloc(size_t count, long size_t, const char *file, int line) {
                 Except_raise(&Mem_Failed, file, line);
         }
 
-    log_dbg("%p calloc %li bytes", ptr, nbytes);
+    log_dbg("%p calloc %lu bytes", ptr, (unsigned long) nbytes);
     return ptr;
 }
 
@@ -63,7 +63,7 @@ void *_Mem_realloc(void *ptr, size_t nbytes, const char *file, int line) {
                 Except_raise(&Mem_Failed, file, line);
         }
 
-    log_dbg("%p realloc %li bytes", ptr, nbytes);
+    log_dbg("%p realloc %lu bytes", ptr, (unsigned long) nbytes);
     return ptr;
 }
 

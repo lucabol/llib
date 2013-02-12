@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1360355526 source:c:\src\llib\tests\main.c
+1360703066 source:c:\src\llib\tests\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -19,7 +19,7 @@
 	<setjmp.h>
 	<windows.h>
 
-1360356039 c:\src\llib\include\test.h
+1360697954 c:\src\llib\include\test.h
 	<stdio.h>
 	<string.h>
 	"utils.h"
@@ -31,7 +31,7 @@
 	"utils.h"
 	"portable.h"
 
-1358540578 c:\src\llib\include\portable.h
+1360698465 c:\src\llib\include\portable.h
 	<signal.h>
 	<malloc.h>
 	<stdlib.h>
@@ -45,20 +45,20 @@
 
 1358279362 c:\src\llib\include\config.h
 
-1358279412 c:\src\llib\include\assert.h
+1360697954 c:\src\llib\include\assert.h
 	"utils.h"
 	"portable.h"
 	"except.h"
 
-1358538743 c:\src\llib\include\mem.h
+1360697954 c:\src\llib\include\mem.h
 	"except.h"
 
-1360352935 c:\src\llib\include\log.h
+1360697954 c:\src\llib\include\log.h
 	<stdio.h>
 	"portable.h"
 	"utils.h"
 
-1360352935 source:c:\src\llib\tests\perf.c
+1360701736 source:c:\src\llib\tests\perf.c
 	<string.h>
 	<test.h>
 	<mem.h>
@@ -69,11 +69,11 @@
 1358538743 c:\src\llib\include\timer.h
 	"utils.h"
 
-1359202426 c:\src\llib\include\slist.h
+1360697954 c:\src\llib\include\slist.h
 
-1359203905 c:\src\llib\include\ring.h
+1360697954 c:\src\llib\include\ring.h
 
-1360353553 source:c:\src\llib\tests\getopttest.c
+1360701736 source:c:\src\llib\tests\getopttest.c
 	<stddef.h>
 	<string.h>
 	"getopt.h"
@@ -82,7 +82,7 @@
 1360352935 c:\src\llib\include\getopt.h
 	"utils.h"
 
-1360356208 source:c:\src\llib\tests\utf8test.c
+1360701736 source:c:\src\llib\tests\utf8test.c
 	<stdint.h>
 	<string.h>
 	"utf8.h"
@@ -92,15 +92,40 @@
 	"str.h"
 	"mem.h"
 
-1360352935 c:\src\llib\include\utf8.h
+1360360454 c:\src\llib\include\utf8.h
 	<stdarg.h>
 	<stdint.h>
 
-1360355562 c:\src\llib\include\str.h
+1360701736 c:\src\llib\include\str.h
 	<stdarg.h>
+	<stdint.h>
+	"token.h"
 
-1360357883 source:c:\src\llib\tests\strtest.c
+1360701736 source:c:\src\llib\tests\strtest.c
+	<stddef.h>
 	"str.h"
 	"test.h"
 	"mem.h"
+
+1360701736 source:c:\src\llib\tests\filetest.c
+	"file.h"
+	"test.h"
+	"mem.h"
+
+1360697954 c:\src\llib\include\file.h
+	<errno.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+	<dirent.h>
+	<sys/stat.h>
+
+1360697954 c:\src\llib\include\token.h
+
+1360702592 source:c:\src\llib\tests\tokentest.c
+	<string.h>
+	"token.h"
+	"test.h"
+	"mem.h"
+	"str.h"
 
