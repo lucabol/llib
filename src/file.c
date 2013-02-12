@@ -1,6 +1,7 @@
 #include "file.h"
 #include "str.h"
 #include "mem.h"
+#include "uniconv.h"
 
 int tinydir_open(tinydir_dir *dir, const char *path)
 {
@@ -28,8 +29,8 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 #ifdef _MSC_VER
     strcat(dir->path, "\\*");
     {
-        uint32_t* path = Str_atoucs(dir->path);
-        dir->_h = FindFirstFile((LPCWSTR) path, &dir->_f);
+        uint16_t* path = u8_to_u16(dir->path);
+        dir->_h = FindFirstFile((LPCWSTR)path, &dir->_f);
         FREE(path);
         //dir->_h = FindFirstFile(dir->path, &dir->_f);
 

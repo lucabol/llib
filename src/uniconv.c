@@ -39,15 +39,13 @@ See the header file "ConvertUTF.h" for complete documentation.
 
 ------------------------------------------------------------------------ */
 
-
-#include "uniconv.h"
 #ifdef CVTUTF_DEBUG
 #include <stdio.h>
 #endif
 
 #include "mem.h"
 #include "string.h"
-#include "stdint.h"
+#include "uniconv.h"
 
 static const int halfShift  = 10; /* used for shifting by 10 bits */
 
@@ -532,11 +530,17 @@ ConversionResult ConvertUTF8toUTF32 (
 UTF16* u8_to_u16(UTF8* src) {
     size_t len = strlen((uint8_t*)src);
     size_t wlen = (len + 1) * sizeof(uint32_t);
-    uint32_t* buf = ALLOC(wlen);
-    int bytes = ConvertUTF8toUTF16(&src, src + len, &buf, buf + wlen, lenientConversion);
-    
-    REALLOC(buf, bytes + 1);
-    return buf;    
+    uint16_t* buf = ALLOC(wlen);
+    uint16_t* start = buf;
+
+    ConversionResult result = ConvertUTF8toUTF16(&src, src + len, &buf, buf + wlen, lenientConversion);
+    *buf = '\0';
+    if(result == conversionOK) {
+        REALLOC(start, (char*)buf - (char*)start + 2);
+        return start;
+    } else {
+        return NULL; /* throw exception*/
+    }
 }
 
 /* ---------------------------------------------------------------------
