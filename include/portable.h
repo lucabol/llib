@@ -8,7 +8,7 @@
 #ifdef __GNUC__
 #define inline inline
 #else
-#define inline
+#define inline _inline
 #endif
 
 /* Define thread_local for different gcc and msvc */
@@ -32,8 +32,10 @@
 # define BREAKPOINT        (raise (SIGTRAP))
 #endif
 
+#ifdef _WIN32
 #ifdef NATIVE_EXCEPTIONS
 extern void Except_hook_signal();
+#endif
 #endif
 
 #ifdef _MSC_VER
@@ -42,6 +44,7 @@ extern void Except_hook_signal();
 #define Aligned_malloc  _aligned_malloc
 #define Aligned_realloc _aligned_realloc
 #define Aligned_free    _aligned_free
+
 #elif __GNUC__
 #include <stdlib.h>
 #include <malloc.h>
@@ -53,11 +56,6 @@ extern void Except_hook_signal();
 #else
 #define Aligned_free    free
 #endif
-
-# ifdef _MSC_VER
-#   define inline
-# else
-# endif
 
 #if defined(_MSC_VER)
   #define P_SIZE_T    "%Iu"
@@ -72,5 +70,39 @@ extern void Except_hook_signal();
   #define PR_SSIZE_T   "%zd"
   #define PR_PTRDIFF_T "%zd"
 #endif
+
+#ifdef _MSC_VER /* C99 compatible snprintf */
+
+#include <stdio.h>
+#include <stdarg.h>
+
+#define snprintf c99_snprintf
+#define vsnprintf c99_vsnprintf
+
+inline int c99_vsnprintf(char* str, size_t size, const char* format, va_list ap)
+{
+    int count = -1;
+
+    if (size != 0)
+        count = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
+    if (count == -1)
+        count = _vscprintf(format, ap);
+
+    return count;
+}
+
+inline int c99_snprintf(char* str, size_t size, const char* format, ...)
+{
+    int count;
+    va_list ap;
+
+    va_start(ap, format);
+    count = c99_vsnprintf(str, size, format, ap);
+    va_end(ap);
+
+    return count;
+}
+
+#endif // _MSC_VER
 
 #endif /* PORTABLE_INCLUDED */

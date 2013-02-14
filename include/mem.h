@@ -38,9 +38,7 @@ extern void     Arena_dispose   (Arena_T ap);
 extern void     Arena_free     (Arena_T arena);
 extern void     Arena_remove_free_blocks();
 
-#ifdef _WIN32 /* Empirical testing in perf.c suggests that naively using _aligned_malloc is slower*/
 extern MemFuncs Mem_set_align();
-#endif
 
 END_DECLS
 

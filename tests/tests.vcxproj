@@ -85,6 +85,7 @@
   <ItemGroup>
     <ClCompile Include="filetest.c" />
     <ClCompile Include="getopttest.c" />
+    <ClCompile Include="int_signed_unsigned.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="perf.c" />
     <ClCompile Include="strtest.c" />

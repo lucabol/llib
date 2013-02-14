@@ -52,8 +52,12 @@ void apply(void **x, void *cl) {
 }
 
 void freetest(void **x, void *cl) {
+    struct test_data* p = (struct test_data*)*x;
     (void)cl;
-    FREE(*x);
+
+    FREE(p->library);
+    FREE(p->feature);
+    FREE(p);
 }
 
 unsigned test_run_all() {

@@ -18,9 +18,10 @@ void* Aligned_realloc(void* ptr, long nbytes, long alignment) {
 #endif
 
 
+#ifdef _WIN32
+
 #ifdef NATIVE_EXCEPTIONS
 
-#ifdef _WIN32
 /* from here: http://stackoverflow.com/questions/3523716/is-there-a-function-to-convert-exception-pointers-struct-to-a-string */
 /* If we didn't care about being gcc specific, we could use the more elegant https://gist.github.com/raw/4441299/a15d0d5a6c716f4f375ed5ea492b45350eaa6288/stack_traces.c */
 
@@ -107,7 +108,6 @@ LONG(CALLBACK win_exception_handler)(LPEXCEPTION_POINTERS ep) {
     Except_raise(&Native_Exception, "", 0);
     return 0;
 }
-#endif /* _WIN32 */
 
 void Except_hook_signal() {
     #ifdef _WIN32
@@ -117,3 +117,5 @@ void Except_hook_signal() {
 }
 
 #endif /* NATIVE_EXCEPTIONS */
+
+#endif /* _WIN32 */

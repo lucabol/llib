@@ -1,4 +1,4 @@
-#include "file.h"
+#include "dir.h"
 #include "str.h"
 #include "mem.h"
 #include "uniconv.h"
@@ -16,7 +16,7 @@ int tinydir_open(tinydir_dir *dir, const char *path)
         return -1;
     }
 
-    /* initialise dir */
+    /* initialize dir */
     dir->_files = NULL;
 #ifdef _WIN32
     dir->_h = INVALID_HANDLE_VALUE;

@@ -1,10 +1,12 @@
+#ifndef UTF8_INCLUDED
+#define UTF8_INCLUDED
+
 #include <stdarg.h>
 #include <stdint.h>
 
-int u8_toucs    (uint32_t *dest, int sz, const char *src, int srcsz);
-int u8_toutf8   (char *dest, int sz, const uint32_t *src, int srcsz);
+#include "utils.h"
 
-int u8_wc_toutf8(char *dest, uint32_t ch); /* single character to UTF-8 */
+BEGIN_DECLS
 
 int u8_offset   (const char *str, int charnum);
 int u8_charnum  (const char *s, int offset);
@@ -25,3 +27,7 @@ char *u8_reverse(const char*s);
 
 int u8_vprintf(char *fmt, va_list ap); /* fmt can be utf as well*/
 int u8_printf(char *fmt, ...);
+
+END_DECLS
+
+#endif

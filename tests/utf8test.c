@@ -1,26 +1,28 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "utf8.h"
 #include "test.h"
 #include "log.h"
 #include "locale.h"
 #include "str.h"
 #include "mem.h"
+#include "uniconv.h"
 
-int test(char* str) {
-    uint32_t   ucsbuf[256];
-    char       u8buf[256];
-
-    u8_toucs(ucsbuf, 256, str, -1);
-    u8_toutf8(u8buf, 256, ucsbuf, -1);
+int test(char* str) {    
+    char* au8buf;
+    uint16_t* au16buf;
 
     /* even chcp 65001 (utf-8) and Lucide Console don't print arabic and chinese
        you need to redirect to a text file to see them.
     */
-    log("%s : redirect stderr to  a file to see utf-8 chars", u8buf);
+    au16buf = u8_to_u16(str);
+    au8buf  = u16_to_u8(au16buf);
 
-    test_assert_str(u8buf, str);
+    test_assert_str(au8buf, str);
+    log("%s : redirect stderr to  a file to see utf-8 chars", au8buf);
+
+    FREE(au16buf);
+    FREE(au8buf);
 
     return TEST_SUCCESS;
 }
@@ -54,9 +56,9 @@ unsigned test_utf8_roundtrip() {
 }
 
 unsigned test_utf8_len() {
-    test_assert(u8_strlen(kChineseSampleText) == 2);
-    test_assert(u8_strlen(kArabicSampleText) == 7);
-    test_assert(u8_strlen(kSpanishSampleText) == 5);
+    test_assert_in_chars(u8_strlen(kChineseSampleText) == 2);
+    test_assert_in_chars(u8_strlen(kArabicSampleText) == 7);
+    test_assert_in_chars(u8_strlen(kSpanishSampleText) == 5);
     return TEST_SUCCESS;
 }
 

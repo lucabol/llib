@@ -24,9 +24,6 @@
     <ClCompile Include="..\src\test.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\portable.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\log.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,9 +42,6 @@
     <ClCompile Include="..\src\_align.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\portable_timer.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\slist.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,19 +51,22 @@
     <ClCompile Include="..\src\getopt.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\utf8.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\str.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\token.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\file.c">
+    <ClCompile Include="..\src\uniconv.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\uniconv.c">
+    <ClCompile Include="..\src\_portable_mem_excpt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\_portable_timer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\_portable_dir.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,19 +116,16 @@
     <ClInclude Include="..\include\getopt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\utf8.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\str.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\token.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\file.h">
+    <ClInclude Include="..\include\uniconv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uniconv.h">
+    <ClInclude Include="..\include\dir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -187,6 +187,7 @@ unsigned test_str();
 unsigned test_utf8_rev();
 unsigned test_token();
 unsigned test_file();
+unsigned test_int_sign();
 
 int main(int argc, char *argv[])
 {
@@ -213,7 +214,8 @@ int main(int argc, char *argv[])
     test_add("utf8", "rev",             test_utf8_rev);
     test_add("str", "all",              test_str);
     test_add("token", "all",            test_token);
-    test_add("file", "all",             test_file);
+    /*test_add("file", "all",             test_file); */
+    test_add("int", "signed",           test_int_sign);
     res = test_run_all();
 
     Mem_print_stats();

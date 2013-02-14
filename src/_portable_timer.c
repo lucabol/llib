@@ -26,12 +26,18 @@ struct T {
 
 T Timer_new_start() {
     T t;
-
+#ifdef _WIN32
+    BOOL result;
+#endif
     NEW(t);
 
 #ifdef _WIN32
-    if(!frequency.QuadPart) assert(QueryPerformanceFrequency(&frequency));
-    assert(QueryPerformanceCounter(&t->startCount));
+    if(!frequency.QuadPart) {
+        result = QueryPerformanceFrequency(&frequency);
+        assert(result);
+    }
+    result = QueryPerformanceCounter(&t->startCount);
+    assert(result);
 #else
     gettimeofday(&t->startCount, NULL);
 #endif
@@ -42,9 +48,11 @@ double Timer_elapsed_micro(T t) {
     double startTimeInMicroSec, endTimeInMicroSec;
 
 #ifdef _WIN32
+    BOOL result;
     LARGE_INTEGER endCount;
 
-    assert(QueryPerformanceCounter(&endCount));
+    result = QueryPerformanceCounter(&endCount);
+    assert(result);
 
     startTimeInMicroSec = t->startCount.QuadPart * (1000000.0 / frequency.QuadPart);
     endTimeInMicroSec = endCount.QuadPart * (1000000.0 / frequency.QuadPart);

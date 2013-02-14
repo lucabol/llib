@@ -1,4 +1,3 @@
-/* $Id: ring.h 6 2007-01-22 00:45:22Z drhanson $ */
 #ifndef RING_INCLUDED
 #define RING_INCLUDED
 
