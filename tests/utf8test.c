@@ -6,7 +6,7 @@
 #include "locale.h"
 #include "str.h"
 #include "mem.h"
-#include "uniconv.h"
+#include "utf8.h"
 
 int test(char* str) {    
     char* au8buf;
@@ -56,9 +56,9 @@ unsigned test_utf8_roundtrip() {
 }
 
 unsigned test_utf8_len() {
-    test_assert_in_chars(u8_strlen(kChineseSampleText) == 2);
-    test_assert_in_chars(u8_strlen(kArabicSampleText) == 7);
-    test_assert_in_chars(u8_strlen(kSpanishSampleText) == 5);
+    test_assert(u8_strlen_in_chars(kChineseSampleText) == 2);
+    test_assert(u8_strlen_in_chars(kArabicSampleText) == 7);
+    test_assert(u8_strlen_in_chars(kSpanishSampleText) == 5);
     return TEST_SUCCESS;
 }
 

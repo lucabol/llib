@@ -105,4 +105,13 @@ inline int c99_snprintf(char* str, size_t size, const char* format, ...)
 
 #endif // _MSC_VER
 
+#ifdef __GNUC__
+#define fast_c(x)      __builtin_expect(!!(x), 1)
+#define slow_c(x)    __builtin_expect(!!(x), 0)
+#else
+#define fast_c(x)      x
+#define slow_c(x)    x
+
+#endif
+
 #endif /* PORTABLE_INCLUDED */

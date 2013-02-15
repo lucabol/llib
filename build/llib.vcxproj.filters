@@ -57,9 +57,6 @@
     <ClCompile Include="..\src\token.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\uniconv.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\_portable_mem_excpt.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -67,6 +64,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\_portable_dir.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utf8.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\safeint.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -122,10 +125,13 @@
     <ClInclude Include="..\include\token.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\uniconv.h">
+    <ClInclude Include="..\include\dir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\dir.h">
+    <ClInclude Include="..\include\utf8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\safeint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

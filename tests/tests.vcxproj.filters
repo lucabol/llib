@@ -39,5 +39,23 @@
     <ClCompile Include="int_signed_unsigned.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="safe_int.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="arena.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ring.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="except.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="log.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

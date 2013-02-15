@@ -9,6 +9,7 @@
 #include "assert.h"
 #include "except.h"
 #include "log.h"
+#include "safeint.h"
 
 #include "_mem.h"
 
@@ -62,7 +63,7 @@ static struct descriptor *find(const void *ptr) {
    is assigned at runtime given that it is thread_loocal */
 inline static
 void init_freelist() {
-    if(freelist.size == 0) freelist.free = &freelist;
+    if(freelist.free == NULL) freelist.free = &freelist;
 }
 
 void _Mem_free(void *ptr, const char *file, int line) {
@@ -76,7 +77,7 @@ void _Mem_free(void *ptr, const char *file, int line) {
             . free on pointer not given out with malloc
             . free pointer twice
         */
-        unsigned int is_not_aligned = ((size_t)ptr) % (sizeof (union align)) != 0;
+        unsigned is_not_aligned = ((size_t)ptr) % (sizeof (union align)) != 0;
         bp = find(ptr);
         if ( is_not_aligned || bp == NULL || bp->free)
             Except_raise(&Assert_Failed, file, line);
@@ -92,7 +93,7 @@ void *_Mem_realloc(void *ptr, size_t nbytes, const char *file, int line) {
     struct descriptor *bp;
     void *newptr;
 
-    assert(ptr);
+    safe_size(nbytes);
 
     init_freelist();
 
@@ -120,6 +121,8 @@ void *_Mem_calloc(size_t count, size_t nbytes, const char *file, int line) {
     void *ptr;
 
     init_freelist();
+
+    safe_mul_sisi(count, nbytes);
 
     ptr = _Mem_alloc(count*nbytes, file, line);
     memset(ptr, '\0', count*nbytes);
@@ -149,12 +152,16 @@ static struct descriptor *dalloc(void *ptr, size_t size, const char *file, int l
     avail->free = avail->link = NULL;
     nleft--;
 
+    assert(nleft >= 0);
+
     return avail++;
 }
 
 void *_Mem_alloc(size_t nbytes, const char *file, int line){
     struct descriptor *bp;
     void *ptr;
+
+    safe_size(nbytes);
 
     init_freelist();
 

@@ -6,7 +6,6 @@
 #include "assert.h"
 #include "str.h"
 #include "mem.h"
-#include "utf8.h"
 #include "except.h"
 
 char *Str_asub(const char *s, size_t i, size_t j) {
@@ -225,25 +224,5 @@ char** Str_split(char* s, const char* delimiters, unsigned empties) {
     }
     buf[n] = NULL;
     return REALLOC(buf, (n+1) * allocs * sizeof(char*));
-}
-
-uint32_t* Str_atoucs   (const char *src) {
-    size_t len = strlen(src);
-    size_t wlen = (len + 1) * sizeof(uint32_t);
-
-    uint32_t* buf = ALLOC(wlen);
-    int bytes = u8_toucs(buf, len + 1, src, -1);
-
-    REALLOC(buf, bytes + 1);
-    return buf;
-}
-
-char* Str_atoutf8   (const uint32_t *src) {
-    size_t len = strlen((char*)src);
-
-    char* buf = ALLOC(len);
-    int chars = u8_toutf8(buf, len, src, -1);
-    REALLOC(buf, (chars + 1) * sizeof(uint32_t));
-    return buf;
 }
 

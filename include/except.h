@@ -35,6 +35,21 @@ void Except_raise(const T *e, const char *file,int line);
 
 #define RAISE(e) Except_raise(&(e), __FILE__, __LINE__)
 
+#define RAISE_RET(e) STMT_START { \
+    Except_raise(&(e), __FILE__, __LINE__); \
+    return; \
+    } STMT_END
+
+#define RAISE_VAL(e, val) STMT_START { \
+    Except_raise(&(e), __FILE__, __LINE__); \
+    return val; \
+    } STMT_END
+
+#define RAISE_INT(e) RAISE_VAL(e, 0)
+#define RAISE_DOUBLE(e) RAISE_VAL(e, 0.0)
+#define RAISE_STRING(e) RAISE_VAL(e, "")
+#define RAISE_PTR(e) RAISE_VAL(e, NULL)
+
 #define RERAISE Except_raise(Except_frame.exception, \
     Except_frame.file, Except_frame.line)
 

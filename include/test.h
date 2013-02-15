@@ -19,6 +19,13 @@ BEGIN_DECLS
     if(strcmp((s1), (s2)) != 0) { printf("%s:%i Test failed (got, expected): %s == %s \n", __FILE__, __LINE__, (s1), (s2));   \
         return TEST_FAILURE; } } STMT_END
 
+#define test_assert_ex(which, ...) \
+    TRY { \
+        __VA_ARGS__; \
+        test_assert((#__VA_ARGS__, 0)); \
+    } EXCEPT(which) { \
+    } END_TRY;
+
 typedef unsigned (*test_func) ();
 
 extern void test_add(char* kind, char* feature, test_func f);

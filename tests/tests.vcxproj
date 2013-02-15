@@ -83,8 +83,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="arena.c" />
+    <ClCompile Include="except.c" />
     <ClCompile Include="filetest.c" />
     <ClCompile Include="getopttest.c" />
+    <ClCompile Include="log.c" />
+    <ClCompile Include="mem.c" />
+    <ClCompile Include="ring.c" />
+    <ClCompile Include="safe_int.c" />
     <ClCompile Include="int_signed_unsigned.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="perf.c" />

@@ -19,7 +19,4 @@ extern char*    Str_asprintf(const char *fmt, ...);
 
 extern char**   Str_split(char* s, const char* delimiters, unsigned empties);
 
-extern uint32_t* Str_atoucs   (const char *src);
-extern char*     Str_atoutf8   (const uint32_t *src);
-
 #endif
