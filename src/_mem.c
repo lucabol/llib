@@ -5,6 +5,7 @@
 #include "assert.h"
 #include "except.h"
 #include "log.h"
+#include "safeint.h"
 
 #include "_mem.h"
 
@@ -12,6 +13,8 @@ const Except_T Mem_Failed = { "Allocation Failed" };
 
 void *_Mem_alloc(size_t nbytes, const char *file, int line){
     void *ptr;
+
+    safe_size(nbytes);
 
     ptr = malloc(nbytes);
     if (ptr == NULL)
@@ -28,6 +31,8 @@ void *_Mem_alloc(size_t nbytes, const char *file, int line){
 void *_Mem_calloc(size_t count, size_t nbytes, const char *file, int line) {
     void *ptr;
 
+    safe_mul_sisi(nbytes, count);
+
     ptr = calloc(count, nbytes);
     if (ptr == NULL)
         {
@@ -43,6 +48,7 @@ void *_Mem_calloc(size_t count, size_t nbytes, const char *file, int line) {
 
 void _Mem_free(void *ptr, const char *file, int line) {
     (void)file, (void)line;
+
     if (ptr) {
         free(ptr);
         ptr = NULL;
@@ -53,6 +59,8 @@ void _Mem_free(void *ptr, const char *file, int line) {
 
 void *_Mem_realloc(void *ptr, size_t nbytes, const char *file, int line) {
     assert(ptr);
+
+    safe_size(nbytes);
 
     ptr = realloc(ptr, nbytes);
     if (ptr == NULL)

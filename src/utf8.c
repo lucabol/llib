@@ -6,6 +6,7 @@
 #include "string.h"
 #include "utf8.h"
 #include "portable.h"
+#include "safeint.h"
 
 /* The table below explain most of the below functions
 00000000 -- 0000007F: 	0xxxxxxx
@@ -302,6 +303,9 @@ uint16_t* u8_to_u16(const char* src) {
     assert(src);
 
     len = strlen((const char*)src);
+
+    safe_sum_sisi(len, 1);
+    safe_mul_sisi(len + 1, sizeof(UTF16));
     wlen = (len + 1) * sizeof(UTF16);
     buf = ALLOC(wlen);
 
@@ -321,7 +325,10 @@ size_t u16_strlen(const UTF16* s) {
 
     assert(s);
 
-    while(*s++) n++;
+    while(*s++) {
+        safe_sum_sisi(n, 1);
+        n++;
+    }
     return n;
 }
 
@@ -338,7 +345,11 @@ char* u16_to_u8(const uint16_t* src) {
        . hence a buffer with N * 4 should be big enough (excluding the string terminator)
 
     */
-    wlen = u16_strlen(src) * 4;
+    wlen = u16_strlen(src);
+    safe_sum_sisi(wlen, 1);
+    safe_mul_sisi(wlen + 1, 4);
+
+    wlen = wlen * 4;
     buf = ALLOC((wlen + 1) * 4);
 
     start = buf;
@@ -396,13 +407,15 @@ size_t u8_charnum(const char *s, unsigned offset)
 /* number of characters */
 size_t u8_strlen_in_chars(const char *s)
 {
-    unsigned count = 0;
-    unsigned i = 0;
+    size_t count = 0;
+    size_t i = 0;
 
     assert(s);
 
-    while (u8_nextchar(s, &i) != 0)
+    while (u8_nextchar(s, &i) != 0) {
+        safe_sum_sisi(count, 1);
         count++;
+    }
 
     return count;
 }
@@ -514,6 +527,7 @@ char *u8_sub (const char *s, size_t i, size_t j) {
     char *str, *p;
 
     assert(s);
+    assert(i <= j);
 
     i = u8_offset(s, i);
     j = u8_offset(s, j);
@@ -553,7 +567,7 @@ char *u8_reverse(const char*s) {
 
 unsigned u8_vprintf(const char *fmt, va_list ap)
 {
-    int cnt, sz=0;
+    unsigned cnt, sz=0;
     char *buf;
     uint16_t *wcs;
 
@@ -561,13 +575,16 @@ unsigned u8_vprintf(const char *fmt, va_list ap)
 
     sz = 512;
     buf = ALLOC(sz);
- try_print:
     cnt = vsnprintf(buf, sz, fmt, ap);
+
+    safe_sum_sisi(cnt, 3);
     cnt += 2;
+
     if (cnt >= sz) {
+        size_t new_cnt;
         REALLOC(buf, cnt + 1);
-        sz = cnt + 1;
-        goto try_print;
+        new_cnt = vsnprintf(buf, cnt, fmt, ap);
+        assert(new_cnt <= cnt + 2);
     }
     wcs = u8_to_u16(buf);
     wprintf(L"%s", (wchar_t*)wcs);

@@ -3,8 +3,8 @@
 #include "mem.h"
 
 unsigned test_file() {
-    tinydir_dir dir;
-    if (tinydir_open(&dir, ".") == -1)
+    dir_dir dir;
+    if (dir_open(&dir, ".") == -1)
     {
         perror("Error opening file");
         goto bail;
@@ -12,8 +12,8 @@ unsigned test_file() {
 
     while (dir.has_next)
     {
-        tinydir_file file;
-        if (tinydir_readfile(&dir, &file) == -1)
+        dir_file file;
+        if (dir_readfile(&dir, &file) == -1)
         {
             perror("Error getting file");
             goto bail;
@@ -26,11 +26,11 @@ unsigned test_file() {
         }
         printf("\n");
 
-        tinydir_next(&dir);
+        dir_next(&dir);
     }
 
 bail:
-    tinydir_close(&dir);
+    dir_close(&dir);
 
     return TEST_SUCCESS;
 }

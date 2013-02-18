@@ -7,6 +7,8 @@
 
 #include "assert.h"
 #include "getopt.h"
+#include "str.h"
+#include "mem.h"
 
 /* types */
 typedef enum GETOPT_ORDERING_T
@@ -323,11 +325,10 @@ getopt_long_only (int argc, char **argv, const char *shortopts,
 static void
 print_option(const struct option* opt) {
     char* help	= opt->help ? opt->help : "";
-    char buf[40];
     char* par	= opt->param_name ? opt->param_name : "P";
-    strcpy(buf, opt->name);
-    strcat(buf, "=");
-    strcat(buf, par);
+    char* buf;
+
+    buf = Str_asprintf("%s=%s", opt->name,par);
 
     if(opt->has_arg == no_argument) {
         fprintf(stderr, "\t-%c, --%-25s %s\n", opt->val, opt->name, help);
@@ -336,6 +337,8 @@ print_option(const struct option* opt) {
     } else if(opt->has_arg == required_argument) {
         fprintf(stderr, "\t-%c, --%-25s %s\n", opt->val, buf, help);
     } else fprintf(stderr, "No info on this parameter");
+
+    FREE(buf);
 }
 
 int		opterrorcodes[256];
@@ -376,6 +379,11 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
     char* progname = argv[0] ? argv[0] : "Program";
 
     assert(longopts);
+
+    if(argc > 255) {
+        fprintf(stderr, "The program supports at most 255 options");
+        abort();
+    }
 
     *p = 'h';
     p++;

@@ -1,7 +1,6 @@
 #include <stdlib.h> /* for abort */
 #include <stdio.h>  /* for fprintf */
 
-#include "assert.h"
 #include "except.h"
 #include "log.h"
 
@@ -15,22 +14,16 @@ void Except_raise(const T *e, const char *file, int line) {
 
     Except_Frame *p = Except_stack;
 
-    assert(e);
-
     if (p == NULL) {
-        char message[50];
-        sprintf(message, "Uncaught exception");
-
+        fprintf(stderr, "Uncaught exception");
         if (e->reason)
-            sprintf(message, " %s", e->reason);
+            fprintf(stderr, " %s", e->reason);
         else
-            sprintf(message, " at 0x%p", e);
-
+            fprintf(stderr, " at 0x%p", e);
         if (file && line > 0)
-            sprintf(message, " raised at %s:%d\n", file, line);
-
-        sprintf(message, "aborting...\n");
-        log(message);
+            fprintf(stderr, " raised at %s:%d\n", file, line);
+        fprintf(stderr, "aborting...\n");
+        fflush(stderr);
         abort();
     }
 

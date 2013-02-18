@@ -39,6 +39,9 @@ static inline void safe_div_sisi(size_t u1, size_t u2);
 
 /************************************************************************/
 
+/*#define SAFE_NO_INT*/
+
+#ifndef SAFE_NO_INT
 C_ASSERT( -1 == (int)0xffffffff ); /* we are on complement 2 machine*/
 
 /* casts */
@@ -95,6 +98,27 @@ static inline void safe_div_sisi(size_t u1, size_t u2) {
     (void)u1;
     if(slow_c(u2 == 0)) RAISE_RET(divide_by_zero);
 }
+
+#else /*SAFE_NO_INT defined*/
+/* casts */
+static inline signed   safe_cast_us(unsigned u) { return (signed) u; }
+static inline unsigned safe_cast_su(signed s) { return (unsigned) s; }
+
+/* heuristics */
+static inline void     safe_size(size_t s) {}
+
+/* operations */
+static inline void safe_sum_uu(unsigned u1, unsigned u2) {}
+static inline void safe_sub_uu(unsigned u1, unsigned u2) {}
+static inline void safe_mul_uu(unsigned u1, unsigned u2) {}
+static inline void safe_div_uu(unsigned u1, unsigned u2) {}
+
+static inline void safe_sum_sisi(size_t u1, size_t u2) {}
+static inline void safe_sub_sisi(size_t u1, size_t u2) {}
+static inline void safe_mul_sisi(size_t u1, size_t u2) {}
+static inline void safe_div_sisi(size_t u1, size_t u2) {}
+
+#endif /*SAFE_NO_INT*/
 
 END_DECLS
 

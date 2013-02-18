@@ -9,10 +9,10 @@ TODO: decrease memory usage, look in existing chunks to find one that has enough
 #include "assert.h"
 #include "except.h"
 #include "log.h"
-
 #include "portable.h" /* for thread_local*/
 #include "_arena.h"
 #include "_mem.h"
+#include "safeint.h"
 
 #define T Arena_T
 
@@ -59,7 +59,7 @@ union header {
 static T freechunks;
 static unsigned int nfree;
 
-void Arena_config (unsigned int chunks, size_t size) {
+void Arena_config (unsigned chunks, size_t size) {
     Arena_chunk_n           = chunks;
     Arena_additional_size   = size;
 }
@@ -91,6 +91,8 @@ void *Arena_alloc(T arena, size_t nbytes, const char *file, int line) {
     assert(arena);
     assert(arena->limit >= arena->avail);
 
+    safe_size(nbytes);
+
     /* A space of nbytes + RESERVED_SIZE or more bytes that is a multiple of sizeof (union align) */
     nbytes = ((nbytes + RESERVED_SIZE + sizeof (union align) - 1)/ (sizeof (union align)))*(sizeof (union align));
 
@@ -100,6 +102,8 @@ void *Arena_alloc(T arena, size_t nbytes, const char *file, int line) {
 
         if ((ptr = freechunks) != NULL) {
             freechunks = freechunks->prev;
+
+            safe_sub_uu(nfree, 1);
             nfree--;
             limit = ptr->limit;
             log_dbg("%p arena reusing chunk, left %i chunks", freechunks, nfree);
@@ -137,7 +141,9 @@ void *Arena_alloc(T arena, size_t nbytes, const char *file, int line) {
 
 void *Arena_calloc(T arena, size_t count, size_t nbytes, const char *file, int line) {
     void *ptr;
-   assert(arena->limit >= arena->avail);
+    assert(arena->limit >= arena->avail);
+
+    safe_mul_sisi(count, nbytes);
 
     ptr = Arena_alloc(arena, count*nbytes, file, line);
     memset(ptr, '\0', count*nbytes);
@@ -151,6 +157,8 @@ void *Arena_realloc  (T arena, void *ptr, size_t nbytes, const char *file, int l
     void* p;
     assert(arena);
     assert(arena->limit >= arena->avail);
+
+    safe_size(nbytes);
 
     if(!nbytes) /* doesn't set ptr to NULL as it is not required */
         return NULL;

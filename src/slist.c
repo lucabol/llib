@@ -4,6 +4,8 @@
 #include "assert.h"
 #include "mem.h"
 #include "slist.h"
+#include "safeint.h"
+
 #define T SList_T
 
 /* Added to normalize the interface with other containers, so you can a typedef 'list' and redefine it later*/
@@ -93,8 +95,10 @@ T SList_reverse(T list) {
 unsigned SList_length(T list) {
 
     unsigned n;
-    for (n = 0; list; list = list->rest)
+    for (n = 0; list; list = list->rest) {
+        safe_sum_uu(n, 1);
         n++;
+    }
 
     return n;
 }
@@ -119,8 +123,11 @@ void SList_map(T list, void apply(void **x, void *cl), void *cl) {
 
 void **SList_toArray(T list, void *end) {
     unsigned i, n = SList_length(list);
+    void** array;
 
-    void **array = ALLOC((n + 1)*sizeof (*array));
+    safe_mul_uu(n + 1, sizeof(*array));
+
+    array = ALLOC((n + 1)*sizeof (*array));
     for (i = 0; i < n; i++) {
         array[i] = list->first;
         list = list->rest;

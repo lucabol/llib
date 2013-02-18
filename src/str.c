@@ -7,11 +7,14 @@
 #include "str.h"
 #include "mem.h"
 #include "except.h"
+#include "safeint.h"
+#include "portable.h"
 
 char *Str_asub(const char *s, size_t i, size_t j) {
     char *str, *p;
     assert(s);
-    assert(i <= j);
+    
+    safe_sub_sisi(j, i);
 
     if(*s == '\0') {
         p = ALLOC(1);
@@ -35,6 +38,7 @@ char *Str_adup(const char *s) {
     assert(s);
 
     len = strlen (s) + 1;
+
     s1 = ALLOC (len);
     return (char *) memcpy (s1, s, len);
 }
@@ -46,6 +50,7 @@ char *Str_areverse(const char *s) {
     assert(s);
 
     len = strlen(s);
+
     str = p = ALLOC(len + 1);
 
     *(str+len) = '\0';
@@ -65,7 +70,11 @@ char *Str_acat(const char *s1, const char *s2) {
     l1 = strlen(s1);
     l2 = strlen(s2);
 
+    safe_sum_sisi(l1, l2);
+    safe_sum_sisi(l1 + l2, 1);
+
     t = ALLOC(l1 + l2 + 1);
+
     memcpy(t, s1, l1);
     memcpy(t + l1, s2, l2);
     *(t + l1 + l2) = '\0';
@@ -82,11 +91,18 @@ char *Str_acatvx(const char *s, ...) {
 
     va_start(ap, s);
     while (s) {
+        size_t len1;
+
         assert(s);
-        len += strlen(s);
+        len1 = strlen(s);
+
+        safe_sum_sisi(len, len1);
+        len += len1;
         s = va_arg(ap, const char *);
     }
     va_end(ap);
+
+    safe_sum_sisi(len, 1);
 
     p = str = ALLOC(len + 1);
     s = save;
@@ -124,8 +140,9 @@ char *Str_amap(const char *s, const char *from, const char *to) {
 
     if (s) {
         char *str, *p;
+        size_t len = strlen(s) + 1;
 
-        p = str = ALLOC(strlen(s) + 1);
+        p = str = ALLOC(len);
 
         while (*s)
             *p++ = map[(unsigned char)*s++];
@@ -138,53 +155,22 @@ char *Str_amap(const char *s, const char *from, const char *to) {
 
 char* Str_avsprintf(const char *fmt, va_list ap)
 {
-    signed cnt = 0;
+    unsigned cnt = 0;
     size_t sz = 0;
     char *buf;
 
     sz = 512;
     buf = (char*)ALLOC(sz);
- try_print:
     cnt = vsnprintf(buf, sz, fmt, ap);
-    if (cnt == -1) {
-        /* Clear indication that output was truncated, but no
-            * clear indication of how big buffer needs to be, so
-            * simply double existing buffer size for next time.
-            */
-        cnt = sz * 2;
 
-    } else if (cnt == (signed) sz) {
-        /* Output was truncated (since at least the \0 could
-            * not fit), but no indication of how big the buffer
-            * needs to be, so just double existing buffer size
-            * for next time.
-            */
-        cnt = sz * 2;
+    safe_sum_sisi(cnt, 3);
+    cnt += 2;
 
-    } else if (cnt > (signed) sz) {
-        /* Output was truncated, but we were told exactly how
-            * big the buffer needs to be next time. Add two chars
-            * to the returned size. One for the \0, and one to
-            * prevent ambiguity in the next case below.
-            */
-        cnt = cnt + 2;
-
-    } else if (cnt == (signed)(sz - 1)) {
-        /* This is ambiguous. May mean that the output string
-            * exactly fits, but on some systems the output string
-            * may have been trucated. We can't tell.
-            * Just double the buffer size for next time.
-            */
-        cnt = sz * 2;
-
-    }
-    if( cnt < 0) /* capture the case where sz overflowed cnt*/
-        RAISE(Mem_Failed);
-
-    if (cnt >= (signed) sz) {
-        buf = (char*)ALLOC(cnt + 1);
-        sz = cnt + 1;
-        goto try_print;
+    if (cnt >= sz) {
+        size_t new_cnt;
+        REALLOC(buf, cnt + 1);
+        new_cnt = vsnprintf(buf, cnt, fmt, ap);
+        assert(new_cnt <= cnt + 3);
     }
 
     return buf;
@@ -206,9 +192,9 @@ char* Str_asprintf(const char *fmt, ...)
 char** Str_split(char* s, const char* delimiters, unsigned empties) {
     tokenizer_t tok = tokenizer( s, delimiters, empties );
     char** buf = ALLOC(512 * sizeof(char*));
-    unsigned n = 0;
+    size_t n = 0;
     char* token;
-    unsigned allocs = 1;
+    size_t allocs = 1;
 
     assert(s);
     assert(delimiters);
@@ -216,13 +202,30 @@ char** Str_split(char* s, const char* delimiters, unsigned empties) {
     assert(*delimiters != '\0');
 
     while ( (token = tokenize( &tok )) != NULL) {
+        size_t alloc_index;
+
+        safe_sum_sisi(n, 1);
         buf[n++] = token;
-        if(n >= 512 * allocs) {
-            REALLOC(buf, 512 * allocs * sizeof(char*));
+        
+        safe_mul_sisi(512, allocs);
+        alloc_index = 512 * allocs;
+
+        if(n >= alloc_index) {
+            safe_sum_sisi(allocs, 1);
             allocs++;
+
+            safe_mul_sisi(alloc_index, sizeof(char*));
+            REALLOC(buf, alloc_index * sizeof(char*));
         }
     }
     buf[n] = NULL;
+    {
+        size_t tmp;
+        safe_sum_sisi(n, 1);
+        safe_mul_sisi(n+1, allocs);
+        tmp = (n + 1) * allocs;
+        safe_mul_sisi(tmp, sizeof(char*));
+    }
     return REALLOC(buf, (n+1) * allocs * sizeof(char*));
 }
 

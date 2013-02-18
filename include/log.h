@@ -14,6 +14,7 @@ BEGIN_DECLS
 #define LOG_WARN     (3)
 #define LOG_INFO     (4)
 #define LOG_DBG      (5)
+#define LOG_END      (6)
 
 extern void get_time(char*);
 

@@ -36,12 +36,12 @@ void Except_raise(const T *e, const char *file,int line);
 #define RAISE(e) Except_raise(&(e), __FILE__, __LINE__)
 
 #define RAISE_RET(e) STMT_START { \
-    Except_raise(&(e), __FILE__, __LINE__); \
+    RAISE(e); \
     return; \
     } STMT_END
 
 #define RAISE_VAL(e, val) STMT_START { \
-    Except_raise(&(e), __FILE__, __LINE__); \
+    RAISE(e); \
     return val; \
     } STMT_END
 

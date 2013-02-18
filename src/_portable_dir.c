@@ -3,14 +3,14 @@
 #include "mem.h"
 #include "utf8.h"
 
-int tinydir_open(tinydir_dir *dir, const char *path)
+int dir_open(dir_dir *dir, const char *path)
 {
     if (dir == NULL || path == NULL || strlen(path) == 0)
     {
         errno = EINVAL;
         return -1;
     }
-    if (strlen(path) + _TINYDIR_PATH_EXTRA >= _TINYDIR_PATH_MAX)
+    if (strlen(path) + _DIR_PATH_EXTRA >= _DIR_PATH_MAX)
     {
         errno = ENAMETOOLONG;
         return -1;
@@ -23,7 +23,7 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 #else
     dir->_d = NULL;
 #endif
-    tinydir_close(dir);
+    dir_close(dir);
 
     strcpy(dir->path, path);
 #ifdef _WIN32
@@ -57,13 +57,24 @@ int tinydir_open(tinydir_dir *dir, const char *path)
     return 0;
 
 bail:
-    tinydir_close(dir);
+    dir_close(dir);
     return -1;
 }
 
-int tinydir_open_sorted(tinydir_dir *dir, const char *path)
+int _dir_file_cmp(const void *a, const void *b)
 {
-    if (tinydir_open(dir, path) == -1)
+    const dir_file *fa = (const dir_file *)a;
+    const dir_file *fb = (const dir_file *)b;
+    if (fa->is_dir != fb->is_dir)
+    {
+        return -(fa->is_dir - fb->is_dir);
+    }
+    return strncasecmp(fa->name, fb->name, _DIR_FILENAME_MAX);
+}
+
+int dir_open_sorted(dir_dir *dir, const char *path)
+{
+    if (dir_open(dir, path) == -1)
     {
         return -1;
     }
@@ -71,9 +82,9 @@ int tinydir_open_sorted(tinydir_dir *dir, const char *path)
     dir->n_files = 0;
     while (dir->has_next)
     {
-        tinydir_file *p_file;
+        dir_file *p_file;
         dir->n_files++;
-        dir->_files = (tinydir_file *)realloc(dir->_files, sizeof(tinydir_file)*dir->n_files);
+        dir->_files = (dir_file *)realloc(dir->_files, sizeof(dir_file)*dir->n_files);
         if (dir->_files == NULL)
         {
             errno = ENOMEM;
@@ -81,24 +92,24 @@ int tinydir_open_sorted(tinydir_dir *dir, const char *path)
         }
 
         p_file = &dir->_files[dir->n_files - 1];
-        if (tinydir_readfile(dir, p_file) == -1)
+        if (dir_readfile(dir, p_file) == -1)
         {
             goto bail;
         }
 
-        tinydir_next(dir);
+        dir_next(dir);
     }
 
-    qsort(dir->_files, dir->n_files, sizeof(tinydir_file), _tinydir_file_cmp);
+    qsort(dir->_files, dir->n_files, sizeof(dir_file), _dir_file_cmp);
 
     return 0;
 
 bail:
-    tinydir_close(dir);
+    dir_close(dir);
     return -1;
 }
 
-void tinydir_close(tinydir_dir *dir)
+void dir_close(dir_dir *dir)
 {
     if (dir == NULL)
     {
@@ -129,7 +140,7 @@ void tinydir_close(tinydir_dir *dir)
 #endif
 }
 
-int tinydir_next(tinydir_dir *dir)
+int dir_next(dir_dir *dir)
 {
     if (dir == NULL)
     {
@@ -156,7 +167,7 @@ int tinydir_next(tinydir_dir *dir)
     if (GetLastError() != ERROR_SUCCESS &&
         GetLastError() != ERROR_NO_MORE_FILES)
     {
-        tinydir_close(dir);
+        dir_close(dir);
         errno = EIO;
         return -1;
     }
@@ -165,7 +176,7 @@ int tinydir_next(tinydir_dir *dir)
     return 0;
 }
 
-int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
+int dir_readfile(const dir_dir *dir, dir_file *file)
 {
 #ifdef _WIN32
     char* filename;
@@ -195,8 +206,8 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 #else
             dir->_e->d_name
 #endif
-        ) + 1 + _TINYDIR_PATH_EXTRA >=
-        _TINYDIR_PATH_MAX)
+        ) + 1 + _DIR_PATH_EXTRA >=
+        _DIR_PATH_MAX)
     {
         /* the path for the file will be too long */
         errno = ENAMETOOLONG;
@@ -208,7 +219,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
 #else
             dir->_e->d_name
 #endif
-        ) >= _TINYDIR_FILENAME_MAX)
+        ) >= _DIR_FILENAME_MAX)
     {
         errno = ENAMETOOLONG;
         return -1;
@@ -248,7 +259,7 @@ int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file)
     return 0;
 }
 
-int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
+int dir_readfile_n(const dir_dir *dir, dir_file *file, int i)
 {
     if (dir == NULL || file == NULL || i < 0)
     {
@@ -261,14 +272,14 @@ int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i)
         return -1;
     }
 
-    memcpy(file, &dir->_files[i], sizeof(tinydir_file));
+    memcpy(file, &dir->_files[i], sizeof(dir_file));
 
     return 0;
 }
 
-int tinydir_open_subdir_n(tinydir_dir *dir, int i)
+int dir_open_subdir_n(dir_dir *dir, int i)
 {
-    char path[_TINYDIR_PATH_MAX];
+    char path[_DIR_PATH_MAX];
     if (dir == NULL || i < 0)
     {
         errno = EINVAL;
@@ -281,22 +292,11 @@ int tinydir_open_subdir_n(tinydir_dir *dir, int i)
     }
 
     strcpy(path, dir->_files[i].path);
-    tinydir_close(dir);
-    if (tinydir_open_sorted(dir, path) == -1)
+    dir_close(dir);
+    if (dir_open_sorted(dir, path) == -1)
     {
         return -1;
     }
 
     return 0;
-}
-
-int _tinydir_file_cmp(const void *a, const void *b)
-{
-    const tinydir_file *fa = (const tinydir_file *)a;
-    const tinydir_file *fb = (const tinydir_file *)b;
-    if (fa->is_dir != fb->is_dir)
-    {
-        return -(fa->is_dir - fb->is_dir);
-    }
-    return strncasecmp(fa->name, fb->name, _TINYDIR_FILENAME_MAX);
 }

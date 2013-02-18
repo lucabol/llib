@@ -1,74 +1,15 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#else
-#include <dirent.h>
-#include <sys/stat.h>
-#endif
+#include "_portable_dir.h"
 
+int dir_open(dir_dir *dir, const char *path);
+int dir_open_sorted(dir_dir *dir, const char *path);
+void dir_close(dir_dir *dir);
 
-/* types */
-
-#define _TINYDIR_PATH_MAX 4096
-#ifdef _WIN32
-/* extra chars for the "\\*" mask */
-#define _TINYDIR_PATH_EXTRA 2
-#else
-#define _TINYDIR_PATH_EXTRA 0
-#endif
-#define _TINYDIR_FILENAME_MAX 256
-
-#ifdef _WIN32
-#define strncasecmp _strnicmp
-#endif
-
-typedef struct
-{
-	char path[_TINYDIR_PATH_MAX];
-	char name[_TINYDIR_FILENAME_MAX];
-	int is_dir;
-	int is_reg;
-
-#ifdef _WIN32
-#else
-	struct stat _s;
-#endif
-} tinydir_file;
-
-typedef struct
-{
-	char path[_TINYDIR_PATH_MAX];
-	int has_next;
-	int n_files;
-
-	tinydir_file *_files;
-#ifdef _WIN32
-	HANDLE _h;
-	WIN32_FIND_DATA _f;
-#else
-	DIR *_d;
-	struct dirent *_e;
-#endif
-} tinydir_dir;
-
-
-/* declarations */
-
-int tinydir_open(tinydir_dir *dir, const char *path);
-int tinydir_open_sorted(tinydir_dir *dir, const char *path);
-void tinydir_close(tinydir_dir *dir);
-
-int tinydir_next(tinydir_dir *dir);
-int tinydir_readfile(const tinydir_dir *dir, tinydir_file *file);
-int tinydir_readfile_n(const tinydir_dir *dir, tinydir_file *file, int i);
-int tinydir_open_subdir_n(tinydir_dir *dir, int i);
-
-int _tinydir_file_cmp(const void *a, const void *b);
+int dir_next(dir_dir *dir);
+int dir_readfile(const dir_dir *dir, dir_file *file);
+int dir_readfile_n(const dir_dir *dir, dir_file *file, int i);
+int dir_open_subdir_n(dir_dir *dir, int i);
 
 #endif

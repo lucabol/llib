@@ -4,8 +4,10 @@
 #define T Ring_T
 typedef struct T *T;
 
+#define Ring_ring(...) Ring_ringx(__VA_ARGS__, NULL)
+
 extern T     Ring_new (void);
-extern T     Ring_ring(void *x, ...);
+extern T     Ring_ringx(void *x, ...);
 extern void  Ring_free  (T *ring);
 extern int   Ring_length(T  ring);
 extern void *Ring_get(T ring, unsigned i);

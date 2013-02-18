@@ -24,7 +24,7 @@
 
 /* Portable breakpoint expression (not statement) */
 #if defined (_MSC_VER)
-# define BREAKPOINT        __debugbreak()
+# define BREAKPOINT __debugbreak()
 #elif defined (__GNUC__)
 # define BREAKPOINT __builtin_trap()
 #else
@@ -119,5 +119,10 @@ inline int c99_snprintf(char* str, size_t size, const char* format, ...)
 #ifdef _MSC_VER
 #define C_ASSERT(e) typedef char __C_ASSERT__[(e)?1:-1]
 #endif
+
+#ifdef _WIN32
+#define strncasecmp _strnicmp
+#endif
+
 
 #endif /* PORTABLE_INCLUDED */
