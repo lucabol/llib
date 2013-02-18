@@ -41,16 +41,37 @@
 			<Add option="-Wall" />
 			<Add directory="../include" />
 		</Compiler>
+		<Unit filename="arena.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="except.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="filetest.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="getopttest.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="int_signed_unsigned.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="log.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="mem.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="perf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ring.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="safe_int.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="strtest.c">

@@ -5,8 +5,8 @@
 #include "log.h"
 
 unsigned test_int_sign() {
-    unsigned u1, u2;
-    signed s1;
+    unsigned u1, u2, u3;
+    signed s1, s2;
 
     /* problems from representing numbers as unsigned*/
 
@@ -19,7 +19,8 @@ unsigned test_int_sign() {
 
     /* with unsigned be careful with down counting loops */
     u2 = 0;
-    for(u1 = 10; u1 >= 0; u1 --) /* never return*/
+    u3 = 0;
+    for(u1 = 10; u1 >= u3; u1 --) /* never return*/
         if(u2++ > 20) {
             test_assert(1);
             break;
@@ -35,13 +36,14 @@ unsigned test_int_sign() {
 
     /* wrapping around of signed is undefined*/
     s1 = INT_MIN;
-    test_assert(! (s1 * 2 < 0) );
+    s2 = s1 -2;
+    test_assert(! (s2 < 0) );
 
     /* unsigned can wrap around if casted to negative ones */
     u1 = UINT_MAX;
     s1 = u1;
-    test_assert(s1 < 0); 
-    
+    test_assert(s1 < 0);
+
     /* another manifestation of rounding of signed */
     s1 = (int) sqrt((double)UINT_MAX);
     test_assert(s1 > 0);

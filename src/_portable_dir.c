@@ -29,7 +29,7 @@ int tinydir_open(tinydir_dir *dir, const char *path)
 #ifdef _WIN32
     strcat(dir->path, "\\*");
     {
-        uint16_t* path = u8_to_u16((const uint8_t*)dir->path);
+        uint16_t* path = u8_to_u16((const char*)dir->path);
         dir->_h = FindFirstFileW((LPCWSTR)path, &dir->_f);
         FREE(path);
     }

@@ -71,9 +71,12 @@ extern void Except_hook_signal();
   #define PR_PTRDIFF_T "%zd"
 #endif
 
+#include <stdio.h>
+#include <stddef.h>
+
 #ifdef _MSC_VER /* C99 compatible snprintf */
 
-#include <stdio.h>
+#define C_ASSERT(e) typedef char __C_ASSERT__[(e)?1:-1]
 #include <stdarg.h>
 
 #define snprintf c99_snprintf
@@ -111,7 +114,10 @@ inline int c99_snprintf(char* str, size_t size, const char* format, ...)
 #else
 #define fast_c(x)      x
 #define slow_c(x)    x
+#endif
 
+#ifdef _MSC_VER
+#define C_ASSERT(e) typedef char __C_ASSERT__[(e)?1:-1]
 #endif
 
 #endif /* PORTABLE_INCLUDED */

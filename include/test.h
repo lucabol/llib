@@ -22,7 +22,7 @@ BEGIN_DECLS
 #define test_assert_ex(which, ...) \
     TRY { \
         __VA_ARGS__; \
-        test_assert((#__VA_ARGS__, 0)); \
+        test_assert(((void)#__VA_ARGS__, 0)); \
     } EXCEPT(which) { \
     } END_TRY;
 

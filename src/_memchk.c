@@ -150,9 +150,8 @@ static struct descriptor *dalloc(void *ptr, size_t size, const char *file, int l
     avail->file = file;
     avail->line = line;
     avail->free = avail->link = NULL;
+    assert(nleft > 0);
     nleft--;
-
-    assert(nleft >= 0);
 
     return avail++;
 }

@@ -14,6 +14,4 @@
 #  define STMT_START  do
 #  define STMT_END    while (0)
 
-#define C_ASSERT(e) typedef char __C_ASSERT__[(e)?1:-1]
-
 #endif

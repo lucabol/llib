@@ -103,14 +103,14 @@ ConversionResult ConvertUTF16toUTF8 (
         UTF8* target = *targetStart;
 
         while ((sourceEnd != NULL && source < sourceEnd) || (sourceEnd == NULL && *source != 0x0000)) {
-            
+
             UTF32 ch;
             unsigned short bytesToWrite = 0;
             const UTF32 byteMask = 0xBF;
             const UTF32 byteMark = 0x80;
             const UTF16* oldSource = source; /* In case we have to back up because of target overflow. */
             ch = *source++;
-            
+
             /* If we have a surrogate pair, convert to UTF32 first. */
             if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_HIGH_END) {
                 /* If the 16 bits following the high surrogate are in the source buffer... */
@@ -306,7 +306,7 @@ uint16_t* u8_to_u16(const char* src) {
     buf = ALLOC(wlen);
 
     start = buf;
-    result = ConvertUTF8toUTF16(&src, NULL, &buf, buf + wlen, lenientConversion);
+    result = ConvertUTF8toUTF16((const UTF8**)(&src), NULL, &buf, buf + wlen, lenientConversion);
     if(result == conversionOK) {
         *buf = '\0';
         REALLOC(start, (char*)buf - (char*)start + 2);
@@ -336,9 +336,9 @@ char* u16_to_u8(const uint16_t* src) {
     /* . utf16 string has at most N chars (at most because of possible surrogate values
        . each char could be represented as 4 bytes in UTF8
        . hence a buffer with N * 4 should be big enough (excluding the string terminator)
-    
+
     */
-    wlen = u16_strlen(src) * 4; 
+    wlen = u16_strlen(src) * 4;
     buf = ALLOC((wlen + 1) * 4);
 
     start = buf;
@@ -347,7 +347,7 @@ char* u16_to_u8(const uint16_t* src) {
     if(result == conversionOK) {
         *buf = '\0';
         REALLOC(start, buf - start + 1);
-        return start;
+        return (char*)start;
     } else {
         RAISE_PTR(u8_conversion_failed);
     }
@@ -493,7 +493,7 @@ unsigned u8_is_locale_utf8(const char *locale)
 {
     /* this code based on libutf8 */
     const char* cp = locale;
-    
+
     assert(locale);
 
     for (; *cp != '\0' && *cp != '@' && *cp != '+' && *cp != ','; cp++) {
@@ -527,7 +527,7 @@ char *u8_sub (const char *s, size_t i, size_t j) {
 }
 
 char *u8_reverse(const char*s) {
-    int len;
+    size_t len;
     char* str, *p;
 
     assert(s);
@@ -538,7 +538,7 @@ char *u8_reverse(const char*s) {
 
     while(len) {
         const char* r;
-        int sl;
+        size_t sl;
 
         u8_dec(s, &len);
         r = s + len;
@@ -571,7 +571,7 @@ unsigned u8_vprintf(const char *fmt, va_list ap)
     }
     wcs = u8_to_u16(buf);
     wprintf(L"%s", (wchar_t*)wcs);
-    
+
     FREE(buf);
     FREE(wcs);
     return cnt;
@@ -991,7 +991,7 @@ ConversionResult ConvertUTF16toUTF32 (
 
 /* ---------------------------------------------------------------------
 
-    Conversions between UTF32, UTF-16, and UTF-8. 
+    Conversions between UTF32, UTF-16, and UTF-8.
 
     Several functions are included here, forming a complete set of
     conversions between the three formats.  UTF-7 is not included

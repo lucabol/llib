@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1360703066 source:c:\src\llib\tests\main.c
+1360954484 source:c:\src\llib\tests\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -19,24 +19,27 @@
 	<setjmp.h>
 	<windows.h>
 
-1360697954 c:\src\llib\include\test.h
+1360966818 c:\src\llib\include\test.h
 	<stdio.h>
 	<string.h>
 	"utils.h"
 
-1358279841 c:\src\llib\include\utils.h
+1360958441 c:\src\llib\include\utils.h
 
-1358279865 c:\src\llib\include\except.h
+1360954483 c:\src\llib\include\except.h
 	<setjmp.h>
 	"utils.h"
 	"portable.h"
 
-1360698465 c:\src\llib\include\portable.h
+1360966396 c:\src\llib\include\portable.h
 	<signal.h>
 	<malloc.h>
 	<stdlib.h>
 	<malloc.h>
 	<windows.h>
+	<stdio.h>
+	<stddef.h>
+	<stdarg.h>
 
 1357850818 c:\src\llib\include\arena.h
 	"utils.h"
@@ -50,7 +53,7 @@
 	"portable.h"
 	"except.h"
 
-1360697954 c:\src\llib\include\mem.h
+1360954483 c:\src\llib\include\mem.h
 	"except.h"
 
 1360697954 c:\src\llib\include\log.h
@@ -71,7 +74,7 @@
 
 1360697954 c:\src\llib\include\slist.h
 
-1360697954 c:\src\llib\include\ring.h
+1360954483 c:\src\llib\include\ring.h
 
 1360701736 source:c:\src\llib\tests\getopttest.c
 	<stddef.h>
@@ -82,21 +85,22 @@
 1360352935 c:\src\llib\include\getopt.h
 	"utils.h"
 
-1360701736 source:c:\src\llib\tests\utf8test.c
+1360954484 source:c:\src\llib\tests\utf8test.c
 	<stdint.h>
 	<string.h>
-	"utf8.h"
 	"test.h"
 	"log.h"
 	"locale.h"
 	"str.h"
 	"mem.h"
+	"utf8.h"
 
-1360360454 c:\src\llib\include\utf8.h
-	<stdarg.h>
+1360954483 c:\src\llib\include\utf8.h
 	<stdint.h>
+	"utils.h"
+	"except.h"
 
-1360701736 c:\src\llib\include\str.h
+1360954483 c:\src\llib\include\str.h
 	<stdarg.h>
 	<stdint.h>
 	"token.h"
@@ -107,8 +111,8 @@
 	"test.h"
 	"mem.h"
 
-1360701736 source:c:\src\llib\tests\filetest.c
-	"file.h"
+1360954484 source:c:\src\llib\tests\filetest.c
+	"dir.h"
 	"test.h"
 	"mem.h"
 
@@ -120,7 +124,8 @@
 	<dirent.h>
 	<sys/stat.h>
 
-1360697954 c:\src\llib\include\token.h
+1360954483 c:\src\llib\include\token.h
+	"utils.h"
 
 1360702592 source:c:\src\llib\tests\tokentest.c
 	<string.h>
@@ -128,4 +133,61 @@
 	"test.h"
 	"mem.h"
 	"str.h"
+
+1360954483 source:c:\src\llib\tests\arena.c
+	<test.h>
+	<except.h>
+	<log.h>
+	<_arena.h>
+	<mem.h>
+
+1360697954 c:\src\llib\include\_arena.h
+	"utils.h"
+	"config.h"
+	"except.h"
+
+1360954484 source:c:\src\llib\tests\except.c
+	<except.h>
+	<log.h>
+	<test.h>
+
+1360954483 c:\src\llib\include\dir.h
+	<errno.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+	<dirent.h>
+	<sys/stat.h>
+
+1360954484 source:c:\src\llib\tests\log.c
+	<log.h>
+	<test.h>
+
+1360954484 source:c:\src\llib\tests\mem.c
+	<test.h>
+	<mem.h>
+	<except.h>
+
+1360954484 source:c:\src\llib\tests\ring.c
+	<ring.h>
+	<mem.h>
+	<test.h>
+
+1360954484 source:c:\src\llib\tests\safe_int.c
+	"safeint.h"
+	"test.h"
+
+1360967031 c:\src\llib\include\safeint.h
+	<limits.h>
+	<stdint.h>
+	"utils.h"
+	"assert.h"
+	"except.h"
+	"portable.h"
+
+1360967284 source:c:\src\llib\tests\int_signed_unsigned.c
+	<limits.h>
+	<math.h>
+	"test.h"
+	"log.h"
 

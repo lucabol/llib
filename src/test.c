@@ -47,6 +47,7 @@ void apply(void **x, void *cl) {
     unsigned status;
 
     status = p->func();
+
     printf("/%s/%s/ %s\n", p->library, p->feature, status == TEST_SUCCESS ? "Ok" : "Failed!!!");
     if(status == TEST_FAILURE) *code = 3;
 }
@@ -64,8 +65,14 @@ unsigned test_run_all() {
     unsigned code = 0;
 
     /* Execute tests*/
+    Timer_T t;
+    double elapsed;
+
+    t = Timer_new_start();
     Ring_map(tests, apply, &code);
-    printf("\n");
+    elapsed = Timer_elapsed_micro_dispose(t);
+
+    printf("\nExecuted in %0.0f micro-sec\n", elapsed);
 
     /* Free tests */
     Ring_map(tests, freetest, NULL);
