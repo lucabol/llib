@@ -82,6 +82,9 @@ void Dir_close(T dir)
 
 #ifdef _WIN32
 
+    if(dir->first_name[0] == '\0')
+        FREE(dir->first_name);
+
     if (dir->_d != INVALID_HANDLE_VALUE)
         FindClose(dir->_d);
 #else
@@ -91,135 +94,36 @@ void Dir_close(T dir)
     FREE(dir);
 }
 
-char* Dir_readfile(T dir)
+char* Dir_next_entry(T dir)
 {
-    char* filename;
-
     assert(dir != NULL);
 
     if(dir->first_name[0] != '\0') {
-        char* tmp = dir->first_name;
+        char* tmp = Str_adup(dir->first_name);
+        REALLOC(dir->first_name, 1);
         dir->first_name[0] = '\0';
         return tmp;
     }
 
 #ifdef _WIN32
-    if (FindNextFile(dir->_d, &dir->_f) == 0)
-#else
-    dir->_e = readdir(dir->_d);
-    if (dir->_e == NULL)
-#endif
     {
-        dir->has_next = 0;
+        WIN32_FIND_DATA f;
+        int r = FindNextFile(dir->_d, &f);
+        if (r) {
+            return u16_to_u8((uint16_t*)f.cFileName);            
+        } else if(GetLastError() == ERROR_NO_MORE_FILES)
+            return NULL;
     }
-
-#ifdef _WIN32
-    if (GetLastError() != ERROR_SUCCESS &&
-        GetLastError() != ERROR_NO_MORE_FILES)
+#else
     {
+        errno = 0;
+        dir->_e = readdir(dir->_d);
+        if (dir->_e != NULL) {
+            return Str_adup(dir->e->d_name);
+        } else if(errno == 0)
+            return NULL;
+    }
+#endif
         Dir_close(dir);
-        RAISE_INT(Dir_file_error);
-    }
-#endif
-
-
-    if(!dir->has_next)
-        return NULL;
-
-#ifdef _WIN32
-    if (dir->_h == INVALID_HANDLE_VALUE)
-        return NULL;
-#else
-    if (dir->_e != NULL)
-        return NULL;
-#endif
-
-#ifdef _WIN32
-    filename = (char*)u16_to_u8((const uint16_t*) dir->_f.cFileName);
-#endif
-
-    if (strlen(dir->path) +
-        strlen(
-#ifdef _WIN32
-            filename
-#else
-            dir->_e->d_name
-#endif
-        ) + 1 + _DIR_PATH_EXTRA >=
-        _DIR_PATH_MAX)
-    {
-        RAISE_DATA_PTR(Dir_file_name_too_long, filename);
-    }
-    if (strlen(
-#ifdef _WIN32
-            filename
-#else
-            dir->_e->d_name
-#endif
-        ) >= _DIR_FILENAME_MAX)
-    {
-        RAISE_DATA_PTR(Dir_file_name_too_long, filename);
-    }
-
-    NEW(file);
-    strcpy(file->path, dir->path);
-    strcat(file->path, "/");
-    strcpy(file->name,
-#ifdef _WIN32
-        filename
-#else
-        dir->_e->d_name
-#endif
-    );
-
-    strcat(file->path, file->name);
-
-    if (stat64(file->path, &file->_s) == -1)
-        RAISE_PTR(Dir_file_error);
-
-    file->is_dir =
-#ifdef _WIN32
-        !!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
-#else
-        S_ISDIR(file->_s.st_mode);
-#endif
-    file->is_reg =
-#ifdef _WIN32
-        !!(dir->_f.dwFileAttributes & FILE_ATTRIBUTE_NORMAL);
-#else
-        S_ISREG(file->_s.st_mode);
-#endif
-
-#ifdef _WIN32
-    FREE(filename);
-#endif
-    return file;
+        RAISE_INT(Dir_entry_error);
 }
-
-/*
-int dir_readfile_n(const dir_entry *dir, dir_file *file, unsigned i)
-{
-    if (dir == NULL || file == NULL || i < 0)
-    {
-        errno = EINVAL;
-        return -1;
-    }
-    if (i >= dir->n_files)
-    {
-        errno = ENOENT;
-        return -1;
-    }
-
-    memcpy(file, &dir->_files[i], sizeof(dir_file));
-
-    return 0;
-}
-
-dir_entry* Dir_open_subdir_n(dir_entry *dir, unsigned i)
-{
-    assert(dir);
-    assert (i >= dir->n_files || !dir->_files[i].is_dir);
-
-    return Dir_open_sorted(dir->_files[i].path);
-}
-*/
