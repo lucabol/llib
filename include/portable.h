@@ -122,7 +122,7 @@ inline int c99_snprintf(char* str, size_t size, const char* format, ...)
 
 #ifdef _WIN32
 #define strncasecmp _strnicmp
+#define stat64 _stat64
 #endif
-
 
 #endif /* PORTABLE_INCLUDED */

@@ -22,6 +22,7 @@ struct Except_Frame {
     const char *file;
     int line;
     const T *exception;
+    const void* data;
 };
 
 enum { Except_entered=0, Except_raised, Except_handled,   Except_finalized };
@@ -32,9 +33,25 @@ extern const    Except_T Assert_Failed;
 extern thread_local Except_T Native_Exception;
 
 void Except_raise(const T *e, const char *file,int line);
+void Except_raise_data(const T *e, const void* d, const char *file,int line);
 
-#define RAISE(e) Except_raise(&(e), __FILE__, __LINE__)
+#define EX_DATA Except_frame.data
 
+#define RAISE_DATA(e, d) Except_raise_data(&(e), d, __FILE__, __LINE__)
+#define RAISE_DATA_RET(e, d) STMT_START { \
+    RAISE_DATA(e, d); \
+    return; \
+    } STMT_END
+#define RAISE_DATA_VAL(e, d, val) STMT_START { \
+    RAISE_DATA(e, d); \
+    return val; \
+    } STMT_END
+#define RAISE_DATA_INT(e, d) RAISE_DATA_VAL(e, d, 0)
+#define RAISE_DATA_DOUBLE(e, d) RAISE_DATA_VAL(e, d, 0.0)
+#define RAISE_DATA_STRING(e, d) RAISE_DATA_VAL(e, d, "")
+#define RAISE_DATA_PTR(e, d) RAISE_DATA_VAL(e, d, NULL)
+
+#define RAISE(e) RAISE_DATA(e, NULL)
 #define RAISE_RET(e) STMT_START { \
     RAISE(e); \
     return; \
@@ -44,13 +61,12 @@ void Except_raise(const T *e, const char *file,int line);
     RAISE(e); \
     return val; \
     } STMT_END
-
 #define RAISE_INT(e) RAISE_VAL(e, 0)
 #define RAISE_DOUBLE(e) RAISE_VAL(e, 0.0)
 #define RAISE_STRING(e) RAISE_VAL(e, "")
 #define RAISE_PTR(e) RAISE_VAL(e, NULL)
 
-#define RERAISE Except_raise(Except_frame.exception, \
+#define RERAISE Except_raise_data(Except_frame.exception, Except_frame.data, \
     Except_frame.file, Except_frame.line)
 
 /* In all my examples this is not needed ...*/

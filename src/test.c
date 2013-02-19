@@ -6,6 +6,7 @@
 #include "timer.h"
 #include "ring.h"
 #include "mem.h"
+#include "str.h"
 
 struct test_data {
     char* library;
@@ -45,10 +46,13 @@ void apply(void **x, void *cl) {
     struct test_data* p = (struct test_data*)*x;
     unsigned* code = (unsigned*) cl;
     unsigned status;
+    char* path;
 
     status = p->func();
 
-    printf("/%s/%s/ %s\n", p->library, p->feature, status == TEST_SUCCESS ? "Ok" : "Failed!!!");
+    path = Str_asprintf("/%s/%s/", p->library, p->feature);
+    printf("%-30s%s\n", path, status == TEST_SUCCESS ? "Ok" : "FAILED !!!");
+    FREE(path);
     if(status == TEST_FAILURE) *code = 3;
 }
 

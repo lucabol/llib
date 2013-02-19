@@ -1,15 +1,22 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include "_portable_dir.h"
+#include "except.h"
+#include "utils.h"
 
-int dir_open(dir_dir *dir, const char *path);
-int dir_open_sorted(dir_dir *dir, const char *path);
-void dir_close(dir_dir *dir);
+BEGIN_DECLS
 
-int dir_next(dir_dir *dir);
-int dir_readfile(const dir_dir *dir, dir_file *file);
-int dir_readfile_n(const dir_dir *dir, dir_file *file, int i);
-int dir_open_subdir_n(dir_dir *dir, int i);
+extern const Except_T Dir_entry_error;
+
+#define T dir_entry
+typedef struct T *T;
+
+T       Dir_open(const char *path);
+void    Dir_close(T dir);
+char*   Dir_next_entry(T dir);
+
+#undef T
+
+END_DECLS
 
 #endif

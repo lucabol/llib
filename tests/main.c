@@ -38,6 +38,7 @@ unsigned test_token();
 unsigned test_file();
 unsigned test_int_sign();
 unsigned test_safe_int();
+unsigned test_except_all();
 
 int main(int argc, char *argv[])
 {
@@ -52,6 +53,7 @@ int main(int argc, char *argv[])
     test_add("mem", "free",             test_mem_free);
     test_add("mem", "perf",             test_mem_perf);
     test_add("arena", "resize",         test_arena_resize);
+    test_add("exception", "all",        test_except_all);
     test_add("exception", "native",     test_native_exceptions);
     test_add("log", "printing",         test_log);
     test_add("list", "basic",           test_list);
@@ -64,7 +66,7 @@ int main(int argc, char *argv[])
     test_add("utf8", "rev",             test_utf8_rev);
     test_add("str", "all",              test_str);
     test_add("token", "all",            test_token);
-    /*test_add("file", "all",             test_file); */
+    test_add("file", "all",             test_file);
     test_add("int", "signed",           test_int_sign);
     test_add("safeint", "cast",         test_safe_int);
     res = test_run_all();

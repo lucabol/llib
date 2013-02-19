@@ -8,7 +8,6 @@
 BEGIN_DECLS
 
 #define T Arena_T
-
 typedef struct T *T;
 
 extern const Except_T Arena_NewFailed;

@@ -10,7 +10,7 @@ thread_local Except_T Native_Exception = { "A native exception has occurred" };
 
 thread_local Except_Frame *Except_stack = NULL;
 
-void Except_raise(const T *e, const char *file, int line) {
+void Except_raise_data(const T *e, const void* data, const char *file, int line) {
 
     Except_Frame *p = Except_stack;
 
@@ -30,8 +30,13 @@ void Except_raise(const T *e, const char *file, int line) {
     p->exception = e;
     p->file = file;
     p->line = line;
+    p->data = data;
 
     Except_stack = Except_stack->prev;
 
     longjmp(p->env, Except_raised);
+}
+
+void Except_raise(const T *e, const char *file, int line) {
+    Except_raise_data(e, NULL, file, line);
 }

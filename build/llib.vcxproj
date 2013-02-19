@@ -52,7 +52,6 @@
     <ClInclude Include="..\include\thread.h" />
     <ClInclude Include="..\include\portable.h" />
     <ClInclude Include="..\include\utils.h" />
-    <ClInclude Include="..\include\_portable_dir.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LICENSE" />
