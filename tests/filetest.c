@@ -1,16 +1,17 @@
 #include "dir.h"
 #include "test.h"
 #include "mem.h"
+#include "log.h"
 
 unsigned test_file() {
     dir_entry dir;
     char* file;
     unsigned n = 0;
-    dir = Dir_open( "..");
+    dir = Dir_open( ".");
 
     while (file = Dir_next_entry(dir))
     {
-        /*printf("%s\n", file);*/
+        log("%s", file);
         n++;
         FREE(file);
     }
