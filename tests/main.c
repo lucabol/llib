@@ -40,6 +40,7 @@ unsigned test_int_sign();
 unsigned test_safe_int();
 unsigned test_except_all();
 unsigned test_rand();
+unsigned test_gauss();
 
 int main(int argc, char *argv[])
 {
@@ -71,6 +72,7 @@ int main(int argc, char *argv[])
     test_add("int", "signed",           test_int_sign);
     test_add("safeint", "cast",         test_safe_int);
     test_add("rand", "avg&std",         test_rand);
+    test_add("rand", "gauss",           test_gauss);
     res = test_run_all();
 
     Mem_print_stats();
