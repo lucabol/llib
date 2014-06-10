@@ -68,6 +68,9 @@
 		<Unit filename="perf.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="rand.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="ring.c">
 			<Option compilerVar="CC" />
 		</Unit>

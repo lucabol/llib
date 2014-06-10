@@ -51,6 +51,7 @@
 		<Unit filename="../include/log.h" />
 		<Unit filename="../include/mem.h" />
 		<Unit filename="../include/portable.h" />
+		<Unit filename="../include/rand.h" />
 		<Unit filename="../include/ring.h" />
 		<Unit filename="../include/safeint.h" />
 		<Unit filename="../include/slist.h" />
@@ -95,6 +96,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/mem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/rand.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/ring.c">
