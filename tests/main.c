@@ -39,6 +39,7 @@ unsigned test_file();
 unsigned test_int_sign();
 unsigned test_safe_int();
 unsigned test_except_all();
+unsigned test_rand();
 
 int main(int argc, char *argv[])
 {
@@ -69,6 +70,7 @@ int main(int argc, char *argv[])
     test_add("file", "all",             test_file);
     test_add("int", "signed",           test_int_sign);
     test_add("safeint", "cast",         test_safe_int);
+    test_add("rand", "avg&std",         test_rand);
     res = test_run_all();
 
     Mem_print_stats();

@@ -19,7 +19,7 @@ BEGIN_DECLS
 extern void get_time(char*);
 
 #define LOG_LEVEL(level, ...)   STMT_START {\
-                                    if (level <= debug_level) { \
+                                    if (level <= debug_level && dbgstream) { \
                                         char buf[80]; get_time(buf); \
                                         fprintf(dbgstream, buf); \
                                         fprintf(dbgstream," %-10s:%-5.d    ", __FILE__, __LINE__); \

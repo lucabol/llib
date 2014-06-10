@@ -3,8 +3,8 @@
 #include "assert.h"
 #include "log.h"
 
-thread_local FILE *dbgstream     = NULL;
-thread_local unsigned  debug_level    = LOG_DISABLE;
+thread_local FILE *dbgstream         = NULL;
+thread_local unsigned  debug_level   = LOG_DISABLE;
 
 void log_set(FILE* where, unsigned level) {
     assert(level < LOG_END);

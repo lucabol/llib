@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\file.c" />
+    <ClCompile Include="..\src\rand.c" />
     <ClCompile Include="..\src\safeint.c" />
     <ClCompile Include="..\src\_portable_dir.c" />
     <ClCompile Include="..\src\getopt.c" />
@@ -37,6 +38,7 @@
     <ClInclude Include="..\include\file.h" />
     <ClInclude Include="..\include\getopt.h" />
     <ClInclude Include="..\include\mem.h" />
+    <ClInclude Include="..\include\rand.h" />
     <ClInclude Include="..\include\ring.h" />
     <ClInclude Include="..\include\safeint.h" />
     <ClInclude Include="..\include\slist.h" />
