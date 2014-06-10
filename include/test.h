@@ -15,6 +15,10 @@ BEGIN_DECLS
     if((e) == 0) { printf("%s:%i Test failed: " #e "\n", __FILE__, __LINE__);                                                     \
              return TEST_FAILURE; }} STMT_END
 
+#define test_assert_float(exp, prec, got) STMT_START {                                                                 \
+    if((got) < (exp) - (prec) || (got) > (exp) + (prec)) { printf("%s:%i Test failed(exp, prec, got): (%f, %f, %f)\n", __FILE__, __LINE__, (double)exp, (double)prec, (double)got);              \
+             return TEST_FAILURE; }} STMT_END
+
 #define test_assert_str(s1, s2) STMT_START {                                                        \
     if(strcmp((s1), (s2)) != 0) { printf("%s:%i Test failed (got, expected): %s == %s \n", __FILE__, __LINE__, (s1), (s2));   \
         return TEST_FAILURE; } } STMT_END

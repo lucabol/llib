@@ -31,8 +31,8 @@ unsigned test_rand() {
     stdev = sqrt((sumSqr - sum * average) / (iters - 1));
     contStd = 1 / sqrt(12.0);
 
-    test_assert(average > 0.49 && average < 0.51);
-    test_assert(stdev > contStd - 0.01 && stdev < contStd + 0.01);
+    test_assert_float(contStd, 0.01, stdev);
+    test_assert_float(0.5, 0.01, average);
 
     return TEST_SUCCESS;
 }
@@ -53,10 +53,10 @@ unsigned test_gauss() {
     }
 
     average = sum / iters;
-    stdev = sqrt((sumSqr - sum * average) / (iters - 1));
+    stdev = sqrt((sumSqr - sum * average) / (iters  - 1));
 
-    test_assert(average > -0.09 && average < 0.01);
-    test_assert(stdev > 1 - 0.01 && stdev < 1 + 0.01);
+    test_assert_float(1., 0.01, stdev);
+    test_assert_float(0, 0.05, average);
 
     return TEST_SUCCESS;
 }
