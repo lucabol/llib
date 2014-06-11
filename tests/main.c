@@ -41,6 +41,10 @@ unsigned test_safe_int();
 unsigned test_except_all();
 unsigned test_rand();
 unsigned test_gauss();
+unsigned test_randstream();
+unsigned test_streamgauss();
+unsigned test_parallelrand();
+unsigned test_parallelrand1();
 
 int main(int argc, char *argv[])
 {
@@ -73,6 +77,10 @@ int main(int argc, char *argv[])
     test_add("safeint", "cast",         test_safe_int);
     test_add("rand", "avg&std",         test_rand);
     test_add("rand", "gauss",           test_gauss);
+    test_add("randstream", "rstream",   test_randstream);
+    test_add("randstream", "gauss",     test_streamgauss);
+    test_add("randstream", "parallel",  test_parallelrand);
+    test_add("randstream", "parallel",  test_parallelrand1);
     res = test_run_all();
 
     Mem_print_stats();

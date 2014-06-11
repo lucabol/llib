@@ -90,6 +90,7 @@
     <ClCompile Include="log.c" />
     <ClCompile Include="mem.c" />
     <ClCompile Include="rand.c" />
+    <ClCompile Include="randstream.c" />
     <ClCompile Include="ring.c" />
     <ClCompile Include="safe_int.c" />
     <ClCompile Include="int_signed_unsigned.c" />

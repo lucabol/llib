@@ -18,3 +18,7 @@ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFT
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 <http://www.opensource.org/licenses/mit-license.php>
+
+The code for RandStream is adapted from http://www.iro.umontreal.ca/~lecuyer/myftp/streams00/c/RngStream.c,
+and can be used freely for non-commercial use. For commercial use contact P. L'Ecuyer at: lecuyer@iro.UMontreal.ca
+

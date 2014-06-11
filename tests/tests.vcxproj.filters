@@ -60,5 +60,8 @@
     <ClCompile Include="rand.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="randstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

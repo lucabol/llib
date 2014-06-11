@@ -78,6 +78,9 @@
     <ClCompile Include="..\src\rand.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\randstream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\except.h">
@@ -144,6 +147,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\rand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\randstream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
