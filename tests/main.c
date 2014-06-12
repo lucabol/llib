@@ -12,7 +12,6 @@
 #include <ring.h>
 
 #include "getopt.h"
-#include "log.h"
 
 static int verbosity = 0;
 
