@@ -4,11 +4,13 @@
 #include <test.h>
 #include <log.h>
 #include <timer.h>
+#include <stats.h>
 
 unsigned test_rand() {
-    double average, tperf, stdev, contStd,  sumSqr = 0, sum = 0;
     int i, iters = 10000;
+    double tperf;
     Timer_T t;
+    Stats_T stats = Stats_New();
 
     Rand_init(1);
     
@@ -16,8 +18,7 @@ unsigned test_rand() {
 
     for(i = 0; i < iters; ++i) {
         double r = Rand_next();
-        sum += r;
-        sumSqr += r * r;
+        Stats_Add(stats, r);
     }
     
     tperf = Timer_elapsed_micro_dispose(t);
@@ -27,36 +28,31 @@ unsigned test_rand() {
     //log("Time to generate rnd: %f", tperf);
     //log_set(NULL, 0);
 
-    average = sum / iters;
-    stdev = sqrt((sumSqr - sum * average) / (iters - 1));
-    contStd = 1 / sqrt(12.0);
+    test_assert_float(1 / sqrt(12.0), 0.01, stats->StdDev);
+    test_assert_float(0.5, 1.96 * stats->StdErr, stats->Average);
 
-    test_assert_float(contStd, 0.01, stdev);
-    test_assert_float(0.5, 0.01, average);
+    Stats_Free(&stats);
 
     return TEST_SUCCESS;
 }
 
 unsigned test_gauss() {
     int i, iters = 10000;
-    double sum = 0, average, stdev, sumSqr = 0;
+    Stats_T stats = Stats_New();
 
     Rand_init(1);
 
     for(i = 0; i < iters / 2; ++i) {
         double r1, r2;
         Rand_gauss(&r1, &r2);
-
-        sum += r1 + r2;
-        sumSqr += r1 * r1 + r2 * r2;
+        Stats_Add(stats, r1);
+        Stats_Add(stats, r2);
     }
 
-    average = sum / iters;
-    stdev = sqrt((sumSqr - sum * average) / (iters  - 1));
+    test_assert_float(1., 0.01, stats->StdDev);
+    test_assert_float(0, 1.96 * stats->StdErr, stats->Average);
 
-    test_assert_float(1., 0.01, stdev);
-    test_assert_float(0, 0.05, average);
-
+    Stats_Free(&stats);
     return TEST_SUCCESS;
 }
 

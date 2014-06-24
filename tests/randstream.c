@@ -1,14 +1,16 @@
 #include <math.h>
-
 #include <randstream.h>
 #include <test.h>
 #include <log.h>
 #include <timer.h>
+#include <stats.h>
 
 unsigned test_randstream() {
-    double average, tperf, stdev, contStd,  sumSqr = 0, sum = 0;
+    double tperf;
+
     int i, iters = 10000;
     Timer_T t;
+    Stats_T stats = Stats_New();
 
     RandStream_T rs = RandStream_new();   
 
@@ -16,8 +18,7 @@ unsigned test_randstream() {
 
     for(i = 0; i < iters; ++i) {
         double r = RandStream_randU01(rs);
-        sum += r;
-        sumSqr += r * r;
+        Stats_Add(stats, r);
     }
     
     RandStream_free(&rs);
@@ -29,35 +30,32 @@ unsigned test_randstream() {
     //log("Time to generate rnd: %f", tperf);
     //log_set(NULL, 0);
 
-    average = sum / iters;
-    stdev = sqrt((sumSqr - sum * average) / (iters - 1));
-    contStd = 1 / sqrt(12.0);
+    test_assert_float(1 / sqrt(12.0), 0.001, stats->StdDev); // one order better uniform than Rand
+    test_assert_float(0.5, 0.001, stats->Average);
+    test_assert_float(0.5, 1.96 * stats->StdErr, stats->Average);
 
-    test_assert_float(contStd, 0.001, stdev); // one order better uniform than Rand
-    test_assert_float(0.5, 0.001, average);
+    Stats_Free(&stats);
 
     return TEST_SUCCESS;
 }
 
 unsigned test_streamgauss() {
     int i, iters = 10000;
-    double sum = 0, average, stdev, sumSqr = 0, variance = 1.;
+    Stats_T stats = Stats_New();
 
     RandStream_T rs = RandStream_new();   
 
     for(i = 0; i < iters; ++i) {
-        double r = RandStream_gauss(rs, variance);
-        sum += r;
-        sumSqr += r * r;
+        double r = RandStream_gauss(rs, 1.0);
+        Stats_Add(stats, r);
     }
 
     RandStream_free(&rs);
 
-    average = sum / iters;
-    stdev = sqrt((sumSqr - sum * average) / (iters  - 1));
+    test_assert_float(sqrt(1.0), 0.01, stats->StdDev);
+    test_assert_float(0.0, 1.96 * stats->StdErr, stats->Average);
 
-    test_assert_float(sqrt(variance), 0.01, stdev);
-    test_assert_float(0, 0.05, average);
+    Stats_Free(&stats);
 
     return TEST_SUCCESS;
 }
