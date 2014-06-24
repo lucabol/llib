@@ -64,7 +64,7 @@ T SList_copy(T list) {
     return head;
 }
 
-T SList_pop(T list, void **x) {
+T SList_pop_front(T list, void **x) {
     assert(list);
     assert(x);
 

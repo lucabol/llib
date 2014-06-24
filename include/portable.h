@@ -38,6 +38,12 @@ extern void Except_hook_signal();
 #endif
 #endif
 
+#ifndef _MSC_VER
+#define ts_gmtime gmtime_r
+#else
+#define ts_gmtime gmtime
+#endif
+
 #ifdef _MSC_VER
 #include <malloc.h>
 
