@@ -17,6 +17,7 @@ struct T {
 extern T        Stats_New         ();
 extern void     Stats_Free        (T* stats);
 extern void     Stats_Add         (T stats, double sample);
+extern void     Stats_Zero        (T stats);
 
 #undef T
 #endif

@@ -7,11 +7,13 @@
 
 
 unsigned test_arena_resize() {
+    
     Arena_T arena   = Arena_new();
     char * aChar;
 
+    
     Mem_set_arena(arena);
-
+    
     aChar           = ALLOC(sizeof(char));
     *aChar          = 'a';
     test_assert(*aChar == 'a');
@@ -37,11 +39,11 @@ unsigned test_arena_resize() {
     aChar[2] = '\0';
     test_assert_str(aChar, "ab");
 
-
     Mem_set_default();
 
-    Arena_dispose(arena);
+    Arena_dispose(&arena);
     Arena_remove_free_blocks();
+    
 
     return TEST_SUCCESS;
 }

@@ -84,6 +84,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="arena.c" />
+    <ClCompile Include="atom.c" />
     <ClCompile Include="except.c" />
     <ClCompile Include="filetest.c" />
     <ClCompile Include="getopttest.c" />
@@ -97,6 +98,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="perf.c" />
     <ClCompile Include="strtest.c" />
+    <ClCompile Include="table.c" />
     <ClCompile Include="tokentest.c" />
     <ClCompile Include="utf8test.c" />
   </ItemGroup>

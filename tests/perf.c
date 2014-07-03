@@ -78,7 +78,7 @@ unsigned test_list_perf() {
     /* Arena_config(10, 10 * 1024); */
     Mem_set_arena(arena);
     res = test_perf(test_list);
-    Arena_dispose(arena);
+    Arena_dispose(&arena);
     Mem_set_default();
 
     log("ListA: %10.0f", res);
@@ -108,7 +108,7 @@ unsigned test_mem_perf() {
 
     test_mem_perf_loop();
 
-    Arena_dispose(arena);
+    Arena_dispose(&arena);
     Mem_set_default();
     arenaTime = Timer_elapsed_micro_dispose(t);
 

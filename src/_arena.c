@@ -67,23 +67,23 @@ void Arena_config (unsigned chunks, size_t size) {
 T Arena_new(void) {
     T arena;
 
-    arena           = _Mem_alloc(sizeof(arena), __FILE__, __LINE__);
+    arena           = _Mem_alloc(sizeof(*arena), __FILE__, __LINE__);
     arena->prev     = NULL;
     arena->limit    = arena->avail = NULL;
     log_dbg("%p new arena", arena);
     return arena;
 }
 
-void Arena_dispose(T ap) {
-    assert(ap);
-    assert(ap->limit >= ap->avail);
+void Arena_dispose(T* ap) {
+    assert(ap && *ap);
+    assert((*ap)->limit >= (*ap)->avail);
 
     log_dbg("%p dispose arena", ap);
 
-    Arena_free(ap);
+    Arena_free(*ap);
 
-    _Mem_free(ap, __FILE__, __LINE__);
-    ap = NULL;
+    _Mem_free(*ap, __FILE__, __LINE__);
+    *ap = NULL;
 }
 
 void *Arena_alloc(T arena, size_t nbytes, const char *file, int line) {

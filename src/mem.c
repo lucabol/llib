@@ -26,7 +26,7 @@ void Mem_print_stats() {
 
 /* Plug Arena into the common allocation framework */
 
-static thread_local  Arena_T Arena_default;
+thread_local  Arena_T Arena_default;
 
 void* a_alloc  (size_t nbytes, const char *file, int line) {
     return Arena_alloc(Arena_default, nbytes, file, line);
@@ -71,6 +71,8 @@ extern MemFuncs Mem_set_arena(Arena_T arena) {
 
 extern MemFuncs Mem_set_default() {
     MemFuncs tmp = Mem_functions;
+
+    Arena_default = NULL;
     Mem_functions = _Mem_functions;
     return tmp;
 }

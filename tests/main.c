@@ -44,6 +44,8 @@ unsigned test_randstream();
 unsigned test_streamgauss();
 unsigned test_parallelrand();
 unsigned test_parallelrand1();
+unsigned test_atom();
+unsigned test_table();
 
 int main(int argc, char *argv[])
 {
@@ -80,6 +82,8 @@ int main(int argc, char *argv[])
     test_add("randstream", "gauss",     test_streamgauss);
     test_add("randstream", "parallel",  test_parallelrand);
     test_add("randstream", "parallel",  test_parallelrand1);
+    test_add("atom", "general",         test_atom);
+    test_add("table", "general",        test_table);
     res = test_run_all();
 
     Mem_print_stats();

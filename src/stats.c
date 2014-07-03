@@ -1,5 +1,6 @@
 #include <math.h>
 #include <float.h>
+#include <string.h>
 
 #include "assert.h"
 #include "mem.h"
@@ -37,5 +38,12 @@ void Stats_Add(T stats, double sample) {
     stats->Max = sample > stats->Max ? sample : stats->Max;
     stats->Min = sample < stats->Min ? sample : stats->Min;
     stats->StdErr = stats->StdDev / sqrt((float)stats->Count);
+}
+
+void Stats_Zero(T s) {
+
+    memset(s, 0, sizeof(*s));
+    s->Min = DBL_MAX;
+    s->Max = DBL_MIN;
 }
 

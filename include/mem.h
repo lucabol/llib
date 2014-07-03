@@ -34,7 +34,7 @@ extern MemFuncs Mem_set_default();
 
 extern Arena_T  Arena_new       (void);
 extern void     Arena_config    (unsigned int chunks, size_t size);
-extern void     Arena_dispose   (Arena_T ap);
+extern void     Arena_dispose   (Arena_T* ap);
 extern void     Arena_free     (Arena_T arena);
 extern void     Arena_remove_free_blocks();
 

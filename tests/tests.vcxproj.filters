@@ -63,5 +63,11 @@
     <ClCompile Include="randstream.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="atom.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="table.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
