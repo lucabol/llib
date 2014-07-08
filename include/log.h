@@ -18,6 +18,8 @@ BEGIN_DECLS
 
 extern void get_time(char*);
 
+#pragma warning (disable: 4127)
+
 #define LOG_LEVEL(level, ...)   STMT_START {\
                                     if (level <= debug_level && dbgstream) { \
                                         char buf[80]; get_time(buf); \

@@ -1,3 +1,7 @@
+// Note that there are compiler / architecture specific tools/library that do this as
+// http://msdn.microsoft.com/en-us/library/x98tx3cf%28v=vs.90%29.aspx
+// http://valgrind.org/
+
 #include <stdlib.h>
 #ifndef NDEBUG /* Need this to be second to avoid a translation empty error in msvc */
 

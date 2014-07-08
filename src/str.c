@@ -127,7 +127,7 @@ char *Str_amap(const char *s, const char *from, const char *to) {
     if (from && to) {
         unsigned c;
         for (c = 0; c < sizeof map; c++)
-            map[c] = c;
+            map[c] = (char)c;
 
         while (*from && *to)
             map[(unsigned char)*from++] = *to++;

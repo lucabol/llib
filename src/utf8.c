@@ -409,7 +409,6 @@ size_t u8_strlen_in_chars(const char *s)
 {
     size_t count = 0;
     size_t i = 0;
-
     assert(s);
 
     while (u8_nextchar(s, &i) != 0) {
@@ -424,7 +423,13 @@ size_t u8_strlen_in_chars(const char *s)
 uint32_t u8_nextchar(const char *s, unsigned *i)
 {
     uint32_t ch = 0;
-    unsigned sz = 0;
+    int sz = 0;
+
+    // The original code below is buggy if you pass an *i that points to the final 0 in the string
+    // Adding this check fixes the problem, but the whole function prototype is error prone
+    // There should be a separate way to tell the caller that the string has ended.
+    if (s[*i] == 0)
+        return 0;
 
     assert(s);
 

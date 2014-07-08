@@ -22,7 +22,7 @@ T SList_push_front(T list, void *x) {
     return p;
 }
 
-T SList_list(void *x, ...) {
+T SList_listx(void *x, ...) {
     va_list ap;
     T list, *p = &list;
 

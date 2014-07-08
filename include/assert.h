@@ -24,4 +24,7 @@ BEGIN_DECLS
 
 #endif
 
+#define assert_compile(pred)       \
+    switch(0){case 0:case pred:;}
+
 END_DECLS

@@ -92,6 +92,9 @@ unsigned test_mem_perf() {
     double memTime, arenaTime, alignTime;
     Arena_T arena;
 
+    // Use in Release mode to print out perf stats, arena is one order of mag faster
+    //log_set(stderr, LOG_INFO);
+    
     /* standard */
     t = Timer_new_start();
 

@@ -4,7 +4,6 @@
 
 const Except_T test_e = { "Test"};
 
-
 unsigned f1(const char* data) {
     TRY {
         if(!strcmp(data, "no")) return 2;
@@ -29,6 +28,7 @@ unsigned f(const char* data) {
 unsigned test_except_all() {
     TRY {
         unsigned k = f("test1");
+        k; // remove warning of variable not referenced
         return TEST_FAILURE;
     } EXCEPT(test_e) {
         test_assert_str((const char*)EX_DATA, "test1");
@@ -39,6 +39,7 @@ unsigned test_except_all() {
         unsigned k = f("no");
         unsigned k1 = f("no");
         unsigned r = k + k1;
+        r; // remove warning of variable not referenced
         return TEST_SUCCESS;
     } EXCEPT(test_e) {
         return TEST_FAILURE;

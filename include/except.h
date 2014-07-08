@@ -8,6 +8,8 @@
 
 BEGIN_DECLS
 
+#pragma warning (disable:4702) // unreacheable code is fine as I'm using exceptions
+
 #define T Except_T
 
 typedef struct T {

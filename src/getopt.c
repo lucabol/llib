@@ -10,6 +10,8 @@
 #include "str.h"
 #include "mem.h"
 
+#pragma warning (disable:4244)
+
 /* types */
 typedef enum GETOPT_ORDERING_T
 {

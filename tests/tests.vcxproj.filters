@@ -69,5 +69,11 @@
     <ClCompile Include="table.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="slist.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="carray.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

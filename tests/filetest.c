@@ -9,7 +9,7 @@ unsigned test_file() {
     unsigned n = 0;
     dir = Dir_open( ".");
 
-    while (file = Dir_next_entry(dir))
+    while ((file = Dir_next_entry(dir)) != NULL)
     {
         log("%s", file);
         n++;

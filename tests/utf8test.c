@@ -19,7 +19,7 @@ int test(char* str) {
     au8buf  = u16_to_u8(au16buf);
 
     test_assert_str(au8buf, str);
-    log("%s : redirect stderr to  a file to see utf-8 chars", au8buf);
+    log("%s : redirect stderr to  a file with 2> to see utf-8 chars", au8buf);
 
     FREE(au16buf);
     FREE(au8buf);
@@ -56,9 +56,9 @@ unsigned test_utf8_roundtrip() {
 }
 
 unsigned test_utf8_len() {
-    test_assert(u8_strlen_in_chars(kChineseSampleText) == 2);
-    test_assert(u8_strlen_in_chars(kArabicSampleText) == 7);
-    test_assert(u8_strlen_in_chars(kSpanishSampleText) == 5);
+    test_assert_int(u8_strlen_in_chars(kChineseSampleText), 2);
+    test_assert_int(u8_strlen_in_chars(kArabicSampleText), 7);
+    test_assert_int(u8_strlen_in_chars(kSpanishSampleText), 5);
     return TEST_SUCCESS;
 }
 

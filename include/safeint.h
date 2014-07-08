@@ -11,6 +11,8 @@
 
 BEGIN_DECLS
 
+#pragma warning (disable:4127)
+
 #ifndef SAFE_SIZE
 #define SAFE_SIZE SIZE_MAX / 2
 #endif

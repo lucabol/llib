@@ -25,7 +25,7 @@ char* test_strdup (const char *s) {
     return d;
 }
 
-void test_add(char* library, char* feature, test_func f) {
+void test_addx(char* library, char* feature, test_func f) {
     struct test_data* p = NULL;
 
     assert(library);
@@ -83,6 +83,8 @@ unsigned test_run_all() {
     Ring_free(&tests);
     return code;
 }
+
+#pragma warning (disable:4127)
 
 double test_perf(test_func f) {
     Timer_T t;
