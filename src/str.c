@@ -13,7 +13,7 @@
 char *Str_asub(const char *s, size_t i, size_t j) {
     char *str, *p;
     assert(s);
-    
+
     safe_sub_sisi(j, i);
 
     if(*s == '\0') {
@@ -153,24 +153,32 @@ char *Str_amap(const char *s, const char *from, const char *to) {
         return NULL;
 }
 
+char* Str_avsprintf(const char *fmt, va_list ap);
+
 char* Str_avsprintf(const char *fmt, va_list ap)
 {
-    unsigned cnt = 0;
-    size_t sz = 0;
+    int cnt = 0;
+    size_t sz = 0, cntsz;
     char *buf;
 
     sz = 512;
     buf = (char*)ALLOC(sz);
     cnt = vsnprintf(buf, sz, fmt, ap);
 
-    safe_sum_sisi(cnt, 3);
-    cnt += 2;
+    cntsz = safe_cast_su(cnt);
 
-    if (cnt >= sz) {
-        size_t new_cnt;
-        REALLOC(buf, cnt + 1);
-        new_cnt = vsnprintf(buf, cnt, fmt, ap);
-        assert(new_cnt <= cnt + 3);
+    safe_sum_sisi(cntsz, 3);
+    cntsz += 2;
+
+    if (cntsz >= sz) {
+        int new_cnt;
+        size_t new_cntsz;
+
+        REALLOC(buf, cntsz + 1);
+        new_cnt = vsnprintf(buf, cntsz, fmt, ap);
+        new_cntsz = safe_cast_su(new_cnt);
+
+        assert(new_cntsz <= cntsz + 3);
     }
 
     return buf;
@@ -206,7 +214,7 @@ char** Str_split(char* s, const char* delimiters, unsigned empties) {
 
         safe_sum_sisi(n, 1);
         buf[n++] = token;
-        
+
         safe_mul_sisi(512, allocs);
         alloc_index = 512 * allocs;
 

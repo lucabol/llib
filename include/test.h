@@ -8,7 +8,8 @@
 
 BEGIN_DECLS
 
-#pragma warning (disable:4127)
+#pragma warning (disable:4127) // Conditional expression is constant
+#pragma warning (disable:4210) // Function given file scope in test_add
 
 #define TEST_SUCCESS 1
 #define TEST_FAILURE 0
@@ -46,7 +47,7 @@ typedef unsigned (*test_func) ();
 
 extern void test_addx(char* kind, char* feature, test_func f);
 extern unsigned test_run_all();
-extern double test_perf(test_func f);
+extern long long test_perf(test_func f);
 
 
 END_DECLS

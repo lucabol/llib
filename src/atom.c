@@ -5,12 +5,13 @@
 #include "atom.h"
 #include "assert.h"
 #include "portable.h" // for thread_local
+#include "safeint.h"
 
 #define NELEMS(x) ((sizeof (x))/(sizeof ((x)[0])))
 
 thread_local struct atom {
     struct atom *link;
-    int len;
+    size_t len;
     char *str;
 } *buckets[2048];
 
@@ -69,27 +70,28 @@ const char *Atom_int(long n) {
     char str[43];
     char *s = str + sizeof str;
     unsigned long m;
+
     if (n == LONG_MIN)
         m = LONG_MAX + 1UL;
     else if (n < 0)
-        m = -n;
+        m = (unsigned long) (-n);
     else
-        m = n;
+        m = (unsigned long) n;
     do
-        *--s = m%10 + '0';
+        *--s = (char) (m%10 + '0');
     while ((m /= 10) > 0);
     if (n < 0)
         *--s = '-';
-    return Atom_new(s, (str + sizeof str) - s);
+    return Atom_new(s, (size_t)((str + sizeof str) - s));
 }
 
-const char *Atom_new(const char *str, int len) {
+const char *Atom_new(const char *str, size_t len) {
     unsigned long h;
-    int i;
+    unsigned i;
     struct atom *p;
 
     assert(str);
-    assert(len >= 0);
+    safe_size(len);
 
     for (h = 0, i = 0; i < len; i++)
         h = (h<<1) + scatter[(unsigned char)str[i]];
@@ -116,9 +118,9 @@ const char *Atom_new(const char *str, int len) {
     return p->str;
 }
 
-int Atom_length(const char *str) {
+size_t Atom_length(const char *str) {
     struct atom *p;
-    int i;
+    unsigned i;
     assert(str);
     for (i = 0; i < NELEMS(buckets); i++)
         for (p = buckets[i]; p; p = p->link)
@@ -131,10 +133,10 @@ int Atom_length(const char *str) {
 void Atom_freeAll() {
 
     struct atom* p;
-    int i;
+    unsigned i;
 
     for(i = 0; i < NELEMS(buckets); ++i) {
-        for(p = buckets[i]; p; ) { 
+        for(p = buckets[i]; p; ) {
             struct atom* p2 = p->link;
             if(p != 0) {
                 FREE(p);

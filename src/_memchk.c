@@ -47,7 +47,7 @@ const Except_T Mem_Failed = { "Allocation Failed" };
 static thread_local  struct descriptor {
     struct descriptor *free;
     struct descriptor *link;
-    const void *ptr;
+    void *ptr;
     size_t size;
     const char *file;
     int line;

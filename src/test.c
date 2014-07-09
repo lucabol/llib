@@ -42,6 +42,7 @@ void test_addx(char* library, char* feature, test_func f) {
     tests = Ring_push_front(tests, p);
 }
 
+static
 void apply(void **x, void *cl) {
     struct test_data* p = (struct test_data*)*x;
     unsigned* code = (unsigned*) cl;
@@ -56,6 +57,7 @@ void apply(void **x, void *cl) {
     if(status == TEST_FAILURE) *code = 3;
 }
 
+static
 void freetest(void **x, void *cl) {
     struct test_data* p = (struct test_data*)*x;
     (void)cl;
@@ -70,13 +72,13 @@ unsigned test_run_all() {
 
     /* Execute tests*/
     Timer_T t;
-    double elapsed;
+    long long elapsed;
 
     t = Timer_new_start();
     Ring_map(tests, apply, &code);
     elapsed = Timer_elapsed_micro_dispose(t);
 
-    printf("\nExecuted in %0.0f micro-sec\n", elapsed);
+    printf("\nExecuted in %I64d micro-sec\n", elapsed);
 
     /* Free tests */
     Ring_map(tests, freetest, NULL);
@@ -86,10 +88,10 @@ unsigned test_run_all() {
 
 #pragma warning (disable:4127)
 
-double test_perf(test_func f) {
+long long test_perf(test_func f) {
     Timer_T t;
-    double time_res;
-    int test_res;
+    long long time_res;
+    unsigned test_res;
     assert(f);
 
     t           = Timer_new_start();

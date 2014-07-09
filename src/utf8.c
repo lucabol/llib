@@ -95,6 +95,7 @@ static const UTF8 firstByteMark[7] = { 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC 
 * into an inline function.
 */
 
+static
 ConversionResult ConvertUTF16toUTF8 (
     const UTF16** sourceStart, const UTF16* sourceEnd,
     UTF8** targetStart, UTF8* targetEnd, ConversionFlags flags) {
@@ -161,6 +162,7 @@ ConversionResult ConvertUTF16toUTF8 (
             case 3: *--target = (UTF8)((ch | byteMark) & byteMask); ch >>= 6;
             case 2: *--target = (UTF8)((ch | byteMark) & byteMask); ch >>= 6;
             case 1: *--target =  (UTF8)(ch | firstByteMark[bytesToWrite]);
+            default:(void)0;
             }
             target += bytesToWrite;
         }
@@ -206,11 +208,13 @@ inline static Boolean isLegalUTF8(const UTF8 *source, int length) {
     return true;
 }
 
+
 /*
 * Exported function to return whether a UTF-8 sequence is legal or not.
 * This is not used here; it's just exported.
 */
-
+/*
+static
 Boolean isLegalUTF8Sequence(const UTF8 *source, const UTF8 *sourceEnd) {
     int length = trailingBytesForUTF8[*source]+1;
     if (source+length > sourceEnd) {
@@ -218,7 +222,9 @@ Boolean isLegalUTF8Sequence(const UTF8 *source, const UTF8 *sourceEnd) {
     }
     return isLegalUTF8(source, length);
 }
+*/
 
+static
 ConversionResult ConvertUTF8toUTF16 (
         const UTF8** sourceStart, const UTF8* sourceEnd,
         UTF16** targetStart, UTF16* targetEnd, ConversionFlags flags) {
@@ -229,7 +235,7 @@ ConversionResult ConvertUTF8toUTF16 (
 
     while ((sourceEnd != NULL && source < sourceEnd) || (sourceEnd == NULL && *source != 0x0000)) {
         UTF32 ch = 0;
-        unsigned short extraBytesToRead = trailingBytesForUTF8[*source];
+        unsigned short extraBytesToRead = (short unsigned) trailingBytesForUTF8[*source];
         if (sourceEnd != NULL && source + extraBytesToRead >= sourceEnd) {
             result = sourceExhausted;
             break;
@@ -250,6 +256,7 @@ ConversionResult ConvertUTF8toUTF16 (
         case 2: ch += *source++; ch <<= 6;
         case 1: ch += *source++; ch <<= 6;
         case 0: ch += *source++;
+        default:(void)0;
         }
         ch -= offsetsFromUTF8[extraBytesToRead];
 
@@ -313,7 +320,7 @@ uint16_t* u8_to_u16(const char* src) {
     result = ConvertUTF8toUTF16((const UTF8**)(&src), NULL, &buf, buf + wlen, lenientConversion);
     if(result == conversionOK) {
         *buf = '\0';
-        REALLOC(start, (char*)buf - (char*)start + 2);
+        REALLOC(start, (size_t)((char*)buf - (char*)start + 2));
         return start;
     } else {
         RAISE_PTR(u8_conversion_failed);
@@ -357,7 +364,7 @@ char* u16_to_u8(const uint16_t* src) {
 
     if(result == conversionOK) {
         *buf = '\0';
-        REALLOC(start, buf - start + 1);
+        REALLOC(start, (size_t)(buf - start + 1));
         return (char*)start;
     } else {
         RAISE_PTR(u8_conversion_failed);
@@ -369,12 +376,14 @@ char* u16_to_u8(const uint16_t* src) {
 #define isutf(c) (((c)&0xC0) != 0x80)
 
 /* returns length of next utf-8 sequence */
+static
 unsigned u8_seqlen(const char *s)
 {
-    return trailingBytesForUTF8[(unsigned int)(unsigned char)s[0]] + 1;
+    return (unsigned) trailingBytesForUTF8[(unsigned int)(unsigned char)s[0]] + 1;
 }
 
 /* charnum => byte offset */
+static
 size_t u8_offset(const char *str, unsigned charnum)
 {
     size_t offs=0;
@@ -490,7 +499,8 @@ char *u8_memchr(char *s, uint32_t ch, size_t sz, unsigned *charn)
 
     *charn = 0;
     while (i < sz) {
-        c = csz = 0;
+        c = 0;
+        csz = 0;
         do {
             c <<= 6;
             c += (unsigned char)s[i++];
@@ -572,9 +582,11 @@ char *u8_reverse(const char*s) {
 
 unsigned u8_vprintf(const char *fmt, va_list ap)
 {
-    unsigned cnt, sz=0;
+    unsigned sz=0;
     char *buf;
     uint16_t *wcs;
+    signed cnt;
+    size_t cntsz;
 
     assert(fmt);
 
@@ -582,26 +594,32 @@ unsigned u8_vprintf(const char *fmt, va_list ap)
     buf = ALLOC(sz);
     cnt = vsnprintf(buf, sz, fmt, ap);
 
-    safe_sum_sisi(cnt, 3);
-    cnt += 2;
+    cntsz = safe_cast_su(cnt);
 
-    if (cnt >= sz) {
-        size_t new_cnt;
-        REALLOC(buf, cnt + 1);
-        new_cnt = vsnprintf(buf, cnt, fmt, ap);
-        assert(new_cnt <= cnt + 2);
+    safe_sum_sisi(cntsz, 3);
+    cntsz += 2;
+
+    if (cntsz >= sz) {
+        signed new_cnt;
+        size_t new_cntsz;
+
+        REALLOC(buf, cntsz + 1);
+        new_cnt = vsnprintf(buf, cntsz, fmt, ap);
+        new_cntsz = safe_cast_su(new_cnt);
+
+        assert(new_cntsz <= cntsz + 2);
     }
     wcs = u8_to_u16(buf);
     wprintf(L"%s", (wchar_t*)wcs);
 
     FREE(buf);
     FREE(wcs);
-    return cnt;
+    return cntsz;
 }
 
 unsigned u8_printf(const char *fmt, ...)
 {
-    int cnt;
+    unsigned cnt;
     va_list args;
 
     va_start(args, fmt);

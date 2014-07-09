@@ -6,7 +6,7 @@
 #include <stats.h>
 
 unsigned test_randstream() {
-    double tperf;
+    long long tperf;
 
     int i, iters = 10000;
     Timer_T t;

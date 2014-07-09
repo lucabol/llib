@@ -33,7 +33,7 @@ static double nextSeed[6] = { 12345, 12345, 12345, 12345, 12345, 12345 };
 /* The following are the transition matrices of the two MRG components */
 /* (in matrix form), raised to the powers -1, 1, 2^76, and 2^127, resp.*/
 static double A1p127[3][3] = {
-		  {    2427906178.0, 3580155704.0,  949770784.0 }, 
+		  {    2427906178.0, 3580155704.0,  949770784.0 },
 		  {     226153695.0, 1230515664.0, 3580155704.0 },
 		  {    1988835001.0,  986791581.0, 1230515664.0 }
 		  };
@@ -115,7 +115,7 @@ T RandStream_new ()
    int i;
    T g;
 
-   g = (T) NEW0(g);
+   NEW0(g);
    g->hasSpare = 0;
 
    for (i = 0; i < 6; ++i) {
@@ -136,7 +136,7 @@ double RandStream_randU01 (T g)
   return U01 (g);
 }
 
-int RadStream_randInt (T g, int i, int j)
+int RandStream_randInt (T g, int i, int j)
 {
    return i + (int) ((j - i + 1.0) * RandStream_randU01 (g));
 }
@@ -151,14 +151,14 @@ double RandStream_gauss(T g, double variance)
 		g->hasSpare = 0;
 		return sqrt(variance * g->rand1) * sin(g->rand2);
 	}
- 
+
 	g->hasSpare = 1;
- 
+
 	g->rand1 = RandStream_randU01(g);
 	if(g->rand1 < SMALL_E) g->rand1 = SMALL_E;
 
 	g->rand1 = -2 * log(g->rand1);
 	g->rand2 = RandStream_randU01(g) * TWO_PI;
- 
+
 	return sqrt(variance * g->rand1) * cos(g->rand2);
 }

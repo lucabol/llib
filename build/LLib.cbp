@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../lib/LLibd" prefix_auto="1" extension_auto="1" />
+				<Option output="..\lib\libLLibd" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../obj/DebugGcc/" />
+				<Option object_output="..\obj\DebugGcc\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -17,9 +17,9 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="../lib/LLibr" prefix_auto="1" extension_auto="1" />
+				<Option output="..\lib\libLLibr" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../obj/ReleaseGcc/" />
+				<Option object_output="..\obj\ReleaseGcc\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -33,93 +33,116 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-Wno-unknown-pragmas" />
 			<Add option="-DUNICODE" />
 			<Add option="-D_UNICODE" />
-			<Add directory="../include" />
+			<Add directory="..\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-lpsapi" />
 			<Add library="psapi" />
 		</Linker>
-		<Unit filename="../include/_arena.h" />
-		<Unit filename="../include/_mem.h" />
-		<Unit filename="../include/assert.h" />
-		<Unit filename="../include/config.h" />
-		<Unit filename="../include/dir.h" />
-		<Unit filename="../include/except.h" />
-		<Unit filename="../include/getopt.h" />
-		<Unit filename="../include/log.h" />
-		<Unit filename="../include/mem.h" />
-		<Unit filename="../include/portable.h" />
-		<Unit filename="../include/rand.h" />
-		<Unit filename="../include/ring.h" />
-		<Unit filename="../include/safeint.h" />
-		<Unit filename="../include/slist.h" />
-		<Unit filename="../include/str.h" />
-		<Unit filename="../include/test.h" />
-		<Unit filename="../include/thread.h" />
-		<Unit filename="../include/timer.h" />
-		<Unit filename="../include/token.h" />
-		<Unit filename="../include/utf8.h" />
-		<Unit filename="../include/utils.h" />
-		<Unit filename="../src/_align.c">
+		<Unit filename="..\include\_arena.h" />
+		<Unit filename="..\include\_mem.h" />
+		<Unit filename="..\include\assert.h" />
+		<Unit filename="..\include\atom.h" />
+		<Unit filename="..\include\carray.h" />
+		<Unit filename="..\include\config.h" />
+		<Unit filename="..\include\dir.h" />
+		<Unit filename="..\include\except.h" />
+		<Unit filename="..\include\file.h" />
+		<Unit filename="..\include\getopt.h" />
+		<Unit filename="..\include\log.h" />
+		<Unit filename="..\include\mem.h" />
+		<Unit filename="..\include\portable.h" />
+		<Unit filename="..\include\rand.h" />
+		<Unit filename="..\include\randstream.h" />
+		<Unit filename="..\include\ring.h" />
+		<Unit filename="..\include\root_find.h" />
+		<Unit filename="..\include\safeint.h" />
+		<Unit filename="..\include\slist.h" />
+		<Unit filename="..\include\stats.h" />
+		<Unit filename="..\include\str.h" />
+		<Unit filename="..\include\table.h" />
+		<Unit filename="..\include\test.h" />
+		<Unit filename="..\include\thread.h" />
+		<Unit filename="..\include\timer.h" />
+		<Unit filename="..\include\token.h" />
+		<Unit filename="..\include\utf8.h" />
+		<Unit filename="..\include\utils.h" />
+		<Unit filename="..\src\_align.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/_arena.c">
+		<Unit filename="..\src\_arena.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/_mem.c">
+		<Unit filename="..\src\_mem.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/_memchk.c">
+		<Unit filename="..\src\_memchk.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/_portable_dir.c">
+		<Unit filename="..\src\_portable_dir.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/_portable_mem_excpt.c">
+		<Unit filename="..\src\_portable_mem_excpt.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/_portable_timer.c">
+		<Unit filename="..\src\_portable_timer.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/assert.c">
+		<Unit filename="..\src\assert.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/except.c">
+		<Unit filename="..\src\atom.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/getopt.c">
+		<Unit filename="..\src\except.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/log.c">
+		<Unit filename="..\src\file.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/mem.c">
+		<Unit filename="..\src\getopt.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/rand.c">
+		<Unit filename="..\src\log.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/ring.c">
+		<Unit filename="..\src\mem.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/safeint.c">
+		<Unit filename="..\src\rand.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/slist.c">
+		<Unit filename="..\src\randstream.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/str.c">
+		<Unit filename="..\src\ring.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/test.c">
+		<Unit filename="..\src\safeint.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/token.c">
+		<Unit filename="..\src\slist.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/utf8.c">
+		<Unit filename="..\src\stats.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\str.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\table.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\token.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\src\utf8.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

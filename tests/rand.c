@@ -8,7 +8,7 @@
 
 unsigned test_rand() {
     int i, iters = 10000;
-    double tperf;
+    long long tperf;
     Timer_T t;
     Stats_T stats = Stats_New();
 

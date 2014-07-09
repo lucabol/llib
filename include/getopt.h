@@ -63,8 +63,8 @@ int getopt_long (int argc, char **argv, const char *shortopts, const struct opti
 int getopt_long_only (int argc, char **argv, const char *shortopts, const struct option *longopts, int *longind);
 
 /* prints out usage text getting data from the augmented option structure */
-void getopt_usage(char* progname, char *short_desc, char *pre_options, char *post_options, const struct option *longopts);
-    
+void getopt_usage(const char* progname, char *short_desc, char *pre_options, char *post_options, const struct option *longopts);
+
 /*  Uses longopts to define which options are accepted, parses them and stores them in the value and specified field.
     Displays an usage message is -h or --help is specified. Returns a negative number for error, display an error string
     and fills out the opterrorcodes and opterrorshorts with the error code in getopt_long format and the short code for the option.

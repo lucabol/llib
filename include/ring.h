@@ -9,7 +9,7 @@ typedef struct T *T;
 extern T     Ring_new (void);
 extern T     Ring_ringx(void *x, ...);
 extern void  Ring_free  (T *ring);
-extern int   Ring_length(T  ring);
+extern unsigned   Ring_length(T  ring);
 extern void *Ring_get(T ring, unsigned i);
 extern void *Ring_put(T ring, unsigned i, void *x);
 extern void *Ring_add(T ring, signed pos, void *x);

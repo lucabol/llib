@@ -69,10 +69,10 @@ unsigned test_list() {
 }
 
 unsigned test_list_perf() {
-    double res = test_perf(test_list);
+    long long res = test_perf(test_list);
     Arena_T arena;
 
-    log("List : %10.0f", res);
+    log("List : %I64d", res);
 
     arena = Arena_new();
     /* Arena_config(10, 10 * 1024); */
@@ -81,7 +81,7 @@ unsigned test_list_perf() {
     Arena_dispose(&arena);
     Mem_set_default();
 
-    log("ListA: %10.0f", res);
+    log("ListA: %I64d", res);
 
 
     return TEST_SUCCESS;
@@ -89,12 +89,12 @@ unsigned test_list_perf() {
 
 unsigned test_mem_perf() {
     Timer_T t;
-    double memTime, arenaTime, alignTime;
+    long long memTime, arenaTime, alignTime;
     Arena_T arena;
 
     // Use in Release mode to print out perf stats, arena is one order of mag faster
     //log_set(stderr, LOG_INFO);
-    
+
     /* standard */
     t = Timer_new_start();
 
@@ -125,11 +125,9 @@ unsigned test_mem_perf() {
     Mem_set_default();
     alignTime = Timer_elapsed_micro_dispose(t);
 
-    log("Mem  : %10.0f", memTime);
-    log("Arena: %10.0f", arenaTime);
-    log("Align: %10.0f", alignTime);
-    log("Ratio: %10.0f", memTime / arenaTime);
-    log("Ratio: %10.0f", alignTime / arenaTime);
+    log("Mem  : %I64d", memTime);
+    log("Arena: %I64d", arenaTime);
+    log("Align: %I64d", alignTime);
 
     return TEST_SUCCESS;
 }

@@ -44,30 +44,33 @@ T Timer_new_start() {
     return t;
 }
 
-double Timer_elapsed_micro(T t) {
-    double startTimeInMicroSec, endTimeInMicroSec;
-
+long long Timer_elapsed_micro(T t) {
 #ifdef _WIN32
     BOOL result;
+    LARGE_INTEGER elapsedMicrosecond;
     LARGE_INTEGER endCount;
 
     result = QueryPerformanceCounter(&endCount);
     assert(result);
 
-    startTimeInMicroSec = t->startCount.QuadPart * (1000000.0 / frequency.QuadPart);
-    endTimeInMicroSec = endCount.QuadPart * (1000000.0 / frequency.QuadPart);
+    elapsedMicrosecond.QuadPart   = endCount.QuadPart - t->startCount.QuadPart;
+    elapsedMicrosecond.QuadPart  *= 1000000;
+    elapsedMicrosecond.QuadPart  /= frequency.QuadPart;
+
+    return elapsedMicrosecond.QuadPart;
 #else
+    long long startTimeInMicroSec, endTimeInMicroSec;
     timeval endCount;
 
     gettimeofday(&endCount, NULL);
-    startTimeInMicroSec = (t->startCount.tv_sec * 1000000.0) + t->startCount.tv_usec;
-    endTimeInMicroSec = (endCount.tv_sec * 1000000.0) + endCount.tv_usec;
-#endif
+    startTimeInMicroSec = (t->startCount.tv_sec * 1000000) + t->startCount.tv_usec;
+    endTimeInMicroSec = (endCount.tv_sec * 1000000) + endCount.tv_usec;
     return endTimeInMicroSec - startTimeInMicroSec;
+#endif
 }
 
-double Timer_elapsed_micro_dispose(T t) {
-    double elapsed;
+long long Timer_elapsed_micro_dispose(T t) {
+    long long elapsed;
 
     elapsed = Timer_elapsed_micro(t);
     FREE(t);

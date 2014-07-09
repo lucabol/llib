@@ -4,6 +4,7 @@
 #include "mem.h"
 #include "assert.h"
 #include "table.h"
+#include "safeint.h"
 
 #define T Table_T
 
@@ -35,11 +36,13 @@ T Table_new(int hint,
 	int i;
 	static int primes[] = { 509, 509, 1021, 2053, 4093,
 		8191, 16381, 32771, 65521, INT_MAX };
+    size_t primessz;
+
 	assert(hint >= 0);
 	for (i = 1; primes[i] < hint; i++)
 		;
-	table = ALLOC(sizeof (*table) +
-		primes[i-1]*sizeof (table->buckets[0]));
+    primessz = safe_cast_su(primes[i - 1]);
+	table = ALLOC(sizeof (*table) + primessz * sizeof (table->buckets[0]));
 	table->size = primes[i-1];
 	table->cmp  = cmp  ?  cmp : cmpatom;
 	table->hash = hash ? hash : hashatom;
@@ -54,9 +57,12 @@ T Table_new(int hint,
 void *Table_get(T table, const void *key) {
 	int i;
 	struct binding *p;
+	size_t usize = safe_cast_su(table->size);
+
 	assert(table);
 	assert(key);
-	i = (*table->hash)(key)%table->size;
+
+	i = safe_cast_us((*table->hash)(key) % usize);
 	for (p = table->buckets[i]; p; p = p->link)
 		if ((*table->cmp)(key, p->key) == 0)
 			break;
@@ -67,9 +73,12 @@ void *Table_put(T table, const void *key, void *value) {
 	int i;
 	struct binding *p;
 	void *prev;
+	size_t usize = safe_cast_su(table->size);
+
 	assert(table);
 	assert(key);
-	i = (*table->hash)(key)%table->size;
+
+	i = safe_cast_us((*table->hash)(key) % usize);
 	for (p = table->buckets[i]; p; p = p->link)
 		if ((*table->cmp)(key, p->key) == 0)
 			break;
@@ -111,10 +120,13 @@ void Table_map(T table,
 void *Table_remove(T table, const void *key) {
 	int i;
 	struct binding **pp;
+	size_t usize = safe_cast_su(table->size);
+
 	assert(table);
 	assert(key);
+
 	table->timestamp++;
-	i = (*table->hash)(key)%table->size;
+	i = safe_cast_us((*table->hash)(key) % usize);
 	for (pp = &table->buckets[i]; *pp; pp = &(*pp)->link)
 		if ((*table->cmp)(key, (*pp)->key) == 0) {
 			struct binding *p = *pp;
@@ -127,15 +139,19 @@ void *Table_remove(T table, const void *key) {
 	return NULL;
 }
 
+#pragma GCC diagnostic ignored "-Wcast-qual"
 void **Table_toArray(T table, void *end) {
 	int i, j = 0;
 	void **array;
 	struct binding *p;
+	size_t lengthsz = safe_cast_su(table->length);
+
 	assert(table);
-	array = ALLOC((2*table->length + 1)*sizeof (*array));
+
+	array = ALLOC((2 * lengthsz + 1)*sizeof (*array));
 	for (i = 0; i < table->size; i++)
 		for (p = table->buckets[i]; p; p = p->link) {
-			array[j++] = (void *)p->key;
+			array[j++] = (void*)p->key;
 			array[j++] = p->value;
 		}
 	array[j] = end;

@@ -81,7 +81,7 @@ const MemFuncs _Align_functions = {
     align_print_allocated
 };
 
-extern MemFuncs Mem_set_align() {
+MemFuncs Mem_set_align() {
     MemFuncs tmp    = Mem_functions;
     Mem_functions   = _Align_functions;
     return tmp;

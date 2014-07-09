@@ -54,7 +54,7 @@ void Ring_free(T *ring) {
     FREE(*ring);
 }
 
-int Ring_length(T ring) {
+unsigned Ring_length(T ring) {
     assert(ring);
     return ring->length;
 }
@@ -144,7 +144,7 @@ void *Ring_add(T ring, signed pos, void *x) {
         return Ring_push_front(ring, x);
     else {
         struct node *p, *q;
-        
+
         unsigned i = pos < 0 ? safe_cast_su (pos + slength) : safe_cast_su (pos - 1);
         {
             unsigned n;
@@ -236,17 +236,17 @@ void Ring_rotate(T ring, int n) {
     assert(n >= - slength && n <= slength);
 
     if (n >= 0)
-        i = n % ring->length;
+        i = n % slength;
     else
-        i = n + ring->length;
+        i = n + slength;
     {
-        unsigned n;
+        signed n1;
         q = ring->head;
         if (i <= slength / 2)
-            for (n = i; n-- > 0; )
+            for (n1 = i; n1-- > 0; )
                 q = q->rlink;
         else
-            for (n = ring->length - i; n-- > 0; )
+            for (n1 = slength - i; n1-- > 0; )
                 q = q->llink;
     }
     ring->head = q;

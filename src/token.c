@@ -21,29 +21,29 @@ tokenizer_t tokenizer(char* s, const char* delimiters, unsigned empties) {
     return result;
 }
 
-char* tokenize(tokenizer_t* tokenizer) {
-    assert(tokenizer);
-    assert(tokenizer->s);
+char* tokenize(tokenizer_t* tkn) {
+    assert(tkn);
+    assert(tkn->s);
 
-    if (!tokenizer->next)   return NULL;
+    if (!tkn->next)   return NULL;
 
-    tokenizer->current  = tokenizer->next;
-    tokenizer->next     = strpbrk(tokenizer->current, tokenizer->delimiters );
+    tkn->current  = tkn->next;
+    tkn->next     = strpbrk(tkn->current, tkn->delimiters );
 
-    if (tokenizer->next) {
-        *tokenizer->next = '\0';
-        tokenizer->next += 1;
+    if (tkn->next) {
+        *tkn->next = '\0';
+        tkn->next += 1;
 
-        if (tokenizer->is_ignore_empties) {
-            tokenizer->next += strspn(tokenizer->next, tokenizer->delimiters);
-            if (!(*tokenizer->current))
-                return tokenize( tokenizer );
+        if (tkn->is_ignore_empties) {
+            tkn->next += strspn(tkn->next, tkn->delimiters);
+            if (!(*tkn->current))
+                return tokenize( tkn );
         }
     }
-    else if (tokenizer->is_ignore_empties && !(*tokenizer->current))
+    else if (tkn->is_ignore_empties && !(*tkn->current))
         return NULL;
 
-    return tokenizer->current;
+    return tkn->current;
 }
 
 

@@ -28,6 +28,12 @@ void Mem_print_stats() {
 
 thread_local  Arena_T Arena_default;
 
+void* a_alloc  (size_t nbytes, const char *file, int line);
+void* a_calloc (size_t count, size_t nbytes, const char *file, int line);
+void  a_free   (void *ptr, const char *file, int line);
+void* a_realloc(void *ptr, size_t nbytes, const char *file, int line);
+void  a_print_stats ();
+
 void* a_alloc  (size_t nbytes, const char *file, int line) {
     return Arena_alloc(Arena_default, nbytes, file, line);
 }

@@ -87,7 +87,7 @@ void Arena_dispose(T* ap) {
 }
 
 void *Arena_alloc(T arena, size_t nbytes, const char *file, int line) {
-    void* ptr;
+    void* ptrRet;
     assert(arena);
     assert(arena->limit >= arena->avail);
 
@@ -133,10 +133,10 @@ void *Arena_alloc(T arena, size_t nbytes, const char *file, int line) {
 
     *((size_t*)arena->avail) = nbytes; /* luca storing the size */
     arena->avail += nbytes;
-    ptr = arena->avail - nbytes + RESERVED_SIZE; /* luca */
+    ptrRet = arena->avail - nbytes + RESERVED_SIZE; /* luca */
 
-    log_dbg("%p arena %lu bytes", ptr, (unsigned long)nbytes);
-    return ptr;
+    log_dbg("%p arena %lu bytes", ptrRet, (unsigned long)nbytes);
+    return ptrRet;
 }
 
 void *Arena_calloc(T arena, size_t count, size_t nbytes, const char *file, int line) {

@@ -21,6 +21,7 @@ extern void *Arena_calloc   (T arena, size_t count, size_t nbytes, const char *f
 extern void *Arena_realloc  (T arena, void *ptr, size_t nbytes, const char *file, int line);
 extern void  Arena_free     (T arena);
 extern void  Arena_print_stats();
+extern void  Arena_remove_free_blocks();
 
 #undef T
 

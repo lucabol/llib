@@ -10,11 +10,11 @@ unsigned test_carray() {
     double* pd = da;
     int l = 0;
 
-    for (pa; *pa != NULL; ++pa, ++l);
+    for (; *pa != NULL; ++pa, ++l);
     test_assert_int(l, 2);
 
     l = 0;
-    for (pd; !isnan(*pd); ++pd, ++l);
+    for (; !isnan(*pd); ++pd, ++l);
     test_assert_int(l, 3);
 
     return TEST_SUCCESS;

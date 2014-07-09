@@ -8,9 +8,9 @@ BEGIN_DECLS
 #define T Timer_T
 typedef struct T* T;
 
-extern T        Timer_new_start();
-extern double   Timer_elapsed_micro(T);
-extern double   Timer_elapsed_micro_dispose(T);
+extern T          Timer_new_start();
+extern long long   Timer_elapsed_micro(T);
+extern long long   Timer_elapsed_micro_dispose(T);
 
 #undef T
 END_DECLS

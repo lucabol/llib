@@ -109,7 +109,7 @@ getopt_internal (int argc, char **argv, const char *shortopts,
         switch (ordering)
         {
             case PERMUTE:
-                permute_from = optind;
+                permute_from = (size_t)optind;
                 num_nonopts = 0;
                 while (optind < argc && !is_option (argv[optind], only))
                 {
@@ -141,6 +141,8 @@ getopt_internal (int argc, char **argv, const char *shortopts,
                 if (!is_option (argv[optind], only))
                     return EOF;
                 break;
+            default:
+                assert(0);
         }
     }
     /* we've got an option, so parse it */
@@ -160,10 +162,10 @@ getopt_internal (int argc, char **argv, const char *shortopts,
             /* no =, so next argv might be arg */
             match_chars = strlen (argv[optind]);
             possible_arg = argv[optind] + match_chars;
-            match_chars = match_chars - optwhere;
+            match_chars = match_chars - (size_t)optwhere;
         }
         else
-            match_chars = (possible_arg - argv[optind]) - optwhere;
+            match_chars = (size_t)((possible_arg - argv[optind]) - optwhere);
         for (optindex = 0; longopts[optindex].name != NULL; optindex++)
         {
             if (memcmp (argv[optind] + optwhere,
@@ -276,6 +278,8 @@ getopt_internal (int argc, char **argv, const char *shortopts,
                 optwhere = 1;
             optarg = NULL;
             break;
+        default:
+            assert(0);
     }
 
     /* do we have to permute or otherwise modify optind? */
@@ -326,8 +330,8 @@ getopt_long_only (int argc, char **argv, const char *shortopts,
 
 static void
 print_option(const struct option* opt) {
-    char* help	= opt->help ? opt->help : "";
-    char* par	= opt->param_name ? opt->param_name : "P";
+    const char* help	= opt->help ? opt->help : "";
+    const char* par	= opt->param_name ? opt->param_name : "P";
     char* buf;
 
     buf = Str_asprintf("%s=%s", opt->name,par);
@@ -347,25 +351,25 @@ int		opterrorcodes[256];
 char	opterrorshorts[256];
 
 void
-getopt_usage(char* progname, char *short_desc, char *pre_options, char *post_options, const struct option *longopts) {
-    pre_options     = pre_options ? pre_options : "";
-    post_options    = post_options ? post_options : "";
-    short_desc      = short_desc ? short_desc : "";
+getopt_usage(const char* progname, char *short_desc, char *pre_options, char *post_options, const struct option *longopts) {
+    const char * pre_options1     = pre_options ? pre_options : "";
+    const char * post_options1    = post_options ? post_options : "";
+    const char * short_desc1      = short_desc ? short_desc : "";
     assert(longopts);
 
 
     fprintf(stderr, "Usage: ");
     if(progname != NULL)
-        fprintf(stderr, "\t%s [OPTION] %s\n", progname, short_desc);
+        fprintf(stderr, "\t%s [OPTION] %s\n", progname, short_desc1);
 
-    fprintf(stderr, pre_options);
+    fprintf(stderr, pre_options1);
     fprintf(stderr, "Options:\n");
 
     while(longopts->name != NULL) {
         print_option(longopts);
         longopts++;
     }
-    fprintf(stderr, post_options);
+    fprintf(stderr, post_options1);
 }
 
 #define ERROR_G	-1
@@ -378,7 +382,7 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
     int long_index = 0;
     int opt = 0;
     unsigned int err_index = 0;
-    char* progname = argv[0] ? argv[0] : "Program";
+    const char* progname = argv[0] ? argv[0] : "Program";
 
     assert(longopts);
 
@@ -392,7 +396,7 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
     /* craft the correct shortopts string*/
     while(lp->name != NULL && (p - shortopts) < 255) {
         if(lp->val != '\0') {
-            *p = lp->val;
+            *p = (char)lp->val;
             p++;
             if(lp->has_arg == required_argument) {
                 *p = ':';
@@ -419,7 +423,7 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
         if(opt == ':' || opt == '?') { /* manage error cases */
             if(err_index < 256) {
                 opterrorcodes[err_index]	= opt;
-                opterrorshorts[err_index]	= optopt;
+                opterrorshorts[err_index]	= (char) optopt;
                 err_index++;
             }
         } else {
@@ -461,7 +465,7 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
                             if(errchar != ' ') {
                                 if(opterr) fprintf(stderr, "%s: argument not a valid integer for option `-%c'\n", progname, opt);
                                 if(err_index < 256) {
-                                    opterrorshorts[err_index] = opt;
+                                    opterrorshorts[err_index] = (char)opt;
                                     opterrorcodes[err_index++] = errchar;
                                 }
                                 if(errchar != getopt_endchars) optind --;                            }
@@ -474,7 +478,7 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
 
                             if(end == optarg) errchar = getopt_notnumber;
                             else if('\0' != *end) errchar = getopt_endchars;
-                            else if((DBL_MIN == sl || DBL_MAX == sl) && ERANGE == errno) errchar = getopt_overunderflow;
+                            else if((DBL_MIN >= sl || DBL_MAX <= sl) && ERANGE == errno) errchar = getopt_overunderflow;
                             else {
                                 OPTSPEC;
                                 *((double*)lp->value) = (double)sl;
@@ -482,7 +486,7 @@ int getopt_parse(int argc, char **argv, struct option *longopts, char *short_des
                             if(errchar != ' ') {
                                 if(opterr) fprintf(stderr, "%s: argument not a valid floating point number for option `-%c'\n", progname, opt);
                                 if(err_index < 256) {
-                                    opterrorshorts[err_index] = opt;
+                                    opterrorshorts[err_index] = (char)opt;
                                     opterrorcodes[err_index++] = errchar;
                                 }
                                 if(errchar != getopt_endchars) optind --;

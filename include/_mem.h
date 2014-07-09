@@ -5,7 +5,7 @@
 
 BEGIN_DECLS
 
-extern const Except_T Mem_Failed;
+//extern const Except_T Mem_Failed;
 
 extern void *_Mem_alloc (size_t nbytes, const char *file, int line);
 extern void *_Mem_calloc(size_t count, size_t nbytes, const char *file, int line);
