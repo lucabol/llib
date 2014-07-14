@@ -197,7 +197,7 @@ char* Str_asprintf(const char *fmt, ...)
     return buf;
 }
 
-char** Str_split(char* s, const char* delimiters, unsigned empties) {
+char** Str_split(char* s, const char* delimiters, unsigned empties, size_t* size) {
     tokenizer_t tok = tokenizer( s, delimiters, empties );
     char** buf = ALLOC(512 * sizeof(char*));
     size_t n = 0;
@@ -226,14 +226,7 @@ char** Str_split(char* s, const char* delimiters, unsigned empties) {
             REALLOC(buf, alloc_index * sizeof(char*));
         }
     }
-    buf[n] = NULL;
-    {
-        size_t tmp;
-        safe_sum_sisi(n, 1);
-        safe_mul_sisi(n+1, allocs);
-        tmp = (n + 1) * allocs;
-        safe_mul_sisi(tmp, sizeof(char*));
-    }
-    return REALLOC(buf, (n+1) * allocs * sizeof(char*));
+    *size = n;
+    return buf;
 }
 

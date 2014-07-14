@@ -5,8 +5,17 @@
 #include <_arena.h>
 #include <mem.h>
 
+static char* testsuite_name = "arena";
 
-unsigned test_arena_resize() {
+static void testsuite_setup() {
+    printf("%s", "In setup");
+}
+
+static void testsuite_teardown() {
+    printf("%s", "In teardown");
+}
+
+static unsigned test_arena_resize() {
     
     Arena_T arena   = Arena_new();
     char * aChar;
@@ -46,4 +55,9 @@ unsigned test_arena_resize() {
     
 
     return TEST_SUCCESS;
+}
+
+void testsuite_arena() {
+
+    testsuite_add("resize", test_arena_resize);
 }

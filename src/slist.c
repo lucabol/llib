@@ -135,3 +135,22 @@ void **SList_toArray(T list, void *end) {
     array[i] = end;
     return array;
 }
+
+
+int SList_find(T list, int(*pred)(void**x, void* cl), void* cl, void** ret) {
+
+    SList_T l = list;
+
+    assert(list);
+    assert(pred);
+    
+    // Not used map so that I can return early when found
+    for (; l; l = l->rest) {
+        if (pred(&l->first, cl)) {
+            if (ret) *ret = l->first;
+            return FOUND;
+        }
+    }
+    if (ret) *ret = NULL;
+    return NOT_FOUND;
+}

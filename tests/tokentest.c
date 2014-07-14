@@ -7,12 +7,12 @@
 
 unsigned test_token() {
     char s[] = ",,afaf,,bafa,,";
-    char** p;
 
     tokenizer_t tok = tokenizer( s, ",", TOKENIZER_NO_EMPTIES );
     const char* token;
     unsigned    n;
     char** splitbuf;
+    size_t size;
 
     n = 0;
     while ((token = tokenize( &tok )) != NULL) {
@@ -36,15 +36,10 @@ unsigned test_token() {
     test_assert(n == 0);
 
     strcpy(s, ",,afaf,,bafa,,");
-    splitbuf = Str_split(s, ",", TOKENIZER_EMPTIES_OK);
+    splitbuf = Str_split(s, ",", TOKENIZER_EMPTIES_OK, &size);
     test_assert(splitbuf);
 
-    n = 0;
-    p = splitbuf;
-    while(*p++) {
-        n++;
-    }
     FREE(splitbuf);
-    test_assert(n == 7);
+    test_assert(size == 7);
     return TEST_SUCCESS;
 }

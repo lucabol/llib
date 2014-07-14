@@ -42,3 +42,33 @@ unsigned test_str() {
 
     return TEST_SUCCESS;
 }
+
+unsigned test_str_split() {
+
+    char s[] = ",,afaf,,bafa,,";
+    char** p;
+    size_t size;
+
+    p = Str_split(s, ",", TOKENIZER_NO_EMPTIES, &size);
+    test_assert_str(p[0], "afaf");
+    test_assert_str(p[1], "bafa");
+    test_assert_int(size, 2);
+    FREE(p);
+
+    strcpy(s, "");
+    p = Str_split(s, ",", TOKENIZER_NO_EMPTIES, &size);
+    test_assert_int(size, 0);
+    FREE(p);
+
+    p = Str_split(s, ",", TOKENIZER_EMPTIES_OK, &size);
+    test_assert_int(size, 1);
+    FREE(p);
+
+    strcpy(s, ",.afaf,f.d");
+    p = Str_split(s, ",.", TOKENIZER_NO_EMPTIES, &size);
+
+    test_assert_int(size, 3);
+    FREE(p);
+
+    return TEST_SUCCESS;
+}

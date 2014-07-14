@@ -39,11 +39,20 @@ BEGIN_DECLS
     } EXCEPT(which) { \
     } END_TRY;
 
-typedef unsigned (*test_func) ();
+typedef unsigned(*test_func) ();
 
-#define test_add(kind, feature, f) \
+#define test_add(kind, feature, f) STMT_START { \
     extern unsigned f(); \
-    test_addx(kind, feature, f);
+    test_addx(kind, feature, f); } STMT_END
+
+#define testsuite_add(name, func) STMT_START { \
+    testsuite_setup(); \
+    test_add(testsuite_name, name, func); \
+    testsuite_teardown(); } STMT_END 
+
+#define testsuite_run(func) STMT_START { \
+    extern unsigned func(); \
+    func(); } STMT_END
 
 extern void test_addx(char* kind, char* feature, test_func f);
 extern unsigned test_run_all();

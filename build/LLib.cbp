@@ -32,8 +32,14 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Wfatal-errors" />
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-Wno-unknown-pragmas" />
+			<Add option="-Wno-unknown-pragmas -Werror -Winit-self -Wswitch-default" />
+			<Add option="-Wswitch-enum -Wstrict-overflow -Wfloat-equal -Wshadow -Wunsafe-loop-optimizations" />
+			<Add option="-Wpointer-arith -Wbad-function-cast -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion" />
+			<Add option="-Wsign-conversion -Wlogical-op -Wmissing-declarations" />
+			<Add option="-Wmissing-field-initializers -Wredundant-decls -fwrapv" />
 			<Add option="-DUNICODE" />
 			<Add option="-D_UNICODE" />
 			<Add directory="..\include" />

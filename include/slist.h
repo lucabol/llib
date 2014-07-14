@@ -26,6 +26,7 @@ extern unsigned SList_length      (T list);
 extern void     SList_free        (T *list);
 extern void     SList_map         (T list, void apply(void **x, void *cl), void *cl);
 extern void **  SList_toArray     (T list, void *end);
+extern int      SList_find        (T list, int(*pred)(void**x, void* cl), void* cl, void** ret);
 
 END_DECLS
 

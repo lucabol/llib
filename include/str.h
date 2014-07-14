@@ -17,6 +17,6 @@ extern char*    Str_amap    (const char *s, const char *from, const char *to);
 
 extern char*    Str_asprintf(const char *fmt, ...);
 
-extern char**   Str_split(char* s, const char* delimiters, unsigned empties);
+extern char**   Str_split(char* s, const char* delimiters, unsigned empties, size_t* n);
 
 #endif

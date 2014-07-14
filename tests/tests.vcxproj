@@ -95,6 +95,7 @@
     <ClCompile Include="getopttest.c" />
     <ClCompile Include="log.c" />
     <ClCompile Include="mem.c" />
+    <ClCompile Include="nakedTest.c" />
     <ClCompile Include="rand.c" />
     <ClCompile Include="randstream.c" />
     <ClCompile Include="ring.c" />

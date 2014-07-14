@@ -75,5 +75,8 @@
     <ClCompile Include="carray.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="nakedTest.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
